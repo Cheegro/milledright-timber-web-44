@@ -6,35 +6,35 @@ import MapEmbed from '@/components/MapEmbed';
 import FirewoodBanner from '@/components/FirewoodBanner';
 
 const Home = () => {
-  // Sample featured products
+  // Sample featured lumber products
   const featuredProducts = [
     {
       id: 1,
-      name: 'LT40 Portable Sawmill',
-      description: 'Our flagship portable sawmill with hydraulic log handling.',
-      image: '/placeholder.svg',
-      price: '$8,995',
+      name: 'Live Edge Slabs',
+      description: 'Beautiful live edge wood slabs ideal for custom tables, countertops, and more.',
+      image: '/lovable-uploads/3e9a035e-9de4-472c-97f1-0f026cf9486d.png',
+      price: 'From $85/board ft',
     },
     {
       id: 2,
-      name: 'LT20 Portable Sawmill',
-      description: 'Compact and versatile sawmill for small to medium operations.',
+      name: '2" Dimensional Lumber',
+      description: 'High-quality dimensional lumber perfect for construction and woodworking projects.',
       image: '/placeholder.svg',
-      price: '$4,995',
+      price: 'From $3.50/board ft',
     },
     {
       id: 3,
-      name: 'Industrial Bandsaw Blades',
-      description: 'Premium quality bandsaw blades for all sawmill models.',
+      name: '2S Surfaced Wood',
+      description: 'Surfaced on two sides for smooth finish, ready for your carpentry projects.',
       image: '/placeholder.svg',
-      price: '$29.99',
+      price: 'From $4.25/board ft',
     },
     {
       id: 4,
-      name: 'Log Loading Attachment',
-      description: 'Easily load heavy logs onto your sawmill with this attachment.',
+      name: 'Custom Milling Services',
+      description: 'Bring your logs and we\'ll mill them to your specifications on-site.',
       image: '/placeholder.svg',
-      price: '$1,295',
+      price: 'Starting at $75/hour',
     },
   ];
 
@@ -42,21 +42,21 @@ const Home = () => {
   const testimonials = [
     {
       id: 1,
-      text: "MilledRight's LT40 completely transformed my small lumber business. The precision cuts and ease of use have saved me countless hours of work.",
-      author: "John D., Professional Sawyer",
-      location: "Oregon"
+      text: "The live edge maple slab I purchased from MilledRight was absolutely stunning. The quality was even better than I expected, and the team was so helpful in helping me select the perfect piece.",
+      author: "John D., Furniture Maker",
+      location: "Barrie"
     },
     {
       id: 2,
-      text: "As a hobbyist, I was hesitant about the investment, but the LT20 has paid for itself within months through projects and custom cutting jobs for neighbors.",
+      text: "I brought my own logs to be milled and couldn't be happier with the results. Fair pricing and expert cutting - I'll definitely be returning with more logs next season.",
       author: "Michael T., Hobbyist",
-      location: "Michigan"
+      location: "Orillia"
     },
     {
       id: 3,
-      text: "The customer service at MilledRight is unmatched. When I had questions about my new mill, they walked me through everything step by step.",
-      author: "Sarah L., Furniture Maker",
-      location: "North Carolina"
+      text: "The quality of lumber from MilledRight is consistently excellent. As a professional woodworker, I depend on good materials, and they never disappoint.",
+      author: "Sarah L., Cabinet Maker",
+      location: "Beaverton"
     }
   ];
 
@@ -73,17 +73,17 @@ const Home = () => {
         <div className="container-wide py-24 md:py-32 lg:py-40 relative z-10">
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-shadow">
-              Precision Milling Solutions for Every Woodworker
+              Quality Lumber Direct From Our Sawmill
             </h1>
             <p className="text-xl mb-8 max-w-2xl text-shadow">
-              From hobbyists to industrial operations, MilledRight provides the highest quality portable and industrial sawmill equipment on the market.
+              From live edge slabs to dimensional lumber, MilledRight Sawmill provides premium locally sourced wood products and custom milling services.
             </p>
             <div className="flex flex-wrap gap-4">
               <Button size="lg" className="bg-sawmill-orange hover:bg-sawmill-auburn text-white">
-                <Link to="/products">Explore Products</Link>
+                <Link to="/products">Browse Our Products</Link>
               </Button>
               <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-sawmill-dark-brown">
-                <Link to="/contact">Request a Quote</Link>
+                <Link to="/contact">Request Custom Milling</Link>
               </Button>
             </div>
           </div>
@@ -104,31 +104,31 @@ const Home = () => {
                 <span className="text-3xl font-bold">1</span>
               </div>
               <h3 className="text-xl font-bold mb-3 text-sawmill-dark-brown">Premium Quality</h3>
-              <p className="text-sawmill-dark-gray">Built with the highest grade materials and precision engineering for lasting performance.</p>
+              <p className="text-sawmill-dark-gray">Hand-selected local lumber with attention to detail, ensuring the highest quality for your projects.</p>
             </div>
             
             <div className="text-center p-6">
               <div className="w-20 h-20 rounded-full bg-sawmill-dark-brown text-white flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl font-bold">2</span>
               </div>
-              <h3 className="text-xl font-bold mb-3 text-sawmill-dark-brown">Expert Support</h3>
-              <p className="text-sawmill-dark-gray">Our team of experienced sawmill operators provides industry-leading customer service.</p>
+              <h3 className="text-xl font-bold mb-3 text-sawmill-dark-brown">Local Sourcing</h3>
+              <p className="text-sawmill-dark-gray">All our lumber comes from sustainably harvested local trees, supporting the regional economy.</p>
             </div>
             
             <div className="text-center p-6">
               <div className="w-20 h-20 rounded-full bg-sawmill-dark-brown text-white flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl font-bold">3</span>
               </div>
-              <h3 className="text-xl font-bold mb-3 text-sawmill-dark-brown">Versatile Solutions</h3>
-              <p className="text-sawmill-dark-gray">Products designed for all levels, from weekend hobbyists to full-scale production facilities.</p>
+              <h3 className="text-xl font-bold mb-3 text-sawmill-dark-brown">Custom Services</h3>
+              <p className="text-sawmill-dark-gray">Bring your logs to us, and we'll mill them to your exact specifications on-site.</p>
             </div>
             
             <div className="text-center p-6">
               <div className="w-20 h-20 rounded-full bg-sawmill-dark-brown text-white flex items-center justify-center mx-auto mb-4">
                 <span className="text-3xl font-bold">4</span>
               </div>
-              <h3 className="text-xl font-bold mb-3 text-sawmill-dark-brown">Value for Money</h3>
-              <p className="text-sawmill-dark-gray">Competitive pricing without compromising on quality or performance.</p>
+              <h3 className="text-xl font-bold mb-3 text-sawmill-dark-brown">Expert Knowledge</h3>
+              <p className="text-sawmill-dark-gray">Our team has years of experience and can help you select the perfect wood for your project.</p>
             </div>
           </div>
         </div>
@@ -177,12 +177,12 @@ const Home = () => {
       {/* Call to Action - Middle */}
       <section className="py-16 bg-sawmill-medium-brown text-white">
         <div className="container-wide text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">Not Sure Which Sawmill is Right for You?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">Custom Milling Services Available</h2>
           <p className="text-xl mb-8 max-w-3xl mx-auto">
-            Our team of experts can help you choose the perfect equipment for your specific needs and budget.
+            Have logs that need milling? Bring them to us and we'll transform them into beautiful, usable lumber to your specifications.
           </p>
           <Button size="lg" className="bg-white text-sawmill-dark-brown hover:bg-sawmill-light-brown hover:text-sawmill-dark-brown">
-            <Link to="/contact">Request Expert Advice</Link>
+            <Link to="/contact">Request Custom Milling Quote</Link>
           </Button>
         </div>
       </section>
@@ -299,16 +299,16 @@ const Home = () => {
       {/* Call to Action - Bottom */}
       <section className="py-16 bg-sawmill-forest text-white">
         <div className="container-wide text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Transform Your Milling Operations?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Start Your Wood Project?</h2>
           <p className="text-xl mb-8 max-w-3xl mx-auto">
-            Join thousands of satisfied customers who have chosen MilledRight for their sawmill needs.
+            Visit our sawmill to browse our selection of quality lumber or discuss your custom milling needs.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Button size="lg" className="bg-white text-sawmill-forest hover:bg-sawmill-light-brown">
-              <Link to="/products">Shop Now</Link>
+              <Link to="/products">Browse Products</Link>
             </Button>
             <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-sawmill-forest">
-              <Link to="/contact">Contact Sales</Link>
+              <Link to="/contact">Contact Us</Link>
             </Button>
           </div>
         </div>

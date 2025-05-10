@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { Flame } from 'lucide-react';
 
 const FirewoodBanner = () => {
   return (
@@ -16,7 +17,8 @@ const FirewoodBanner = () => {
               size="lg" 
               className="bg-white text-sawmill-auburn hover:bg-sawmill-light-brown hover:text-sawmill-auburn"
             >
-              <a href="https://flamingfirewood.ca" target="_blank" rel="noopener noreferrer">
+              <a href="https://flamingfirewood.ca" target="_blank" rel="noopener noreferrer" className="flex items-center">
+                <Flame className="mr-2 h-5 w-5" />
                 Visit FlamingFirewood.ca
               </a>
             </Button>
