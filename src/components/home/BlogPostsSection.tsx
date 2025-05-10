@@ -14,8 +14,8 @@ const BlogPostsSection = () => {
           <Card>
             <div className="aspect-video relative overflow-hidden">
               <img 
-                src="/placeholder.svg" 
-                alt="Blog post"
+                src="https://lh3.googleusercontent.com/pw/AP1GczMvU1jPjRuTD7NTL26kN32qe3xBVIe9TFH12AhmjREiYsWiWrKArbnxaIv-2OCojyczJbFsjBAJ9DDAKguoih5sYfzfZLUWiHcjm1CABI8YBg3y=w2400" 
+                alt="Bandsaw maintenance blog post"
                 className="object-cover w-full h-full"
               />
             </div>
@@ -35,8 +35,8 @@ const BlogPostsSection = () => {
           <Card>
             <div className="aspect-video relative overflow-hidden">
               <img 
-                src="/placeholder.svg" 
-                alt="Blog post"
+                src="https://lh3.googleusercontent.com/pw/AP1GczMF-UwqDS0mzQhvKlZMMUqQjKwTeLsMs_9Y8SwdIC6a9h2vDZKec37odDn28R83IKXkMt7gvRsUIDIF0q6QJIrum2GSCsSeGQQjbUZVMcRypTv_=w2400" 
+                alt="Portable sawmill blog post"
                 className="object-cover w-full h-full"
               />
             </div>
@@ -56,8 +56,8 @@ const BlogPostsSection = () => {
           <Card>
             <div className="aspect-video relative overflow-hidden">
               <img 
-                src="/placeholder.svg" 
-                alt="Blog post"
+                src="https://lh3.googleusercontent.com/pw/AP1GczNLvUgvZSbzRZXdpVowZi-2wptldWSWZDBtrwDaMks0T3B9H4fTcrMJut7RJUo93xFIJU9djlLDXQOa7XoW3VzbwFNE33MTSmrPXa-9vB_enYD6=w2400" 
+                alt="Customer spotlight blog post"
                 className="object-cover w-full h-full"
               />
             </div>

@@ -9,7 +9,7 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-black opacity-60 z-0"></div>
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center"
-        style={{ backgroundImage: `url('/placeholder.svg')` }}
+        style={{ backgroundImage: `url('https://lh3.googleusercontent.com/pw/AP1GczPTRLiCj-uABM3l1danyqwliakkiNlE1J2GunUYMhSQox9oWd_6xgYZ50AcIO39LB_tiSChg-kOvEOeg1Wd7qhXvShvHpCxdQLvYCJt7SOrzNZ7=w2400')` }}
       ></div>
       
       <div className="container-wide py-24 md:py-32 lg:py-40 relative z-10">

@@ -5,34 +5,34 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
 const FeaturedProductsSection = () => {
-  // Sample featured lumber products
+  // Sample featured lumber products with real images
   const featuredProducts = [
     {
       id: 1,
       name: 'Live Edge Slabs',
       description: 'Beautiful live edge wood slabs ideal for custom tables, countertops, and more.',
-      image: '/lovable-uploads/3e9a035e-9de4-472c-97f1-0f026cf9486d.png',
+      image: 'https://lh3.googleusercontent.com/pw/AP1GczOAcByE5Hm4MYIMettl4emX9aNlg4wLE-Y-TPISX24hZT_d6KeYda7iviQoVVw8xZqpvwwMUohBa6xDoxPRM22HGaag8KVSxhgF7AvievLP_kIi=w2400',
       price: 'From $85/board ft',
     },
     {
       id: 2,
       name: '2" Dimensional Lumber',
       description: 'High-quality dimensional lumber perfect for construction and woodworking projects.',
-      image: '/placeholder.svg',
+      image: 'https://lh3.googleusercontent.com/pw/AP1GczNwsxZoR0-yVe3k_Wii5gR_FvJK_h-vkiR3vX3fW0miFTsr7FkZT6eO51tiqWzzGxgNpFmsJ9fDIw1K228F74pLeywJu11ezWCxrKEFkcUw7OhX=w2400',
       price: 'From $3.50/board ft',
     },
     {
       id: 3,
       name: '2S Surfaced Wood',
       description: 'Surfaced on two sides for smooth finish, ready for your carpentry projects.',
-      image: '/placeholder.svg',
+      image: 'https://lh3.googleusercontent.com/pw/AP1GczP48Owk0UOdaqptbQ0LDibJMEigXrR_6wR7fJt-xZ1sWCMU6zmv90R9jQ7MHNgTMEWpAWv6jXQYjDlMaVF_mwJqVY_jwXbfJ9DZw4uSqfZ0QjbL=w2400',
       price: 'From $4.25/board ft',
     },
     {
       id: 4,
       name: 'Custom Milling Services',
       description: 'Bring your logs and we\'ll mill them to your specifications on-site.',
-      image: '/placeholder.svg',
+      image: 'https://lh3.googleusercontent.com/pw/AP1GczN1IOYefycEDh-kyR3PW-NwuwJK2PVvhV_Is2mY9SiOBocgJjcv83p99G6SnGWOIXNqgFgRWVkyvgJ6ExtYJJ7lGIqebRO12YnP_5tcLic5iykE=w2400',
       price: 'Starting at $75/hour',
     },
   ];

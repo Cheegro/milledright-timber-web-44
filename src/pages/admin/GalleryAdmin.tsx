@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -6,71 +5,71 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
-// Mock data for gallery images
+// Updated mock data with real images
 const mockImages = [
   { 
     id: 1, 
-    title: 'LT40 in Action',
-    description: 'Customer using the LT40 Portable Sawmill',
-    category: 'Product Images',
+    title: 'Custom Milling in Action',
+    description: 'Customer using our portable sawmill service',
+    category: 'Operations',
     date: 'May 10, 2025',
-    thumbnail: '/placeholder.svg'
+    thumbnail: 'https://lh3.googleusercontent.com/pw/AP1GczN1IOYefycEDh-kyR3PW-NwuwJK2PVvhV_Is2mY9SiOBocgJjcv83p99G6SnGWOIXNqgFgRWVkyvgJ6ExtYJJ7lGIqebRO12YnP_5tcLic5iykE=w2400'
   },
   { 
     id: 2, 
-    title: 'Custom Furniture Project',
-    description: 'Finished furniture made with lumber from our mills',
-    category: 'Customer Projects',
+    title: 'Live Edge Slabs',
+    description: 'Beautiful live edge wood ready for finishing',
+    category: 'Product Images',
     date: 'May 8, 2025',
-    thumbnail: '/placeholder.svg'
+    thumbnail: 'https://lh3.googleusercontent.com/pw/AP1GczOAcByE5Hm4MYIMettl4emX9aNlg4wLE-Y-TPISX24hZT_d6KeYda7iviQoVVw8xZqpvwwMUohBa6xDoxPRM22HGaag8KVSxhgF7AvievLP_kIi=w2400'
   },
   { 
     id: 3, 
-    title: 'Mill Installation',
-    description: 'Setting up a new industrial mill',
-    category: 'Installations',
+    title: 'Portable Sawmill',
+    description: 'Our portable sawmill setup at a customer location',
+    category: 'Product Images',
     date: 'May 5, 2025',
-    thumbnail: '/placeholder.svg'
+    thumbnail: 'https://lh3.googleusercontent.com/pw/AP1GczMF-UwqDS0mzQhvKlZMMUqQjKwTeLsMs_9Y8SwdIC6a9h2vDZKec37odDn28R83IKXkMt7gvRsUIDIF0q6QJIrum2GSCsSeGQQjbUZVMcRypTv_=w2400'
   },
   { 
     id: 4, 
-    title: 'Timber Processing',
-    description: 'Large logs being processed at a commercial operation',
-    category: 'Operations',
+    title: 'Lumber Stack',
+    description: 'Fresh cut dimensional lumber ready for drying',
+    category: 'Product Images',
     date: 'April 28, 2025',
-    thumbnail: '/placeholder.svg'
+    thumbnail: 'https://lh3.googleusercontent.com/pw/AP1GczNwsxZoR0-yVe3k_Wii5gR_FvJK_h-vkiR3vX3fW0miFTsr7FkZT6eO51tiqWzzGxgNpFmsJ9fDIw1K228F74pLeywJu11ezWCxrKEFkcUw7OhX=w2400'
   },
   { 
     id: 5, 
-    title: 'Portable Mill Demo',
-    description: 'Demonstrating the LT20 at a trade show',
-    category: 'Events',
+    title: 'Sawmill Operation',
+    description: 'Processing logs at our main facility',
+    category: 'Operations',
     date: 'April 20, 2025',
-    thumbnail: '/placeholder.svg'
+    thumbnail: 'https://lh3.googleusercontent.com/pw/AP1GczMvU1jPjRuTD7NTL26kN32qe3xBVIe9TFH12AhmjREiYsWiWrKArbnxaIv-2OCojyczJbFsjBAJ9DDAKguoih5sYfzfZLUWiHcjm1CABI8YBg3y=w2400'
   },
   { 
     id: 6, 
-    title: 'Custom Cabin Build',
-    description: 'Customer building a cabin with lumber milled on site',
-    category: 'Customer Projects',
+    title: 'Specialized Cutting',
+    description: 'Custom cutting for unique project requirements',
+    category: 'Services',
     date: 'April 15, 2025',
-    thumbnail: '/placeholder.svg'
+    thumbnail: 'https://lh3.googleusercontent.com/pw/AP1GczOZ48lmtWVIpvHxJwGSMxDbasI8aR7GnAWPCafZTHrTsYBmPz79yKSHqwejiWNeCPKGp6hS3E3wYcuzQJ9jhADsHpoBccgrP7_PNvIMzEsexzLv=w2400'
   },
   { 
     id: 7, 
-    title: 'Mill Maintenance',
-    description: 'Proper maintenance techniques for your mill',
-    category: 'Maintenance',
+    title: 'Wood Samples',
+    description: 'Various wood species available at our mill',
+    category: 'Product Images',
     date: 'April 10, 2025',
-    thumbnail: '/placeholder.svg'
+    thumbnail: 'https://lh3.googleusercontent.com/pw/AP1GczP48Owk0UOdaqptbQ0LDibJMEigXrR_6wR7fJt-xZ1sWCMU6zmv90R9jQ7MHNgTMEWpAWv6jXQYjDlMaVF_mwJqVY_jwXbfJ9DZw4uSqfZ0QjbL=w2400'
   },
   { 
     id: 8, 
-    title: 'Factory Tour',
-    description: 'Inside look at our manufacturing facility',
-    category: 'Company',
+    title: 'Mill Setup',
+    description: 'Setting up our portable mill for a custom job',
+    category: 'Operations',
     date: 'April 5, 2025',
-    thumbnail: '/placeholder.svg'
+    thumbnail: 'https://lh3.googleusercontent.com/pw/AP1GczNLvUgvZSbzRZXdpVowZi-2wptldWSWZDBtrwDaMks0T3B9H4fTcrMJut7RJUo93xFIJU9djlLDXQOa7XoW3VzbwFNE33MTSmrPXa-9vB_enYD6=w2400'
   },
 ];
 
