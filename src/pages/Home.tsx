@@ -8,7 +8,7 @@ import TestimonialsSection from '@/components/home/TestimonialsSection';
 import BlogPostsSection from '@/components/home/BlogPostsSection';
 import BottomCTASection from '@/components/home/BottomCTASection';
 import MapEmbed from '@/components/MapEmbed';
-import FirewoodBanner from '@/components/FirewoodBanner';
+import SharedBanner from '@/components/SharedBanner';
 
 const Home = () => {
   return (
@@ -16,11 +16,8 @@ const Home = () => {
       {/* Hero Section */}
       <HeroSection />
       
-      {/* Firewood Banner */}
-      <FirewoodBanner type="firewood" />
-      
-      {/* Farmers Market Banner */}
-      <FirewoodBanner type="farmers-market" />
+      {/* Banners - Full Size for Home page */}
+      <SharedBanner variant="full" />
       
       {/* Why Choose Us */}
       <WhyChooseUsSection />

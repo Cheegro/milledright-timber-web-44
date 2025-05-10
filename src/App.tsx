@@ -20,6 +20,7 @@ import Contact from "./pages/Contact";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import NotFound from "./pages/NotFound";
+import SharedBanner from "./components/SharedBanner";
 
 // Admin Pages
 import Dashboard from "./pages/admin/Dashboard";
@@ -30,9 +31,10 @@ import ReviewsAdmin from "./pages/admin/ReviewsAdmin";
 
 const queryClient = new QueryClient();
 
-const MainLayout = ({ children }: { children: React.ReactNode }) => (
+const MainLayout = ({ children, hideBanner = false }: { children: React.ReactNode, hideBanner?: boolean }) => (
   <>
     <Header />
+    {!hideBanner && <SharedBanner variant="compact" />}
     {children}
     <Footer />
   </>
@@ -49,7 +51,7 @@ const App = () => (
           <Route 
             path="/" 
             element={
-              <MainLayout>
+              <MainLayout hideBanner={true}>
                 <Home />
               </MainLayout>
             } 
@@ -73,7 +75,7 @@ const App = () => (
           <Route 
             path="/gallery" 
             element={
-              <MainLayout>
+              <MainLayout hideBanner={true}>
                 <Gallery />
               </MainLayout>
             } 

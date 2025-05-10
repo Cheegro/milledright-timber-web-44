@@ -6,6 +6,7 @@ import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
+import SharedBanner from '@/components/SharedBanner';
 
 // Mock gallery data - in a real app this would come from an API
 const galleryData = {
@@ -67,6 +68,9 @@ const Gallery = () => {
           </p>
         </div>
       </div>
+      
+      {/* Add compact banner */}
+      <SharedBanner variant="compact" />
       
       <div className="container-wide py-10">
         <Tabs defaultValue="all" value={activeTab} onValueChange={setActiveTab} className="mb-10">
