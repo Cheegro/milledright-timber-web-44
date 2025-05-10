@@ -91,7 +91,10 @@ const Home = () => {
       </section>
       
       {/* Firewood Banner */}
-      <FirewoodBanner />
+      <FirewoodBanner type="firewood" />
+      
+      {/* Farmers Market Banner */}
+      <FirewoodBanner type="farmers-market" />
       
       {/* Why Choose Us */}
       <section className="py-16 bg-muted">

@@ -31,7 +31,7 @@ const MapEmbed = () => {
                   <MapPin className="h-5 w-5 text-sawmill-orange mr-2 mt-1" />
                   <div>
                     <p className="font-medium">Milled Right Sawmill</p>
-                    <p className="text-sawmill-dark-gray">4456 Highway 12, Beaverton, ON</p>
+                    <p className="text-sawmill-dark-gray">16720 ON-48, Whitchurch-Stouffville, ON L4A 3M6</p>
                   </div>
                 </div>
                 <div className="flex items-center">
@@ -41,7 +41,7 @@ const MapEmbed = () => {
               </div>
               <div className="mt-6">
                 <Button className="w-full bg-sawmill-dark-brown hover:bg-sawmill-medium-brown">
-                  <a href="https://goo.gl/maps/8V8Z5WQjH8ZKoLq16" target="_blank" rel="noopener noreferrer">
+                  <a href="https://maps.google.com/?q=16720+ON-48,+Whitchurch-Stouffville,+ON+L4A+3M6" target="_blank" rel="noopener noreferrer">
                     Get Directions
                   </a>
                 </Button>
