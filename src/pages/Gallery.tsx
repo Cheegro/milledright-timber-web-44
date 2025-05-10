@@ -83,22 +83,24 @@ const Gallery = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {galleryData[category as keyof typeof galleryData].map((image) => (
                   <Card key={image.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                    <DialogTrigger asChild onClick={() => handleImageClick(image)}>
-                      <CardContent className="p-0 cursor-pointer">
-                        <div className="relative">
-                          <AspectRatio ratio={4/3}>
-                            <img 
-                              src={image.imageUrl} 
-                              alt={image.title} 
-                              className="object-cover w-full h-full"
-                            />
-                          </AspectRatio>
-                          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 text-white">
-                            <h3 className="font-semibold">{image.title}</h3>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <CardContent className="p-0 cursor-pointer" onClick={() => handleImageClick(image)}>
+                          <div className="relative">
+                            <AspectRatio ratio={4/3}>
+                              <img 
+                                src={image.imageUrl} 
+                                alt={image.title} 
+                                className="object-cover w-full h-full"
+                              />
+                            </AspectRatio>
+                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 text-white">
+                              <h3 className="font-semibold">{image.title}</h3>
+                            </div>
                           </div>
-                        </div>
-                      </CardContent>
-                    </DialogTrigger>
+                        </CardContent>
+                      </DialogTrigger>
+                    </Dialog>
                   </Card>
                 ))}
               </div>
