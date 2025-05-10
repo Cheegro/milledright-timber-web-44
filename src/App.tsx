@@ -34,9 +34,13 @@ const queryClient = new QueryClient();
 const MainLayout = ({ children, hideBanner = false }: { children: React.ReactNode, hideBanner?: boolean }) => (
   <>
     <Header />
-    {!hideBanner && <SharedBanner variant="compact" />}
-    {children}
-    <Footer />
+    <div className="flex flex-col min-h-screen">
+      <div className="flex-grow">
+        {children}
+      </div>
+      {!hideBanner && <SharedBanner variant="compact" />}
+      <Footer />
+    </div>
   </>
 );
 
@@ -75,7 +79,7 @@ const App = () => (
           <Route 
             path="/gallery" 
             element={
-              <MainLayout hideBanner={true}>
+              <MainLayout>
                 <Gallery />
               </MainLayout>
             } 

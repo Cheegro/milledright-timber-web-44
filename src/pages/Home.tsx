@@ -16,9 +16,6 @@ const Home = () => {
       {/* Hero Section */}
       <HeroSection />
       
-      {/* Banners - Full Size for Home page */}
-      <SharedBanner variant="full" />
-      
       {/* Why Choose Us */}
       <WhyChooseUsSection />
       
@@ -36,6 +33,9 @@ const Home = () => {
       
       {/* Latest Blog Posts */}
       <BlogPostsSection />
+      
+      {/* Banners - Full Size for Home page */}
+      <SharedBanner variant="full" />
       
       {/* Call to Action - Bottom */}
       <BottomCTASection />
