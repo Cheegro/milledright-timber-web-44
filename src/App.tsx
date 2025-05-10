@@ -10,6 +10,8 @@ import AdminLayout from "./layouts/AdminLayout";
 
 // Main Website Pages
 import Home from "./pages/Home";
+import Products from "./pages/Products";
+import ProductDetail from "./pages/ProductDetail";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import NotFound from "./pages/NotFound";
@@ -44,6 +46,22 @@ const App = () => (
             element={
               <MainLayout>
                 <Home />
+              </MainLayout>
+            } 
+          />
+          <Route 
+            path="/products" 
+            element={
+              <MainLayout>
+                <Products />
+              </MainLayout>
+            } 
+          />
+          <Route 
+            path="/products/:id" 
+            element={
+              <MainLayout>
+                <ProductDetail />
               </MainLayout>
             } 
           />
