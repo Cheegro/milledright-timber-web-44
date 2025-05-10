@@ -14,7 +14,7 @@ const blogPosts = [
     date: "2025-04-22",
     author: "Mike Johnson",
     category: "Tips & Tricks",
-    imageUrl: "/placeholder.svg"
+    imageUrl: "public/lovable-uploads/15c1d1dd-4743-4437-9885-f0a252905680.png"
   },
   {
     id: 2,
@@ -23,7 +23,7 @@ const blogPosts = [
     date: "2025-04-15",
     author: "Sarah Miller",
     category: "Education",
-    imageUrl: "/placeholder.svg"
+    imageUrl: "public/lovable-uploads/bc15c355-6ee0-46a0-abe2-a10542535a4e.png"
   },
   {
     id: 3,
@@ -32,7 +32,7 @@ const blogPosts = [
     date: "2025-04-08",
     author: "Tom Wilson",
     category: "Equipment",
-    imageUrl: "/placeholder.svg"
+    imageUrl: "public/lovable-uploads/fbfcdde3-8d46-4da8-8058-04b6ba96bfc4.png"
   },
   {
     id: 4,
@@ -41,7 +41,7 @@ const blogPosts = [
     date: "2025-03-30",
     author: "Lisa Green",
     category: "Sustainability",
-    imageUrl: "/placeholder.svg"
+    imageUrl: "public/lovable-uploads/20824b3a-95ce-47ff-895d-b19f775386b0.png"
   },
   {
     id: 5,
@@ -50,7 +50,7 @@ const blogPosts = [
     date: "2025-03-21",
     author: "Chris Taylor",
     category: "Projects",
-    imageUrl: "/placeholder.svg"
+    imageUrl: "public/lovable-uploads/3c7d6dd1-8b41-4a54-abd5-a29423098810.png"
   },
   {
     id: 6,
@@ -59,7 +59,7 @@ const blogPosts = [
     date: "2025-03-15",
     author: "Mike Johnson",
     category: "Tips & Tricks",
-    imageUrl: "/placeholder.svg"
+    imageUrl: "public/lovable-uploads/3690e90b-4ecc-4ea1-ae72-8c2c65ccba68.png"
   }
 ];
 
