@@ -5,42 +5,42 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
 const FeaturedProductsSection = () => {
-  // Sample featured lumber products with real images
+  // Featured lumber products with real images
   const featuredProducts = [
     {
       id: 1,
-      name: 'Live Edge Slabs',
-      description: 'Beautiful live edge wood slabs ideal for custom tables, countertops, and more.',
+      name: 'Walnut Live Edge Slabs',
+      description: 'Beautiful walnut live edge slabs with rich color variation, perfect for custom tables and countertops.',
       image: 'https://lh3.googleusercontent.com/pw/AP1GczOAcByE5Hm4MYIMettl4emX9aNlg4wLE-Y-TPISX24hZT_d6KeYda7iviQoVVw8xZqpvwwMUohBa6xDoxPRM22HGaag8KVSxhgF7AvievLP_kIi=w2400',
-      price: 'From $85/board ft',
+      price: 'From $95/board ft',
     },
     {
       id: 2,
-      name: '2" Dimensional Lumber',
-      description: 'High-quality dimensional lumber perfect for construction and woodworking projects.',
-      image: 'https://lh3.googleusercontent.com/pw/AP1GczNwsxZoR0-yVe3k_Wii5gR_FvJK_h-vkiR3vX3fW0miFTsr7FkZT6eO51tiqWzzGxgNpFmsJ9fDIw1K228F74pLeywJu11ezWCxrKEFkcUw7OhX=w2400',
-      price: 'From $3.50/board ft',
+      name: 'Maple Live Edge Slabs',
+      description: 'Stunning maple live edge slabs with beautiful grain patterns, excellent for dining tables and desks.',
+      image: 'https://lh3.googleusercontent.com/pw/AP1GczP48Owk0UOdaqptbQ0LDibJMEigXrR_6wR7fJt-xZ1sWCMU6zmv90R9jQ7MHNgTMEWpAWv6jXQYjDlMaVF_mwJqVY_jwXbfJ9DZw4uSqfZ0QjbL=w2400',
+      price: 'From $85/board ft',
     },
     {
       id: 3,
-      name: '2S Surfaced Wood',
-      description: 'Surfaced on two sides for smooth finish, ready for your carpentry projects.',
-      image: 'https://lh3.googleusercontent.com/pw/AP1GczP48Owk0UOdaqptbQ0LDibJMEigXrR_6wR7fJt-xZ1sWCMU6zmv90R9jQ7MHNgTMEWpAWv6jXQYjDlMaVF_mwJqVY_jwXbfJ9DZw4uSqfZ0QjbL=w2400',
-      price: 'From $4.25/board ft',
+      name: 'Oak Live Edge Slabs',
+      description: 'Durable oak live edge slabs with distinctive grain, ideal for rustic furniture designs and statement pieces.',
+      image: 'https://lh3.googleusercontent.com/pw/AP1GczNwsxZoR0-yVe3k_Wii5gR_FvJK_h-vkiR3vX3fW0miFTsr7FkZT6eO51tiqWzzGxgNpFmsJ9fDIw1K228F74pLeywJu11ezWCxrKEFkcUw7OhX=w2400',
+      price: 'From $75/board ft',
     },
     {
       id: 4,
-      name: 'Custom Milling Services',
-      description: 'Bring your logs and we\'ll mill them to your specifications on-site.',
-      image: 'https://lh3.googleusercontent.com/pw/AP1GczN1IOYefycEDh-kyR3PW-NwuwJK2PVvhV_Is2mY9SiOBocgJjcv83p99G6SnGWOIXNqgFgRWVkyvgJ6ExtYJJ7lGIqebRO12YnP_5tcLic5iykE=w2400',
-      price: 'Starting at $75/hour',
+      name: 'Cherry Live Edge Slabs',
+      description: 'Rich cherry live edge slabs that darken beautifully with age, perfect for heirloom furniture pieces.',
+      image: 'https://lh3.googleusercontent.com/pw/AP1GczMv8UGTC1-2V2OD2SGliOP4hQnxhDjf_B87-ZgCljeA2jQYIPT_iLA45QEKg0XqsvSMvfUJotixK1KBODI4-MZk3AQDZekoBsUbZQHp39pnLOwp=w2400',
+      price: 'From $90/board ft',
     },
   ];
 
   return (
     <section className="py-16">
       <div className="container-wide">
-        <h2 className="section-title text-center mx-auto">Featured Products</h2>
+        <h2 className="section-title text-center mx-auto">Featured Live Edge Slabs</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-10">
           {featuredProducts.map(product => (
@@ -71,7 +71,7 @@ const FeaturedProductsSection = () => {
         
         <div className="text-center mt-12">
           <Button size="lg" className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown text-white">
-            <Link to="/products">View All Products</Link>
+            <Link to="/products">View All Live Edge Slabs</Link>
           </Button>
         </div>
       </div>

@@ -13,69 +13,69 @@ import {
   TableRow 
 } from "@/components/ui/table";
 
-// Mock data for products
+// Mock data for lumber products
 const mockProducts = [
   { 
     id: 1, 
-    name: 'LT40 Portable Sawmill', 
-    category: 'Portable Sawmills', 
-    price: '$8,995',
+    name: 'Walnut Live Edge Slab', 
+    category: 'Live Edge Slabs', 
+    price: '$95/board ft',
     status: 'Active',
     date: 'May 10, 2025'
   },
   { 
     id: 2, 
-    name: 'LT20 Portable Sawmill', 
-    category: 'Portable Sawmills', 
-    price: '$4,995',
+    name: 'Maple Live Edge Slab', 
+    category: 'Live Edge Slabs', 
+    price: '$85/board ft',
     status: 'Active',
     date: 'May 2, 2025'
   },
   { 
     id: 3, 
-    name: 'Industrial Bandsaw Blades', 
-    category: 'Blades', 
-    price: '$29.99',
+    name: 'Oak Live Edge Slab', 
+    category: 'Live Edge Slabs', 
+    price: '$75/board ft',
     status: 'Active',
     date: 'May 8, 2025'
   },
   { 
     id: 4, 
-    name: 'Log Loading Attachment', 
-    category: 'Accessories', 
-    price: '$1,295',
+    name: 'Cherry Live Edge Slab', 
+    category: 'Live Edge Slabs', 
+    price: '$90/board ft',
     status: 'Active',
     date: 'May 5, 2025'
   },
   { 
     id: 5, 
-    name: 'Sawmill Maintenance Kit', 
-    category: 'Parts & Maintenance', 
-    price: '$149.99',
+    name: 'Ash Live Edge Slab', 
+    category: 'Live Edge Slabs', 
+    price: '$70/board ft',
     status: 'Active',
     date: 'April 28, 2025'
   },
   { 
     id: 6, 
-    name: 'HD50 Industrial Mill', 
-    category: 'Industrial Mills', 
-    price: '$24,995',
+    name: 'Hickory Live Edge Slab', 
+    category: 'Live Edge Slabs', 
+    price: '$85/board ft',
     status: 'Draft',
     date: 'April 20, 2025'
   },
   { 
     id: 7, 
-    name: 'Blade Sharpening Tool', 
-    category: 'Accessories', 
-    price: '$89.99',
+    name: 'Elm Live Edge Slab', 
+    category: 'Live Edge Slabs', 
+    price: '$80/board ft',
     status: 'Active',
     date: 'April 15, 2025'
   },
   { 
     id: 8, 
-    name: 'Safety Gear Bundle', 
-    category: 'Accessories', 
-    price: '$129.99',
+    name: 'Spalted Maple Live Edge', 
+    category: 'Live Edge Slabs', 
+    price: '$110/board ft',
     status: 'Active',
     date: 'April 10, 2025'
   },
@@ -98,16 +98,16 @@ const ProductsAdmin = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <h1 className="text-2xl md:text-3xl font-bold text-sawmill-dark-brown">Products</h1>
+        <h1 className="text-2xl md:text-3xl font-bold text-sawmill-dark-brown">Lumber Products</h1>
         <Button className="bg-sawmill-orange hover:bg-sawmill-auburn">
-          <Link to="/admin/products/new">Add New Product</Link>
+          <Link to="/admin/products/new">Add New Lumber</Link>
         </Button>
       </div>
       
       <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
         <div className="flex-1">
           <Input
-            placeholder="Search products..."
+            placeholder="Search lumber products..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="max-w-md"
@@ -130,7 +130,7 @@ const ProductsAdmin = () => {
       
       <div className="rounded-md border">
         <Table>
-          <TableCaption>A list of your products.</TableCaption>
+          <TableCaption>A list of your lumber products.</TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead className="w-[80px]">ID</TableHead>
