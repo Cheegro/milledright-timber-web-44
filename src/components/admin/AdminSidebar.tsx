@@ -13,7 +13,7 @@ import {
   SidebarTrigger,
   useSidebar
 } from "@/components/ui/sidebar";
-import { layout-dashboard, camera, book, star, user } from 'lucide-react';
+import { LayoutDashboard, Camera, BookOpen, Star, User } from 'lucide-react';
 
 const AdminSidebar = () => {
   const { collapsed } = useSidebar();

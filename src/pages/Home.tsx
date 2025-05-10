@@ -2,6 +2,8 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import MapEmbed from '@/components/MapEmbed';
+import FirewoodBanner from '@/components/FirewoodBanner';
 
 const Home = () => {
   // Sample featured products
@@ -87,6 +89,9 @@ const Home = () => {
           </div>
         </div>
       </section>
+      
+      {/* Firewood Banner */}
+      <FirewoodBanner />
       
       {/* Why Choose Us */}
       <section className="py-16 bg-muted">
@@ -209,6 +214,9 @@ const Home = () => {
           </div>
         </div>
       </section>
+      
+      {/* Map Location */}
+      <MapEmbed />
       
       {/* Latest Blog Posts */}
       <section className="py-16">
