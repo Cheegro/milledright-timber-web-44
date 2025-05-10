@@ -12,6 +12,11 @@ import AdminLayout from "./layouts/AdminLayout";
 import Home from "./pages/Home";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
+import Gallery from "./pages/Gallery";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import NotFound from "./pages/NotFound";
@@ -62,6 +67,46 @@ const App = () => (
             element={
               <MainLayout>
                 <ProductDetail />
+              </MainLayout>
+            } 
+          />
+          <Route 
+            path="/gallery" 
+            element={
+              <MainLayout>
+                <Gallery />
+              </MainLayout>
+            } 
+          />
+          <Route 
+            path="/blog" 
+            element={
+              <MainLayout>
+                <Blog />
+              </MainLayout>
+            } 
+          />
+          <Route 
+            path="/blog/:id" 
+            element={
+              <MainLayout>
+                <BlogPost />
+              </MainLayout>
+            } 
+          />
+          <Route 
+            path="/about" 
+            element={
+              <MainLayout>
+                <About />
+              </MainLayout>
+            } 
+          />
+          <Route 
+            path="/contact" 
+            element={
+              <MainLayout>
+                <Contact />
               </MainLayout>
             } 
           />
