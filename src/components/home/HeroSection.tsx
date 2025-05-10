@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
 
 const HeroSection = () => {
   return (
@@ -13,7 +14,12 @@ const HeroSection = () => {
       ></div>
       
       <div className="container-wide py-24 md:py-32 lg:py-40 relative z-10">
-        <div className="max-w-3xl">
+        <motion.div 
+          className="max-w-3xl"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+        >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-shadow">
             Quality Lumber Direct From Our Sawmill
           </h1>
@@ -21,14 +27,14 @@ const HeroSection = () => {
             From live edge slabs to dimensional lumber, MilledRight Sawmill provides premium locally sourced wood products and custom milling services.
           </p>
           <div className="flex flex-wrap gap-4">
-            <Button size="lg" className="bg-sawmill-orange hover:bg-sawmill-auburn text-white">
+            <Button size="lg" className="bg-sawmill-orange hover:bg-sawmill-auburn text-white transition-all duration-300 transform hover:scale-105">
               <Link to="/products">Browse Our Products</Link>
             </Button>
-            <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-sawmill-dark-brown">
+            <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-sawmill-dark-brown transition-all duration-300">
               <Link to="/contact">Request Custom Milling</Link>
             </Button>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
