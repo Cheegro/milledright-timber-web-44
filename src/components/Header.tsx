@@ -1,11 +1,19 @@
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ShieldCheck } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleAdminAccess = () => {
+    toast({
+      title: "Admin Dashboard",
+      description: "Redirecting to admin dashboard...",
+    });
+  };
 
   return (
     <header className="bg-white shadow-md">
@@ -29,6 +37,15 @@ const Header = () => {
           <Link to="/about" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium">About Us</Link>
           <Link to="/contact" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium">Contact</Link>
           <Button className="bg-sawmill-orange hover:bg-sawmill-auburn text-white">Get Quote</Button>
+          <Link to="/admin" onClick={handleAdminAccess}>
+            <Button 
+              variant="outline" 
+              className="border-sawmill-dark-brown text-sawmill-dark-brown hover:bg-sawmill-dark-brown hover:text-white"
+            >
+              <ShieldCheck className="mr-2 h-4 w-4" />
+              Admin
+            </Button>
+          </Link>
         </nav>
         
         {/* Mobile menu button */}
@@ -51,6 +68,15 @@ const Header = () => {
             <Link to="/about" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium py-2 px-4 rounded hover:bg-gray-100" onClick={() => setIsOpen(false)}>About Us</Link>
             <Link to="/contact" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium py-2 px-4 rounded hover:bg-gray-100" onClick={() => setIsOpen(false)}>Contact</Link>
             <Button className="bg-sawmill-orange hover:bg-sawmill-auburn text-white w-full">Get Quote</Button>
+            <Link to="/admin" onClick={() => {handleAdminAccess(); setIsOpen(false);}}>
+              <Button 
+                variant="outline" 
+                className="border-sawmill-dark-brown text-sawmill-dark-brown hover:bg-sawmill-dark-brown hover:text-white w-full"
+              >
+                <ShieldCheck className="mr-2 h-4 w-4" />
+                Admin
+              </Button>
+            </Link>
           </nav>
         </div>
       )}
