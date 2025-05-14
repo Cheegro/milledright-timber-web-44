@@ -3,13 +3,15 @@ import React from 'react';
 import BlogCard from './BlogCard';
 
 interface BlogPost {
-  id: number;
+  id: string;
   title: string;
   excerpt: string;
-  date: string;
+  date?: string;
+  published_at?: string; 
   author: string;
-  category: string;
-  imageUrl: string;
+  category?: string;
+  imageUrl?: string;
+  image_url?: string;
 }
 
 interface BlogListProps {

@@ -3,18 +3,22 @@ import React from 'react';
 import BlogSearch from './BlogSearch';
 import BlogCategories from './BlogCategories';
 import BlogRecentPosts from './BlogRecentPosts';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface BlogPost {
-  id: number;
+  id: string;
   title: string;
   excerpt: string;
-  date: string;
-  author: string;
-  category: string;
-  imageUrl: string;
+  date?: string;
+  published_at?: string;
+  author?: string;
+  category?: string;
+  imageUrl?: string;
+  image_url?: string;
 }
 
 interface Category {
+  id: string;
   name: string;
   count: number;
 }
@@ -22,9 +26,20 @@ interface Category {
 interface BlogSidebarProps {
   recentPosts: BlogPost[];
   categories: Category[];
+  isLoading?: boolean;
 }
 
-const BlogSidebar: React.FC<BlogSidebarProps> = ({ recentPosts, categories }) => {
+const BlogSidebar: React.FC<BlogSidebarProps> = ({ recentPosts, categories, isLoading = false }) => {
+  if (isLoading) {
+    return (
+      <div className="space-y-8">
+        <Skeleton className="h-[200px] w-full" />
+        <Skeleton className="h-[300px] w-full" />
+        <Skeleton className="h-[250px] w-full" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       <BlogSearch />

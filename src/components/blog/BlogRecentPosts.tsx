@@ -5,13 +5,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
 interface BlogPost {
-  id: number;
+  id: string | number;
   title: string;
-  excerpt: string;
-  date: string;
-  author: string;
-  category: string;
-  imageUrl: string;
+  excerpt?: string;
+  date?: string;
+  published_at?: string;
+  author?: string;
+  category?: string;
+  imageUrl?: string;
+  image_url?: string;
 }
 
 interface BlogRecentPostsProps {
@@ -31,33 +33,39 @@ const BlogRecentPosts: React.FC<BlogRecentPostsProps> = ({ posts }) => {
         <CardTitle>Recent Posts</CardTitle>
       </CardHeader>
       <CardContent>
-        <ul className="space-y-4">
-          {posts.slice(0, 3).map((post, index) => (
-            <React.Fragment key={post.id}>
-              <li>
-                <Link 
-                  to={`/blog/${post.id}`}
-                  className="flex gap-3 hover:text-sawmill-dark-brown transition-colors"
-                >
-                  <div className="w-16 h-16 flex-shrink-0">
-                    <img 
-                      src={post.imageUrl} 
-                      alt={post.title}
-                      className="w-full h-full object-cover rounded"
-                    />
-                  </div>
-                  <div>
-                    <h4 className="font-medium">{post.title}</h4>
-                    <p className="text-xs text-muted-foreground">{formatDate(post.date)}</p>
-                  </div>
-                </Link>
-              </li>
-              {index < 2 && (
-                <Separator className="my-4" />
-              )}
-            </React.Fragment>
-          ))}
-        </ul>
+        {posts.length === 0 ? (
+          <p className="text-muted-foreground text-center py-4">No recent posts</p>
+        ) : (
+          <ul className="space-y-4">
+            {posts.slice(0, 3).map((post, index) => (
+              <React.Fragment key={post.id}>
+                <li>
+                  <Link 
+                    to={`/blog/${post.id}`}
+                    className="flex gap-3 hover:text-sawmill-dark-brown transition-colors"
+                  >
+                    <div className="w-16 h-16 flex-shrink-0">
+                      <img 
+                        src={post.image_url || post.imageUrl} 
+                        alt={post.title}
+                        className="w-full h-full object-cover rounded"
+                      />
+                    </div>
+                    <div>
+                      <h4 className="font-medium">{post.title}</h4>
+                      <p className="text-xs text-muted-foreground">
+                        {(post.published_at || post.date) ? formatDate(post.published_at || post.date!) : "No date"}
+                      </p>
+                    </div>
+                  </Link>
+                </li>
+                {index < Math.min(posts.length, 3) - 1 && (
+                  <Separator className="my-4" />
+                )}
+              </React.Fragment>
+            ))}
+          </ul>
+        )}
       </CardContent>
     </Card>
   );

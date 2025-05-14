@@ -5,13 +5,15 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Badge } from '@/components/ui/badge';
 
 interface BlogPost {
-  id: number;
+  id: string | number;
   title: string;
   excerpt: string;
-  date: string;
+  date?: string;
+  published_at?: string;
   author: string;
-  category: string;
-  imageUrl: string;
+  category?: string;
+  imageUrl?: string;
+  image_url?: string;
 }
 
 interface BlogCardProps {
@@ -25,12 +27,16 @@ const formatDate = (dateString: string) => {
 };
 
 const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
+  // Handle both mock data and Supabase data structures
+  const imageUrl = post.image_url || post.imageUrl;
+  const date = post.published_at || post.date;
+  
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
       <Link to={`/blog/${post.id}`}>
         <div className="h-48 overflow-hidden">
           <img 
-            src={post.imageUrl} 
+            src={imageUrl} 
             alt={post.title} 
             className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
           />
@@ -43,7 +49,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
           <p className="text-muted-foreground">{post.excerpt}</p>
         </CardContent>
         <CardFooter className="text-sm text-muted-foreground flex justify-between">
-          <span>{formatDate(post.date)}</span>
+          <span>{date ? formatDate(date) : "No date"}</span>
           <span>By {post.author}</span>
         </CardFooter>
       </Link>

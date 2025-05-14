@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,85 +12,43 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-
-// Mock data for blog posts
-const mockPosts = [
-  { 
-    id: 1, 
-    title: '10 Tips for Maintaining Your Bandsaw Blades', 
-    author: 'John Smith',
-    status: 'Published',
-    date: 'May 5, 2025',
-    comments: 12
-  },
-  { 
-    id: 2, 
-    title: 'Portable vs. Stationary Sawmills: Which Is Right For You?', 
-    author: 'Emily Johnson',
-    status: 'Published',
-    date: 'April 28, 2025',
-    comments: 8
-  },
-  { 
-    id: 3, 
-    title: 'Customer Spotlight: Building a Successful Business with MilledRight', 
-    author: 'Michael Brown',
-    status: 'Published',
-    date: 'April 15, 2025',
-    comments: 5
-  },
-  { 
-    id: 4, 
-    title: 'Understanding Wood Species for Your Milling Projects', 
-    author: 'Sarah Thompson',
-    status: 'Published',
-    date: 'April 10, 2025',
-    comments: 3
-  },
-  { 
-    id: 5, 
-    title: 'Maximizing Efficiency: Sawmill Setup Tips', 
-    author: 'John Smith',
-    status: 'Draft',
-    date: 'April 5, 2025',
-    comments: 0
-  },
-  { 
-    id: 6, 
-    title: 'How to Choose the Right Sawmill for Your Small Business', 
-    author: 'David Wilson',
-    status: 'Draft',
-    date: 'March 29, 2025',
-    comments: 0
-  },
-  { 
-    id: 7, 
-    title: '5 Creative Projects Using Your Milled Lumber', 
-    author: 'Emily Johnson',
-    status: 'Published',
-    date: 'March 22, 2025',
-    comments: 15
-  },
-  { 
-    id: 8, 
-    title: 'The Environmental Benefits of Portable Sawmills', 
-    author: 'Michael Brown',
-    status: 'Published',
-    date: 'March 15, 2025',
-    comments: 9
-  },
-];
+import { Skeleton } from "@/components/ui/skeleton";
+import { fetchAllBlogPosts, deleteBlogPost } from '@/api/adminBlogApi';
 
 const BlogAdmin = () => {
+  const [posts, setPosts] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
+  const [loading, setLoading] = useState(true);
+  
+  useEffect(() => {
+    async function loadPosts() {
+      setLoading(true);
+      const postsData = await fetchAllBlogPosts();
+      setPosts(postsData);
+      setLoading(false);
+    }
+    
+    loadPosts();
+  }, []);
   
   // Filter blog posts based on search query and status
-  const filteredPosts = mockPosts.filter(post => {
+  const filteredPosts = posts.filter(post => {
     const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === 'All' || post.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
+  
+  // Handle post deletion
+  const handleDeletePost = async (id: string, title: string) => {
+    if (confirm(`Are you sure you want to delete "${title}"?`)) {
+      const success = await deleteBlogPost(id);
+      if (success) {
+        // Update the local state to remove the deleted post
+        setPosts(posts.filter(post => post.id !== id));
+      }
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -146,55 +104,71 @@ const BlogAdmin = () => {
               <TableHead>Author</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Date</TableHead>
-              <TableHead>Comments</TableHead>
+              <TableHead>Category</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredPosts.map(post => (
-              <TableRow key={post.id}>
-                <TableCell className="font-medium">{post.id}</TableCell>
-                <TableCell>
-                  <Link 
-                    to={`/admin/blog/${post.id}/edit`}
-                    className="text-sawmill-dark-brown hover:underline font-medium"
-                  >
-                    {post.title}
-                  </Link>
-                </TableCell>
-                <TableCell>{post.author}</TableCell>
-                <TableCell>
-                  <span className={`px-2 py-1 rounded-full text-xs ${
-                    post.status === 'Published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
-                  }`}>
-                    {post.status}
-                  </span>
-                </TableCell>
-                <TableCell>{post.date}</TableCell>
-                <TableCell>{post.comments}</TableCell>
-                <TableCell className="text-right">
-                  <div className="flex justify-end gap-2">
+            {loading ? (
+              // Loading skeletons
+              Array(5).fill(0).map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell><Skeleton className="h-4 w-8" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-48" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-20" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-20" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-16 ml-auto" /></TableCell>
+                </TableRow>
+              ))
+            ) : filteredPosts.length > 0 ? (
+              filteredPosts.map(post => (
+                <TableRow key={post.id}>
+                  <TableCell className="font-medium">{post.id.substring(0, 8)}...</TableCell>
+                  <TableCell>
                     <Link 
                       to={`/admin/blog/${post.id}/edit`}
-                      className="text-sawmill-orange hover:underline text-sm"
+                      className="text-sawmill-dark-brown hover:underline font-medium"
                     >
-                      Edit
+                      {post.title}
                     </Link>
-                    <button 
-                      className="text-red-500 hover:underline text-sm"
-                      onClick={() => {
-                        if (confirm(`Are you sure you want to delete "${post.title}"?`)) {
-                          // Handle delete operation here
-                          console.log(`Delete post ${post.id}`);
-                        }
-                      }}
-                    >
-                      Delete
-                    </button>
-                  </div>
+                  </TableCell>
+                  <TableCell>{post.author}</TableCell>
+                  <TableCell>
+                    <span className={`px-2 py-1 rounded-full text-xs ${
+                      post.status === 'Published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                    }`}>
+                      {post.status}
+                    </span>
+                  </TableCell>
+                  <TableCell>{new Date(post.created_at).toLocaleDateString()}</TableCell>
+                  <TableCell>{post.category}</TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-2">
+                      <Link 
+                        to={`/admin/blog/${post.id}/edit`}
+                        className="text-sawmill-orange hover:underline text-sm"
+                      >
+                        Edit
+                      </Link>
+                      <button 
+                        className="text-red-500 hover:underline text-sm"
+                        onClick={() => handleDeletePost(post.id, post.title)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center py-4">
+                  No blog posts found. {searchQuery || statusFilter !== 'All' ? 'Try adjusting your filters.' : ''}
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </div>
