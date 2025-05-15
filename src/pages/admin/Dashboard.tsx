@@ -29,7 +29,7 @@ const Dashboard = () => {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl md:text-3xl font-bold text-sawmill-dark-brown">Dashboard</h1>
         <Button className="bg-sawmill-orange hover:bg-sawmill-auburn">
-          <Link to="/admin/settings">Settings</Link>
+          <Link to="/admin/settings" className="w-full h-full inline-block">Settings</Link>
         </Button>
       </div>
       
@@ -63,9 +63,11 @@ const Dashboard = () => {
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardTitle>Recent Products</CardTitle>
-              <Button variant="outline" size="sm">
-                <Link to="/admin/products/new">Add New</Link>
-              </Button>
+              <Link to="/admin/products/new">
+                <Button variant="outline" size="sm">
+                  Add New
+                </Button>
+              </Link>
             </div>
           </CardHeader>
           <CardContent>
@@ -105,9 +107,11 @@ const Dashboard = () => {
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardTitle>Recent Blog Posts</CardTitle>
-              <Button variant="outline" size="sm">
-                <Link to="/admin/blog/new">Add New</Link>
-              </Button>
+              <Link to="/admin/blog/new">
+                <Button variant="outline" size="sm">
+                  Add New
+                </Button>
+              </Link>
             </div>
           </CardHeader>
           <CardContent>
@@ -150,8 +154,8 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-              <Button className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown h-auto py-6 flex flex-col">
-                <Link to="/admin/products/new" className="flex flex-col items-center">
+              <Link to="/admin/products/new" className="w-full">
+                <Button className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown h-auto py-6 w-full flex flex-col items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="m7.5 4.27 9 5.15" />
                     <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
@@ -159,11 +163,11 @@ const Dashboard = () => {
                     <path d="M12 22V12" />
                   </svg>
                   Add New Product
-                </Link>
-              </Button>
+                </Button>
+              </Link>
               
-              <Button className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown h-auto py-6 flex flex-col">
-                <Link to="/admin/blog/new" className="flex flex-col items-center">
+              <Link to="/admin/blog/new" className="w-full">
+                <Button className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown h-auto py-6 w-full flex flex-col items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
                     <circle cx="12" cy="12" r="1" />
@@ -171,11 +175,11 @@ const Dashboard = () => {
                     <path d="M7 12h10" />
                   </svg>
                   Add New Blog Post
-                </Link>
-              </Button>
+                </Button>
+              </Link>
               
-              <Button className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown h-auto py-6 flex flex-col">
-                <Link to="/admin/gallery/new" className="flex flex-col items-center">
+              <Link to="/admin/gallery/new" className="w-full">
+                <Button className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown h-auto py-6 w-full flex flex-col items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M9 3h.01" />
                     <rect width="18" height="18" x="3" y="3" rx="2" />
@@ -183,11 +187,11 @@ const Dashboard = () => {
                     <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
                   </svg>
                   Add New Image
-                </Link>
-              </Button>
+                </Button>
+              </Link>
               
-              <Button className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown h-auto py-6 flex flex-col">
-                <Link to="/admin/reviews/new" className="flex flex-col items-center">
+              <Link to="/admin/reviews/new" className="w-full">
+                <Button className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown h-auto py-6 w-full flex flex-col items-center">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M12 2l2.5 5.3 5.5.8-4 3.9.9 5.4-4.9-2.6L7 17.4l.9-5.4-4-3.9 5.5-.8z" />
                     <circle cx="12" cy="12" r="1" />
@@ -195,8 +199,8 @@ const Dashboard = () => {
                     <path d="M7 12h10" />
                   </svg>
                   Add New Review
-                </Link>
-              </Button>
+                </Button>
+              </Link>
             </div>
           </CardContent>
         </Card>

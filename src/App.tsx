@@ -27,6 +27,7 @@ import Dashboard from "./pages/admin/Dashboard";
 import ProductsAdmin from "./pages/admin/ProductsAdmin";
 import BlogAdmin from "./pages/admin/BlogAdmin";
 import GalleryAdmin from "./pages/admin/GalleryAdmin";
+import GalleryImageForm from "./pages/admin/GalleryImageForm";
 import ReviewsAdmin from "./pages/admin/ReviewsAdmin";
 
 const queryClient = new QueryClient();
@@ -123,18 +124,17 @@ const App = () => (
             <Route path="products" element={<ProductsAdmin />} />
             <Route path="blog" element={<BlogAdmin />} />
             <Route path="gallery" element={<GalleryAdmin />} />
+            <Route path="gallery/new" element={<GalleryImageForm />} />
+            <Route path="gallery/:id/edit" element={<GalleryImageForm />} />
             <Route path="reviews" element={<ReviewsAdmin />} />
             {/* Future Admin Routes */}
-            {/* <Route path="products/:id/edit" element={<ProductEditForm />} /> */}
-            {/* <Route path="products/new" element={<ProductNewForm />} /> */}
-            {/* <Route path="blog/:id/edit" element={<BlogEditForm />} /> */}
-            {/* <Route path="blog/new" element={<BlogNewForm />} /> */}
-            {/* <Route path="gallery/:id/edit" element={<GalleryEditForm />} /> */}
-            {/* <Route path="gallery/new" element={<GalleryNewForm />} /> */}
-            {/* <Route path="reviews/:id/edit" element={<ReviewEditForm />} /> */}
-            {/* <Route path="reviews/new" element={<ReviewNewForm />} /> */}
-            {/* <Route path="settings" element={<Settings />} /> */}
-            {/* <Route path="users" element={<Users />} /> */}
+            <Route path="products/new" element={<div>Product New Form - Coming Soon</div>} />
+            <Route path="products/:id/edit" element={<div>Product Edit Form - Coming Soon</div>} />
+            <Route path="blog/new" element={<div>Blog New Form - Coming Soon</div>} />
+            <Route path="blog/:id/edit" element={<div>Blog Edit Form - Coming Soon</div>} />
+            <Route path="reviews/new" element={<div>Review New Form - Coming Soon</div>} />
+            <Route path="reviews/:id/edit" element={<div>Review Edit Form - Coming Soon</div>} />
+            <Route path="settings" element={<div>Settings - Coming Soon</div>} />
           </Route>
           
           {/* 404 Page */}

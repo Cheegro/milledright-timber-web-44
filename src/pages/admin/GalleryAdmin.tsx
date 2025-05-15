@@ -83,9 +83,11 @@ const GalleryAdmin = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <h1 className="text-2xl md:text-3xl font-bold text-sawmill-dark-brown">Gallery</h1>
-        <Button className="bg-sawmill-orange hover:bg-sawmill-auburn">
-          <Link to="/admin/gallery/new">Add New Image</Link>
-        </Button>
+        <Link to="/admin/gallery/new">
+          <Button className="bg-sawmill-orange hover:bg-sawmill-auburn w-full md:w-auto">
+            Add New Image
+          </Button>
+        </Link>
       </div>
       
       <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
@@ -138,11 +140,11 @@ const GalleryAdmin = () => {
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem>
+                      <DropdownMenuItem asChild>
                         <Link to={`/admin/gallery/${image.id}/edit`} className="w-full">Edit</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem 
-                        className="text-red-500"
+                        className="text-red-500 cursor-pointer"
                         onClick={() => handleDelete(image)}
                       >
                         Delete
