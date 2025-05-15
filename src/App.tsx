@@ -29,6 +29,7 @@ import BlogAdmin from "./pages/admin/BlogAdmin";
 import GalleryAdmin from "./pages/admin/GalleryAdmin";
 import GalleryImageForm from "./pages/admin/GalleryImageForm";
 import ReviewsAdmin from "./pages/admin/ReviewsAdmin";
+import Settings from "./pages/admin/Settings";
 
 const queryClient = new QueryClient();
 
@@ -127,6 +128,7 @@ const App = () => (
             <Route path="gallery/new" element={<GalleryImageForm />} />
             <Route path="gallery/:id/edit" element={<GalleryImageForm />} />
             <Route path="reviews" element={<ReviewsAdmin />} />
+            <Route path="settings" element={<Settings />} />
             {/* Future Admin Routes */}
             <Route path="products/new" element={<div>Product New Form - Coming Soon</div>} />
             <Route path="products/:id/edit" element={<div>Product Edit Form - Coming Soon</div>} />
@@ -134,7 +136,6 @@ const App = () => (
             <Route path="blog/:id/edit" element={<div>Blog Edit Form - Coming Soon</div>} />
             <Route path="reviews/new" element={<div>Review New Form - Coming Soon</div>} />
             <Route path="reviews/:id/edit" element={<div>Review Edit Form - Coming Soon</div>} />
-            <Route path="settings" element={<div>Settings - Coming Soon</div>} />
           </Route>
           
           {/* 404 Page */}
