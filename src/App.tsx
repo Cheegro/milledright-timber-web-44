@@ -26,6 +26,7 @@ import SharedBanner from "./components/SharedBanner";
 import Dashboard from "./pages/admin/Dashboard";
 import ProductsAdmin from "./pages/admin/ProductsAdmin";
 import BlogAdmin from "./pages/admin/BlogAdmin";
+import BlogPostEditor from "./pages/admin/BlogPostEditor";
 import GalleryAdmin from "./pages/admin/GalleryAdmin";
 import GalleryImageForm from "./pages/admin/GalleryImageForm";
 import ReviewsAdmin from "./pages/admin/ReviewsAdmin";
@@ -129,11 +130,13 @@ const App = () => (
             <Route path="gallery/:id/edit" element={<GalleryImageForm />} />
             <Route path="reviews" element={<ReviewsAdmin />} />
             <Route path="settings" element={<Settings />} />
-            {/* Future Admin Routes */}
+            {/* Product Admin Routes */}
             <Route path="products/new" element={<div>Product New Form - Coming Soon</div>} />
             <Route path="products/:id/edit" element={<div>Product Edit Form - Coming Soon</div>} />
-            <Route path="blog/new" element={<div>Blog New Form - Coming Soon</div>} />
-            <Route path="blog/:id/edit" element={<div>Blog Edit Form - Coming Soon</div>} />
+            {/* Blog Admin Routes */}
+            <Route path="blog/new" element={<BlogPostEditor />} />
+            <Route path="blog/:id/edit" element={<BlogPostEditor />} />
+            {/* Review Admin Routes */}
             <Route path="reviews/new" element={<div>Review New Form - Coming Soon</div>} />
             <Route path="reviews/:id/edit" element={<div>Review Edit Form - Coming Soon</div>} />
           </Route>
