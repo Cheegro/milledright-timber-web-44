@@ -122,14 +122,21 @@ const ProductForm = () => {
         values.image_url = imageUrl;
       }
       
-      if (isEditMode) {
-        await updateProduct(id!, values);
+      if (isEditMode && id) {
+        await updateProduct(id, values);
         toast({
           title: "Success",
           description: "Product updated successfully.",
         });
       } else {
-        await createProduct(values);
+        // For creating new product, ensure all required fields are present
+        await createProduct({
+          name: values.name,
+          category_id: values.category_id,
+          price: values.price,
+          description: values.description || null,
+          image_url: values.image_url || null,
+        });
         toast({
           title: "Success",
           description: "Product created successfully.",
