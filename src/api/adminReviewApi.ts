@@ -2,7 +2,11 @@
 import { supabase } from "@/integrations/supabase/client";
 import { Tables } from "@/integrations/supabase/types";
 
-export type Review = Tables<"reviews">;
+export type Review = Tables<"reviews"> & {
+  products?: {
+    name: string;
+  } | null;
+};
 
 export type ReviewFormValues = {
   author: string;
