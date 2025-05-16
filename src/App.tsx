@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -32,6 +31,7 @@ import GalleryAdmin from "./pages/admin/GalleryAdmin";
 import GalleryImageForm from "./pages/admin/GalleryImageForm";
 import ReviewsAdmin from "./pages/admin/ReviewsAdmin";
 import Settings from "./pages/admin/Settings";
+import ReviewForm from "./components/admin/ReviewForm";
 
 const queryClient = new QueryClient();
 
@@ -138,8 +138,9 @@ const App = () => (
             <Route path="blog/new" element={<BlogPostEditor />} />
             <Route path="blog/:id/edit" element={<BlogPostEditor />} />
             {/* Review Admin Routes */}
-            <Route path="reviews/new" element={<div>Review New Form - Coming Soon</div>} />
-            <Route path="reviews/:id/edit" element={<div>Review Edit Form - Coming Soon</div>} />
+            <Route path="reviews" element={<ReviewsAdmin />} />
+            <Route path="reviews/new" element={<ReviewForm />} />
+            <Route path="reviews/:id/edit" element={<ReviewForm />} />
           </Route>
           
           {/* 404 Page */}
