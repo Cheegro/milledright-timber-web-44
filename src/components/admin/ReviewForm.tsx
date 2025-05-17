@@ -238,7 +238,7 @@ const ReviewForm = () => {
                 <FormItem>
                   <FormLabel>Related Product</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
+                    onValueChange={(value) => field.onChange(value || null)}
                     value={field.value || undefined}
                   >
                     <FormControl>
@@ -247,7 +247,7 @@ const ReviewForm = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="">None</SelectItem>
+                      {/* Removed the empty value SelectItem that was causing the error */}
                       {products.map((product) => (
                         <SelectItem key={product.id} value={product.id}>
                           {product.name}
