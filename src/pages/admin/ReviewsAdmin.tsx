@@ -6,12 +6,13 @@ import { fetchReviews } from '@/api/adminReviewApi';
 import ReviewHeader from '@/components/admin/reviews/ReviewHeader';
 import ReviewFilters from '@/components/admin/reviews/ReviewFilters';
 import ReviewList from '@/components/admin/reviews/ReviewList';
+import { DateRange } from 'react-day-picker';
 
 const ReviewsAdmin = () => {
   // State for filters and pagination
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
-  const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>({});
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const [ratingFilter, setRatingFilter] = useState<number | null>(null);
   const [selectedReviews, setSelectedReviews] = useState<string[]>([]);
   
@@ -34,8 +35,8 @@ const ReviewsAdmin = () => {
     
     // Date range filter
     const reviewDate = new Date(review.date);
-    const matchesDateFrom = dateRange.from ? reviewDate >= dateRange.from : true;
-    const matchesDateTo = dateRange.to ? reviewDate <= dateRange.to : true;
+    const matchesDateFrom = dateRange?.from ? reviewDate >= dateRange.from : true;
+    const matchesDateTo = dateRange?.to ? reviewDate <= dateRange.to : true;
     
     // Rating filter
     const matchesRating = ratingFilter ? review.rating >= ratingFilter : true;

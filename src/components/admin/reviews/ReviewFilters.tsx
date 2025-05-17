@@ -16,15 +16,16 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { Filter } from "lucide-react";
+import { Filter, CalendarIcon } from "lucide-react";
+import { DateRange } from "react-day-picker";
 
 interface ReviewFiltersProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   statusFilter: string;
   setStatusFilter: (status: string) => void;
-  dateRange: { from?: Date; to?: Date };
-  setDateRange: (range: { from?: Date; to?: Date }) => void;
+  dateRange: DateRange | undefined;
+  setDateRange: (range: DateRange | undefined) => void;
   ratingFilter: number | null;
   setRatingFilter: (rating: number | null) => void;
 }
@@ -44,7 +45,7 @@ const ReviewFilters = ({
   const handleReset = () => {
     setSearchQuery('');
     setStatusFilter('All');
-    setDateRange({ from: undefined, to: undefined });
+    setDateRange(undefined);
     setRatingFilter(null);
   };
 
@@ -100,7 +101,7 @@ const ReviewFilters = ({
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline" className="w-full justify-start text-left">
-                  {dateRange.from ? (
+                  {dateRange?.from ? (
                     dateRange.to ? (
                       <>
                         {format(dateRange.from, "MMM dd, yyyy")} - {format(dateRange.to, "MMM dd, yyyy")}
@@ -119,6 +120,7 @@ const ReviewFilters = ({
                   selected={dateRange}
                   onSelect={setDateRange}
                   initialFocus
+                  className="pointer-events-auto"
                 />
               </PopoverContent>
             </Popover>
