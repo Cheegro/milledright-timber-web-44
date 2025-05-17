@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -210,8 +209,8 @@ const ProductForm = () => {
                 <FormItem>
                   <FormLabel>Category</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
-                    value={field.value || ""}
+                    onValueChange={(value) => field.onChange(value === "no-category" ? null : value)}
+                    value={field.value || "no-category"}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -219,8 +218,7 @@ const ProductForm = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {/* Fixed: Changed empty string value to "none" */}
-                      <SelectItem value="none">None</SelectItem>
+                      <SelectItem value="no-category">None</SelectItem>
                       {categories.map((category) => (
                         <SelectItem key={category.id} value={category.id}>
                           {category.name}

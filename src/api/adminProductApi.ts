@@ -172,37 +172,28 @@ export async function uploadProductImage(file: File) {
     // Create a unique file name
     const fileExt = file.name.split('.').pop();
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
-    const filePath = `${fileName}`;
-
-    // Check if product-images bucket exists, if not create it
-    const { data: buckets } = await supabase.storage.listBuckets();
-    const bucketExists = buckets?.some(bucket => bucket.name === 'product-images');
     
-    if (!bucketExists) {
-      console.log("Product images bucket doesn't exist, creating it...");
-      const { error: createBucketError } = await supabase.storage.createBucket('product-images', {
-        public: true
-      });
-      
-      if (createBucketError) {
-        console.error("Error creating bucket:", createBucketError);
-        throw new Error(createBucketError.message);
-      }
-    }
-
+    // Instead of trying to check or create a bucket, we'll use a simple approach:
+    // 1. Try to upload to the existing bucket
+    // 2. If that fails with a specific error, we'll handle it appropriately
+    
     const { data, error } = await supabase.storage
       .from('product-images')
-      .upload(filePath, file);
+      .upload(fileName, file, {
+        upsert: false, // Don't overwrite if exists
+        cacheControl: '3600' // 1 hour cache
+      });
 
     if (error) {
       console.error("Error uploading image:", error);
+      // For now, we'll just pass the error up the chain
       throw new Error(error.message);
     }
 
-    // Get public URL
+    // Get public URL - this should work if the bucket has public access enabled
     const { data: publicUrlData } = supabase.storage
       .from('product-images')
-      .getPublicUrl(filePath);
+      .getPublicUrl(fileName);
 
     return publicUrlData.publicUrl;
   } catch (error) {
