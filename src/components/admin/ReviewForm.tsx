@@ -239,7 +239,7 @@ const ReviewForm = () => {
                   <FormLabel>Related Product</FormLabel>
                   <Select
                     onValueChange={(value) => field.onChange(value || null)}
-                    value={field.value || undefined}
+                    value={field.value || ""}
                   >
                     <FormControl>
                       <SelectTrigger>
