@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -30,6 +31,7 @@ import BlogPostEditor from "./pages/admin/BlogPostEditor";
 import GalleryAdmin from "./pages/admin/GalleryAdmin";
 import GalleryImageForm from "./pages/admin/GalleryImageForm";
 import ReviewsAdmin from "./pages/admin/ReviewsAdmin";
+import ReviewDetail from "./pages/admin/ReviewDetail";
 import Settings from "./pages/admin/Settings";
 import ReviewForm from "./components/admin/ReviewForm";
 
@@ -141,6 +143,7 @@ const App = () => (
             <Route path="reviews" element={<ReviewsAdmin />} />
             <Route path="reviews/new" element={<ReviewForm />} />
             <Route path="reviews/:id/edit" element={<ReviewForm />} />
+            <Route path="reviews/:id/detail" element={<ReviewDetail />} />
           </Route>
           
           {/* 404 Page */}

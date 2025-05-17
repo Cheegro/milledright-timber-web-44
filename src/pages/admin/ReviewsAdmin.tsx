@@ -8,8 +8,12 @@ import ReviewFilters from '@/components/admin/reviews/ReviewFilters';
 import ReviewList from '@/components/admin/reviews/ReviewList';
 
 const ReviewsAdmin = () => {
+  // State for filters and pagination
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
+  const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>({});
+  const [ratingFilter, setRatingFilter] = useState<number | null>(null);
+  const [selectedReviews, setSelectedReviews] = useState<string[]>([]);
   
   // Fetch reviews data
   const { data: reviews = [], isLoading, isError } = useQuery({
@@ -17,14 +21,26 @@ const ReviewsAdmin = () => {
     queryFn: fetchReviews,
   });
 
-  // Filter reviews based on search query and status
+  // Filter reviews based on search query, status, date range and rating
   const filteredReviews = reviews.filter(review => {
+    // Search filter
     const matchesSearch = 
       review.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
       review.text.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (review.products?.name || '').toLowerCase().includes(searchQuery.toLowerCase());
+      
+    // Status filter
     const matchesStatus = statusFilter === 'All' || review.status === statusFilter;
-    return matchesSearch && matchesStatus;
+    
+    // Date range filter
+    const reviewDate = new Date(review.date);
+    const matchesDateFrom = dateRange.from ? reviewDate >= dateRange.from : true;
+    const matchesDateTo = dateRange.to ? reviewDate <= dateRange.to : true;
+    
+    // Rating filter
+    const matchesRating = ratingFilter ? review.rating >= ratingFilter : true;
+    
+    return matchesSearch && matchesStatus && matchesDateFrom && matchesDateTo && matchesRating;
   });
 
   if (isLoading) {
@@ -45,14 +61,27 @@ const ReviewsAdmin = () => {
 
   return (
     <div className="space-y-6">
-      <ReviewHeader />
+      <ReviewHeader 
+        selectedReviews={selectedReviews}
+        setSelectedReviews={setSelectedReviews}
+      />
+      
       <ReviewFilters 
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         statusFilter={statusFilter}
         setStatusFilter={setStatusFilter}
+        dateRange={dateRange}
+        setDateRange={setDateRange}
+        ratingFilter={ratingFilter}
+        setRatingFilter={setRatingFilter}
       />
-      <ReviewList reviews={filteredReviews} />
+      
+      <ReviewList 
+        reviews={filteredReviews}
+        selectedReviews={selectedReviews}
+        setSelectedReviews={setSelectedReviews}
+      />
     </div>
   );
 };
