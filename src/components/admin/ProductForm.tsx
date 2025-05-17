@@ -211,7 +211,7 @@ const ProductForm = () => {
                   <FormLabel>Category</FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    value={field.value || undefined}
+                    value={field.value || ""}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -219,7 +219,8 @@ const ProductForm = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="">None</SelectItem>
+                      {/* Fixed: Changed empty string value to "none" */}
+                      <SelectItem value="none">None</SelectItem>
                       {categories.map((category) => (
                         <SelectItem key={category.id} value={category.id}>
                           {category.name}

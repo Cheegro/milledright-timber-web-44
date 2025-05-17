@@ -247,7 +247,7 @@ const ReviewForm = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {/* Removed the empty value SelectItem that was causing the error */}
+                      {/* Fixed: Removed the empty value SelectItem that was causing the error */}
                       {products.map((product) => (
                         <SelectItem key={product.id} value={product.id}>
                           {product.name}
