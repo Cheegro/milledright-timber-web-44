@@ -3,4 +3,5 @@
 # working directory name when running `supabase init`.
 project_id = "trxekaptnzkcupbeomrc"
 [functions.product-notification]
-verify_jwt = true
+verify_jwt = false
+

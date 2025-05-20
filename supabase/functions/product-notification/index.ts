@@ -36,6 +36,18 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error("Missing required fields");
     }
 
+    // Check if we have a Resend API key
+    if (!Deno.env.get("RESEND_API_KEY")) {
+      console.warn("No RESEND_API_KEY provided - skipping email notification");
+      return new Response(
+        JSON.stringify({ success: false, message: "RESEND_API_KEY not configured" }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
     const actionText = action === "created" ? "added" : "updated";
     const subject = `Product ${actionText}: ${product.name}`;
     

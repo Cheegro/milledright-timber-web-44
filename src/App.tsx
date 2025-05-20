@@ -23,6 +23,7 @@ import NotFound from "./pages/NotFound";
 import SharedBanner from "./components/SharedBanner";
 
 // Admin Pages
+import AdminLogin from "./pages/admin/Login";
 import Dashboard from "./pages/admin/Dashboard";
 import ProductsAdmin from "./pages/admin/ProductsAdmin";
 import ProductForm from "./components/admin/ProductForm";
@@ -123,7 +124,10 @@ const App = () => (
             } 
           />
           
-          {/* Admin Routes */}
+          {/* Admin Login Route */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          
+          {/* Protected Admin Routes */}
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="products" element={<ProductsAdmin />} />

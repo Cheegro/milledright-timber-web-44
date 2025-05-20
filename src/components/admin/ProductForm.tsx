@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
-import { Loader2, Upload } from 'lucide-react';
+import { Loader2, Upload, AlertCircle } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
 import {
   Form,
@@ -44,6 +44,11 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -66,6 +71,7 @@ const ProductForm = () => {
   const [sendNotification, setSendNotification] = useState(true);
   const [notificationEmail, setNotificationEmail] = useState("admin@example.com");
   const [showNotificationSettings, setShowNotificationSettings] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch product categories
   const { data: categories = [] } = useQuery({
@@ -136,9 +142,11 @@ const ProductForm = () => {
 
       if (response.error) {
         console.error("Error sending notification:", response.error);
+        // Don't throw error here, just log it - we don't want notification failures to prevent product creation
       }
     } catch (error) {
       console.error("Failed to send notification:", error);
+      // Don't throw error here, just log it - we don't want notification failures to prevent product creation
     }
   };
 
@@ -163,11 +171,22 @@ const ProductForm = () => {
   const onSubmit = async (values: FormValues) => {
     try {
       setIsSubmitting(true);
+      setError(null);
       
       // Upload image if a new one was selected
       if (imageFile) {
-        const imageUrl = await uploadProductImage(imageFile);
-        values.image_url = imageUrl;
+        try {
+          const imageUrl = await uploadProductImage(imageFile);
+          values.image_url = imageUrl;
+        } catch (error: any) {
+          console.error("Error uploading image:", error);
+          toast({
+            title: "Image Upload Failed",
+            description: "Product will be saved without an image. You can add an image later.",
+            variant: "destructive",
+          });
+          // Continue with product creation without image
+        }
       }
       
       let savedProduct;
@@ -180,7 +199,11 @@ const ProductForm = () => {
         });
         
         // Send notification for updated product
-        await sendProductNotification(savedProduct, 'updated');
+        try {
+          await sendProductNotification(savedProduct, 'updated');
+        } catch (error) {
+          console.error("Failed to send notification, but product was updated:", error);
+        }
       } else {
         // For creating new product, ensure all required fields are present
         savedProduct = await createProduct({
@@ -196,12 +219,17 @@ const ProductForm = () => {
         });
         
         // Send notification for new product
-        await sendProductNotification(savedProduct, 'created');
+        try {
+          await sendProductNotification(savedProduct, 'created');
+        } catch (error) {
+          console.error("Failed to send notification, but product was created:", error);
+        }
       }
       
       navigate('/admin/products');
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error saving product:", error);
+      setError(error.message || "Failed to save product. Please try again.");
       toast({
         title: "Error",
         description: "Failed to save product. Please try again.",
@@ -235,6 +263,14 @@ const ProductForm = () => {
           Notification Settings
         </Button>
       </div>
+
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
 
       {/* Notification Settings Dialog */}
       <Dialog open={showNotificationSettings} onOpenChange={setShowNotificationSettings}>
@@ -346,7 +382,7 @@ const ProductForm = () => {
               name="image_url"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Product Image</FormLabel>
+                  <FormLabel>Product Image <span className="text-sm text-gray-500 font-normal">(optional)</span></FormLabel>
                   <FormControl>
                     <div className="space-y-4">
                       <div className="flex items-center gap-4">
@@ -356,15 +392,16 @@ const ProductForm = () => {
                           onClick={() => document.getElementById('image-upload')?.click()}
                         >
                           <Upload className="mr-2 h-4 w-4" />
-                          {field.value ? 'Change Image' : 'Upload Image'}
+                          {field.value || imageFile ? 'Change Image' : 'Upload Image'}
                         </Button>
-                        {field.value && !imageFile && (
+                        {(field.value || imageFile) && (
                           <Button
                             type="button"
                             variant="ghost"
                             className="text-red-500 hover:text-red-700"
                             onClick={() => {
                               field.onChange('');
+                              setImageFile(null);
                               setImagePreview(null);
                             }}
                           >
@@ -402,7 +439,7 @@ const ProductForm = () => {
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
+                <FormLabel>Description <span className="text-sm text-gray-500 font-normal">(optional)</span></FormLabel>
                 <FormControl>
                   <Textarea 
                     placeholder="Enter product description" 
@@ -415,6 +452,15 @@ const ProductForm = () => {
               </FormItem>
             )}
           />
+
+          <Alert className="bg-amber-50 text-amber-800 border-amber-200">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Important Note</AlertTitle>
+            <AlertDescription>
+              Email notifications require a Resend API key to be configured. If you haven't set this up, 
+              the product will still be created but notifications may not be sent.
+            </AlertDescription>
+          </Alert>
 
           <div className="flex gap-4">
             <Button 
