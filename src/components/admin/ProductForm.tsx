@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -9,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { Loader2, Upload } from 'lucide-react';
+import { supabase } from "@/integrations/supabase/client";
 import {
   Form,
   FormControl,
@@ -31,6 +33,17 @@ import {
   updateProduct,
   uploadProductImage
 } from '@/api/adminProductApi';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -50,6 +63,9 @@ const ProductForm = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [sendNotification, setSendNotification] = useState(true);
+  const [notificationEmail, setNotificationEmail] = useState("admin@example.com");
+  const [showNotificationSettings, setShowNotificationSettings] = useState(false);
 
   // Fetch product categories
   const { data: categories = [] } = useQuery({
@@ -93,6 +109,39 @@ const ProductForm = () => {
     }
   }, [productData, form]);
 
+  // Send email notification
+  const sendProductNotification = async (product: any, action: 'created' | 'updated') => {
+    try {
+      if (!sendNotification) return;
+
+      // Find the category name for the product
+      let categoryName = 'Uncategorized';
+      if (product.category_id) {
+        const category = categories.find(c => c.id === product.category_id);
+        if (category) {
+          categoryName = category.name;
+        }
+      }
+
+      const response = await supabase.functions.invoke('product-notification', {
+        body: {
+          product: {
+            ...product,
+            category: categoryName
+          },
+          action: action,
+          notifyEmail: notificationEmail
+        }
+      });
+
+      if (response.error) {
+        console.error("Error sending notification:", response.error);
+      }
+    } catch (error) {
+      console.error("Failed to send notification:", error);
+    }
+  };
+
   // Handle image file selection
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -121,15 +170,20 @@ const ProductForm = () => {
         values.image_url = imageUrl;
       }
       
+      let savedProduct;
+
       if (isEditMode && id) {
-        await updateProduct(id, values);
+        savedProduct = await updateProduct(id, values);
         toast({
           title: "Success",
           description: "Product updated successfully.",
         });
+        
+        // Send notification for updated product
+        await sendProductNotification(savedProduct, 'updated');
       } else {
         // For creating new product, ensure all required fields are present
-        await createProduct({
+        savedProduct = await createProduct({
           name: values.name,
           category_id: values.category_id,
           price: values.price,
@@ -140,6 +194,9 @@ const ProductForm = () => {
           title: "Success",
           description: "Product created successfully.",
         });
+        
+        // Send notification for new product
+        await sendProductNotification(savedProduct, 'created');
       }
       
       navigate('/admin/products');
@@ -169,7 +226,60 @@ const ProductForm = () => {
         <h1 className="text-2xl font-bold text-sawmill-dark-brown">
           {isEditMode ? 'Edit Product' : 'Create New Product'}
         </h1>
+        
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => setShowNotificationSettings(true)}
+        >
+          Notification Settings
+        </Button>
       </div>
+
+      {/* Notification Settings Dialog */}
+      <Dialog open={showNotificationSettings} onOpenChange={setShowNotificationSettings}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Email Notification Settings</DialogTitle>
+            <DialogDescription>
+              Configure who will be notified when products are created or updated.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="flex items-center space-x-2">
+              <Checkbox 
+                id="send-notification" 
+                checked={sendNotification}
+                onCheckedChange={(checked) => setSendNotification(checked === true)}
+              />
+              <label htmlFor="send-notification">
+                Send email notifications when products are created or updated
+              </label>
+            </div>
+            
+            {sendNotification && (
+              <div className="space-y-2">
+                <label htmlFor="notification-email" className="text-sm font-medium">
+                  Notification Email
+                </label>
+                <Input
+                  id="notification-email"
+                  value={notificationEmail}
+                  onChange={(e) => setNotificationEmail(e.target.value)}
+                  placeholder="Enter email address"
+                />
+              </div>
+            )}
+          </div>
+          
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button>Save Settings</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
