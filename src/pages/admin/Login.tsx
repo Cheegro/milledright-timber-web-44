@@ -13,9 +13,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
+import { useAdminAuth } from "@/hooks/useAdminAuth";
 
 const AdminLogin = () => {
   const navigate = useNavigate();
+  const { login } = useAdminAuth(false); // Don't require auth on login page
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -26,8 +28,8 @@ const AdminLogin = () => {
 
     // Simple authentication - in a real app, this should be more secure
     if (username === "admin" && password === "sawmill123") {
-      // Store auth status in localStorage
-      localStorage.setItem("adminAuthenticated", "true");
+      // Store auth status using the hook
+      login();
       
       // Redirect to admin dashboard
       navigate("/admin");

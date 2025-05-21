@@ -23,11 +23,16 @@ export const useAdminAuth = (requireAuth: boolean = true) => {
     checkAuth();
   }, [navigate, requireAuth]);
 
+  const login = () => {
+    localStorage.setItem('adminAuthenticated', 'true');
+    setIsAuthenticated(true);
+  };
+
   const logout = () => {
     localStorage.removeItem('adminAuthenticated');
     setIsAuthenticated(false);
     navigate('/admin/login');
   };
 
-  return { isAuthenticated, isLoading, logout };
+  return { isAuthenticated, isLoading, login, logout };
 };

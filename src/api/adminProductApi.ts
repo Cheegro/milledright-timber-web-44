@@ -105,7 +105,7 @@ export async function createProduct(productData: {
 
     if (error) {
       console.error("Error creating product:", error);
-      throw new Error(error.message);
+      throw new Error(`Failed to create product: ${error.message}`);
     }
 
     return data;
@@ -136,7 +136,7 @@ export async function updateProduct(
 
     if (error) {
       console.error("Error updating product:", error);
-      throw new Error(error.message);
+      throw new Error(`Failed to update product: ${error.message}`);
     }
 
     return data;
@@ -156,7 +156,7 @@ export async function deleteProduct(id: string) {
 
     if (error) {
       console.error("Error deleting product:", error);
-      throw new Error(error.message);
+      throw new Error(`Failed to delete product: ${error.message}`);
     }
 
     return true;
@@ -169,29 +169,18 @@ export async function deleteProduct(id: string) {
 // Upload a product image
 export async function uploadProductImage(file: File) {
   try {
+    // Check file size before uploading
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      throw new Error(`File size exceeds limit of 5MB. Current size: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+    }
+    
     // Create a unique file name
     const fileExt = file.name.split('.').pop();
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
     
-    // Check if bucket exists, create if it doesn't
-    const { data: buckets } = await supabase.storage.listBuckets();
-    const productImagesBucket = buckets?.find(b => b.name === 'product-images');
-    
-    if (!productImagesBucket) {
-      // Attempt to create the bucket
-      const { error: createError } = await supabase.storage.createBucket('product-images', {
-        public: true,
-        fileSizeLimit: 5 * 1024 * 1024, // 5MB
-        allowedMimeTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/webp']
-      });
-      
-      if (createError) {
-        console.error("Error creating bucket:", createError);
-        throw new Error(`Failed to create storage bucket: ${createError.message}`);
-      }
-    }
-    
-    // Upload the file to the bucket
+    // Upload the file to the bucket - no need to check for bucket existence
+    // The bucket should already be created and public
     const { data, error } = await supabase.storage
       .from('product-images')
       .upload(fileName, file, {

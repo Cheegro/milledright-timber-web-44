@@ -39,7 +39,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
@@ -74,7 +73,7 @@ const ProductForm = () => {
   const [error, setError] = useState<string | null>(null);
 
   // Fetch product categories
-  const { data: categories = [] } = useQuery({
+  const { data: categories = [], error: categoriesError } = useQuery({
     queryKey: ['productCategories'],
     queryFn: fetchProductCategories,
   });
@@ -85,6 +84,17 @@ const ProductForm = () => {
     queryFn: () => fetchProduct(id!),
     enabled: isEditMode,
   });
+
+  // Show error if categories failed to load
+  useEffect(() => {
+    if (categoriesError) {
+      toast({
+        title: "Error",
+        description: "Failed to load product categories. Please try again.",
+        variant: "destructive",
+      });
+    }
+  }, [categoriesError]);
 
   // Initialize form
   const form = useForm<FormValues>({
@@ -154,6 +164,18 @@ const ProductForm = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      
+      // Validate file size
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (file.size > maxSize) {
+        toast({
+          title: "Error",
+          description: `File size exceeds limit of 5MB. Current size: ${(file.size / 1024 / 1024).toFixed(2)}MB`,
+          variant: "destructive",
+        });
+        return;
+      }
+      
       setImageFile(file);
       
       // Create a preview
@@ -182,10 +204,11 @@ const ProductForm = () => {
           console.error("Error uploading image:", error);
           toast({
             title: "Image Upload Failed",
-            description: "Product will be saved without an image. You can add an image later.",
+            description: error.message || "Product will be saved without an image. You can add an image later.",
             variant: "destructive",
           });
-          // Continue with product creation without image
+          // Make image_url null so the product can still be created without an image
+          values.image_url = null;
         }
       }
       
@@ -232,7 +255,7 @@ const ProductForm = () => {
       setError(error.message || "Failed to save product. Please try again.");
       toast({
         title: "Error",
-        description: "Failed to save product. Please try again.",
+        description: error.message || "Failed to save product. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -455,10 +478,10 @@ const ProductForm = () => {
 
           <Alert className="bg-amber-50 text-amber-800 border-amber-200">
             <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Important Note</AlertTitle>
+            <AlertTitle>Note About Authentication</AlertTitle>
             <AlertDescription>
-              Email notifications require a Resend API key to be configured. If you haven't set this up, 
-              the product will still be created but notifications may not be sent.
+              The admin panel is currently using a simple authentication system. If you encounter any issues 
+              with product creation or image uploads, please ensure you are logged in correctly.
             </AlertDescription>
           </Alert>
 
