@@ -4,12 +4,12 @@ import { Button } from '@/components/ui/button';
 import ProductCard from './ProductCard';
 
 interface Product {
-  id: number;
+  id: string;
   name: string;
   category: string;
   price: string;
-  description: string;
-  image: string;
+  description: string | null;
+  image_url: string | null;
 }
 
 interface ProductsListProps {

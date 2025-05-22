@@ -4,13 +4,14 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
+// Interface updated to match Supabase product structure
 interface Product {
-  id: number;
+  id: string;
   name: string;
   category: string;
   price: string;
-  description: string;
-  image: string;
+  description: string | null;
+  image_url: string | null;
 }
 
 interface ProductCardProps {
@@ -18,11 +19,14 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
+  // Use a placeholder image if the product doesn't have an image
+  const imageUrl = product.image_url || '/placeholder.svg';
+
   return (
     <Card key={product.id} className="overflow-hidden product-card">
       <div className="aspect-square bg-white p-4">
         <img 
-          src={product.image} 
+          src={imageUrl} 
           alt={product.name}
           className="object-cover w-full h-full"
         />
