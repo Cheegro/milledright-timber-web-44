@@ -37,16 +37,36 @@ const QuickQuoteForm = () => {
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // Send form data to your notification email
+      await fetch('https://formsubmit.co/Lucas@Flamingfirewood.ca', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          ...values,
+          _subject: `New Quote Request: ${values.projectType}`,
+        }),
+      });
+      
       console.log('Form submitted:', values);
       toast({
         title: "Quote request submitted!",
         description: "We'll get back to you within 24 hours.",
       });
       form.reset();
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast({
+        title: "Submission error",
+        description: "There was a problem submitting your request. Please try again or contact us directly.",
+        variant: "destructive"
+      });
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
   return (

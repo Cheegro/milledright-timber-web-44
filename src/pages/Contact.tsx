@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import {
   Phone,
   Mail,
@@ -67,7 +67,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-bold mb-1">Email</h3>
-                    <p>info@milledright.com</p>
+                    <p>Lucas@Flamingfirewood.ca</p>
                   </div>
                 </CardContent>
               </Card>

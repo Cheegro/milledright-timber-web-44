@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { MapPin, Phone } from 'lucide-react';
+import { MapPin, Phone, Mail } from 'lucide-react';
 
 const MapEmbed = () => {
   return (
@@ -42,6 +42,10 @@ const MapEmbed = () => {
                   <div className="flex items-center ml-7">
                     <a href="tel:+19057173474" className="hover:underline">(905) 717-3474</a>
                   </div>
+                </div>
+                <div className="flex items-center">
+                  <Mail className="h-5 w-5 text-sawmill-orange mr-2" />
+                  <a href="mailto:Lucas@Flamingfirewood.ca" className="hover:underline">Lucas@Flamingfirewood.ca</a>
                 </div>
               </div>
               <div className="mt-6">

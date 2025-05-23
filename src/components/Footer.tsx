@@ -19,6 +19,9 @@ const Footer = () => {
               <span className="font-bold mr-2">Alternative:</span> (905) 717-3474
             </p>
             <p className="flex items-center mt-2">
+              <span className="font-bold mr-2">Email:</span> Lucas@Flamingfirewood.ca
+            </p>
+            <p className="flex items-center mt-2">
               <span className="font-bold mr-2">Address:</span> 16720 Hwy 48, Whitchurch-Stouffville, ON
             </p>
           </div>

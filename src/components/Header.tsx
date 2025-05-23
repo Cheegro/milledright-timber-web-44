@@ -1,13 +1,14 @@
 
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, ShieldCheck } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleAdminAccess = () => {
     toast({
@@ -17,10 +18,18 @@ const Header = () => {
   };
 
   const handleGetQuote = () => {
-    navigate('/#quote-section');
-    setTimeout(() => {
-      document.getElementById('quote-section')?.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+    const isHomePage = location.pathname === '/';
+    
+    if (isHomePage) {
+      // If already on home page, just scroll to the section
+      const quoteSection = document.getElementById('quote-section');
+      if (quoteSection) {
+        quoteSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // If on another page, navigate to home with hash
+      navigate('/#quote-section');
+    }
   };
 
   return (

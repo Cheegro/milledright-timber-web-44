@@ -1,5 +1,6 @@
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import HeroSection from '@/components/home/HeroSection';
 import WhyChooseUsSection from '@/components/home/WhyChooseUsSection';
 import FeaturedProductsSection from '@/components/home/FeaturedProductsSection';
@@ -14,6 +15,18 @@ import ProjectShowcaseSection from '@/components/home/ProjectShowcaseSection';
 import QuickQuoteForm from '@/components/home/QuickQuoteForm';
 
 const Home = () => {
+  const location = useLocation();
+  const quoteRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    // Check if hash exists and scroll to the section
+    if (location.hash === '#quote-section' && quoteRef.current) {
+      setTimeout(() => {
+        quoteRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  }, [location]);
+  
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
@@ -23,7 +36,7 @@ const Home = () => {
       <WhyChooseUsSection />
       
       {/* Quick Quote Form & Value Props */}
-      <section id="quote-section" className="py-16 bg-gray-50">
+      <section id="quote-section" ref={quoteRef} className="py-16 bg-gray-50">
         <div className="container-wide">
           <h2 className="section-title text-center mx-auto mb-10">Get a Free Quote for Your Project</h2>
           
