@@ -104,6 +104,7 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({
   // Handle form submission
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
+    console.log("Form submitted with values:", values);
 
     try {
       let imageUrl = values.image_url;
@@ -123,6 +124,8 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({
         // Set published_at if the post is being published
         published_at: values.is_published ? new Date().toISOString() : null,
       };
+
+      console.log("Submitting post data:", postData);
 
       let result;
       if (isEditing && initialData?.id) {

@@ -5,6 +5,8 @@ import { toast } from "@/components/ui/use-toast";
 // Create a new blog post
 export async function createBlogPost(postData: any) {
   try {
+    console.log("Creating blog post with data:", postData);
+    
     const { data, error } = await supabase
       .from("blog_posts")
       .insert(postData)
