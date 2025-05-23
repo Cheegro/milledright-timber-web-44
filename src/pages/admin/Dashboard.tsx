@@ -2,27 +2,90 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Loader2 } from "lucide-react";
 
 const Dashboard = () => {
-  // Placeholder data for the dashboard
+  // Fetch actual counts from database tables
+  const { data: counts, isLoading: countsLoading } = useQuery({
+    queryKey: ['dashboard-counts'],
+    queryFn: async () => {
+      // Fetch counts for all relevant tables
+      const [productsResponse, blogPostsResponse, galleryImagesResponse, reviewsResponse] = await Promise.all([
+        supabase.from('products').select('id', { count: 'exact', head: true }),
+        supabase.from('blog_posts').select('id', { count: 'exact', head: true }),
+        supabase.from('gallery_images').select('id', { count: 'exact', head: true }),
+        supabase.from('reviews').select('id', { count: 'exact', head: true }),
+      ]);
+      
+      return {
+        products: productsResponse.count || 0,
+        blogPosts: blogPostsResponse.count || 0,
+        galleryImages: galleryImagesResponse.count || 0,
+        reviews: reviewsResponse.count || 0
+      };
+    }
+  });
+
+  // Fetch recent products for the dashboard
+  const { data: recentProducts, isLoading: productsLoading } = useQuery({
+    queryKey: ['recent-products'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('id, name, category_id, created_at, product_categories(name)')
+        .order('created_at', { ascending: false })
+        .limit(3);
+      
+      if (error) throw error;
+      
+      return data.map(product => ({
+        id: product.id,
+        name: product.name,
+        category: product.product_categories?.name || 'Uncategorized',
+        date: new Date(product.created_at).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        })
+      }));
+    }
+  });
+
+  // Fetch recent blog posts for the dashboard
+  const { data: recentPosts, isLoading: postsLoading } = useQuery({
+    queryKey: ['recent-posts'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('id, title, created_at')
+        .order('created_at', { ascending: false })
+        .limit(3);
+      
+      if (error) throw error;
+      
+      return data.map(post => ({
+        id: post.id,
+        title: post.title,
+        date: new Date(post.created_at).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        })
+      }));
+    }
+  });
+
+  // Create stats array with actual data
   const stats = [
-    { title: "Products", value: "24", link: "/admin/products" },
-    { title: "Blog Posts", value: "16", link: "/admin/blog" },
-    { title: "Gallery Images", value: "43", link: "/admin/gallery" },
-    { title: "Reviews", value: "38", link: "/admin/reviews" },
+    { title: "Products", value: countsLoading ? "..." : counts?.products.toString(), link: "/admin/products" },
+    { title: "Blog Posts", value: countsLoading ? "..." : counts?.blogPosts.toString(), link: "/admin/blog" },
+    { title: "Gallery Images", value: countsLoading ? "..." : counts?.galleryImages.toString(), link: "/admin/gallery" },
+    { title: "Reviews", value: countsLoading ? "..." : counts?.reviews.toString(), link: "/admin/reviews" },
   ];
 
-  const recentProducts = [
-    { id: 1, name: "LT40 Portable Sawmill", category: "Portable Sawmills", date: "May 10, 2025" },
-    { id: 2, name: "Industrial Bandsaw Blades", category: "Blades", date: "May 8, 2025" },
-    { id: 3, name: "Log Loading Attachment", category: "Accessories", date: "May 5, 2025" },
-  ];
-
-  const recentPosts = [
-    { id: 1, title: "10 Tips for Maintaining Your Bandsaw Blades", date: "May 5, 2025" },
-    { id: 2, title: "Portable vs. Stationary Sawmills: Which Is Right For You?", date: "April 28, 2025" },
-    { id: 3, title: "Customer Spotlight: Building a Successful Business with MilledRight", date: "April 15, 2025" },
-  ];
+  const isLoading = countsLoading || productsLoading || postsLoading;
 
   return (
     <div className="space-y-6">
@@ -44,7 +107,13 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
-                <div className="text-3xl font-bold text-sawmill-dark-brown">{stat.value}</div>
+                <div className="text-3xl font-bold text-sawmill-dark-brown">
+                  {isLoading ? (
+                    <Loader2 className="h-6 w-6 animate-spin text-sawmill-medium-brown" />
+                  ) : (
+                    stat.value
+                  )}
+                </div>
                 <Link 
                   to={stat.link}
                   className="text-sawmill-orange hover:text-sawmill-auburn text-sm font-medium"
@@ -71,25 +140,35 @@ const Dashboard = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {recentProducts.map(product => (
-                <div key={product.id} className="flex items-center justify-between border-b pb-3 last:border-0 last:pb-0">
-                  <div>
-                    <p className="font-medium text-sawmill-dark-brown">{product.name}</p>
-                    <p className="text-sm text-muted-foreground">Category: {product.category}</p>
+            {productsLoading ? (
+              <div className="flex justify-center py-4">
+                <Loader2 className="h-8 w-8 animate-spin text-sawmill-medium-brown" />
+              </div>
+            ) : recentProducts && recentProducts.length > 0 ? (
+              <div className="space-y-4">
+                {recentProducts.map(product => (
+                  <div key={product.id} className="flex items-center justify-between border-b pb-3 last:border-0 last:pb-0">
+                    <div>
+                      <p className="font-medium text-sawmill-dark-brown">{product.name}</p>
+                      <p className="text-sm text-muted-foreground">Category: {product.category}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-muted-foreground">{product.date}</span>
+                      <Link 
+                        to={`/admin/products/${product.id}/edit`}
+                        className="text-sawmill-orange hover:text-sawmill-auburn text-sm"
+                      >
+                        Edit
+                      </Link>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-muted-foreground">{product.date}</span>
-                    <Link 
-                      to={`/admin/products/${product.id}/edit`}
-                      className="text-sawmill-orange hover:text-sawmill-auburn text-sm"
-                    >
-                      Edit
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-4">
+                <p className="text-muted-foreground">No products found</p>
+              </div>
+            )}
             
             <div className="mt-4 text-center">
               <Link 
@@ -115,24 +194,34 @@ const Dashboard = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {recentPosts.map(post => (
-                <div key={post.id} className="flex items-center justify-between border-b pb-3 last:border-0 last:pb-0">
-                  <div>
-                    <p className="font-medium text-sawmill-dark-brown">{post.title}</p>
+            {postsLoading ? (
+              <div className="flex justify-center py-4">
+                <Loader2 className="h-8 w-8 animate-spin text-sawmill-medium-brown" />
+              </div>
+            ) : recentPosts && recentPosts.length > 0 ? (
+              <div className="space-y-4">
+                {recentPosts.map(post => (
+                  <div key={post.id} className="flex items-center justify-between border-b pb-3 last:border-0 last:pb-0">
+                    <div>
+                      <p className="font-medium text-sawmill-dark-brown">{post.title}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-muted-foreground">{post.date}</span>
+                      <Link 
+                        to={`/admin/blog/${post.id}/edit`}
+                        className="text-sawmill-orange hover:text-sawmill-auburn text-sm"
+                      >
+                        Edit
+                      </Link>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-muted-foreground">{post.date}</span>
-                    <Link 
-                      to={`/admin/blog/${post.id}/edit`}
-                      className="text-sawmill-orange hover:text-sawmill-auburn text-sm"
-                    >
-                      Edit
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-4">
+                <p className="text-muted-foreground">No blog posts found</p>
+              </div>
+            )}
             
             <div className="mt-4 text-center">
               <Link 
