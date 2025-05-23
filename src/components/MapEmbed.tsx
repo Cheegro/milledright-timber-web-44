@@ -31,17 +31,22 @@ const MapEmbed = () => {
                   <MapPin className="h-5 w-5 text-sawmill-orange mr-2 mt-1" />
                   <div>
                     <p className="font-medium">Milled Right Sawmill</p>
-                    <p className="text-sawmill-dark-gray">16720 ON-48, Whitchurch-Stouffville, ON L4A 3M6</p>
+                    <p className="text-sawmill-dark-gray">16720 Hwy 48, Whitchurch-Stouffville, ON</p>
                   </div>
                 </div>
-                <div className="flex items-center">
-                  <Phone className="h-5 w-5 text-sawmill-orange mr-2" />
-                  <a href="tel:+17059891941" className="hover:underline">(705) 989-1941</a>
+                <div className="flex flex-col space-y-2">
+                  <div className="flex items-center">
+                    <Phone className="h-5 w-5 text-sawmill-orange mr-2" />
+                    <a href="tel:+14378980642" className="hover:underline">(437) 898-0642</a>
+                  </div>
+                  <div className="flex items-center ml-7">
+                    <a href="tel:+19057173474" className="hover:underline">(905) 717-3474</a>
+                  </div>
                 </div>
               </div>
               <div className="mt-6">
                 <Button className="w-full bg-sawmill-dark-brown hover:bg-sawmill-medium-brown">
-                  <a href="https://maps.google.com/?q=16720+ON-48,+Whitchurch-Stouffville,+ON+L4A+3M6" target="_blank" rel="noopener noreferrer">
+                  <a href="https://maps.google.com/?q=16720+Hwy+48,+Whitchurch-Stouffville,+ON" target="_blank" rel="noopener noreferrer">
                     Get Directions
                   </a>
                 </Button>

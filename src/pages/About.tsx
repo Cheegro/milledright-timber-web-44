@@ -112,9 +112,9 @@ const About = () => {
         <h2 className="text-3xl font-bold mb-10 text-center">Meet Our Team</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {[
-            { name: "Mike Richards", role: "Founder & Head Miller", img: "/placeholder.svg", initials: "MR" },
-            { name: "Sarah Johnson", role: "Operations Manager", img: "/placeholder.svg", initials: "SJ" },
-            { name: "Tom Wilson", role: "Lead Sawyer", img: "/placeholder.svg", initials: "TW" },
+            { name: "Lucas Nauta", role: "Owner & Head Miller", img: "/placeholder.svg", initials: "LN" },
+            { name: "Amber Watters", role: "Operations Manager", img: "/placeholder.svg", initials: "AW" },
+            { name: "Martin Nauta", role: "Lead Sawyer", img: "/placeholder.svg", initials: "MN" },
             { name: "Lisa Green", role: "Customer Relations", img: "/placeholder.svg", initials: "LG" }
           ].map((member) => (
             <Card key={member.name} className="overflow-hidden">

@@ -13,10 +13,13 @@ const Footer = () => {
             <h3 className="text-xl font-bold mb-4 border-b border-sawmill-medium-brown pb-2">MilledRight Sawmill</h3>
             <p className="mb-4">Premium quality sawmill equipment and solutions for professional and hobbyist woodworkers.</p>
             <p className="flex items-center">
-              <span className="font-bold mr-2">Call Us:</span> (555) 123-4567
+              <span className="font-bold mr-2">Call Us:</span> (437) 898-0642
             </p>
             <p className="flex items-center mt-2">
-              <span className="font-bold mr-2">Email:</span> info@milledright.com
+              <span className="font-bold mr-2">Alternative:</span> (905) 717-3474
+            </p>
+            <p className="flex items-center mt-2">
+              <span className="font-bold mr-2">Address:</span> 16720 Hwy 48, Whitchurch-Stouffville, ON
             </p>
           </div>
           

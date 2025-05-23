@@ -23,7 +23,7 @@ const Home = () => {
       <WhyChooseUsSection />
       
       {/* Quick Quote Form & Value Props */}
-      <section className="py-16 bg-gray-50">
+      <section id="quote-section" className="py-16 bg-gray-50">
         <div className="container-wide">
           <h2 className="section-title text-center mx-auto mb-10">Get a Free Quote for Your Project</h2>
           

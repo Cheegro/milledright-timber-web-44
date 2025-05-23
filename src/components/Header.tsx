@@ -1,18 +1,26 @@
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X, ShieldCheck } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleAdminAccess = () => {
     toast({
       title: "Admin Dashboard",
       description: "Redirecting to admin dashboard...",
     });
+  };
+
+  const handleGetQuote = () => {
+    navigate('/#quote-section');
+    setTimeout(() => {
+      document.getElementById('quote-section')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
   };
 
   return (
@@ -36,7 +44,7 @@ const Header = () => {
           <Link to="/blog" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium">Blog</Link>
           <Link to="/about" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium">About Us</Link>
           <Link to="/contact" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium">Contact</Link>
-          <Button className="bg-sawmill-orange hover:bg-sawmill-auburn text-white">Get Quote</Button>
+          <Button className="bg-sawmill-orange hover:bg-sawmill-auburn text-white" onClick={handleGetQuote}>Get Quote</Button>
           <Link to="/admin" onClick={handleAdminAccess}>
             <Button 
               variant="outline" 
@@ -67,7 +75,7 @@ const Header = () => {
             <Link to="/blog" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium py-2 px-4 rounded hover:bg-gray-100" onClick={() => setIsOpen(false)}>Blog</Link>
             <Link to="/about" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium py-2 px-4 rounded hover:bg-gray-100" onClick={() => setIsOpen(false)}>About Us</Link>
             <Link to="/contact" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium py-2 px-4 rounded hover:bg-gray-100" onClick={() => setIsOpen(false)}>Contact</Link>
-            <Button className="bg-sawmill-orange hover:bg-sawmill-auburn text-white w-full">Get Quote</Button>
+            <Button className="bg-sawmill-orange hover:bg-sawmill-auburn text-white w-full" onClick={() => {handleGetQuote(); setIsOpen(false);}}>Get Quote</Button>
             <Link to="/admin" onClick={() => {handleAdminAccess(); setIsOpen(false);}}>
               <Button 
                 variant="outline" 

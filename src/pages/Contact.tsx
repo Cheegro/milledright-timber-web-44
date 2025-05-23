@@ -54,7 +54,8 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-bold mb-1">Phone</h3>
-                    <p>(555) 123-4567</p>
+                    <p>(437) 898-0642</p>
+                    <p>(905) 717-3474</p>
                   </div>
                 </CardContent>
               </Card>
@@ -78,7 +79,7 @@ const Contact = () => {
                   </div>
                   <div>
                     <h3 className="font-bold mb-1">Address</h3>
-                    <p>123 Lumber Lane<br />Woodsville, WA 98765</p>
+                    <p>16720 Hwy 48<br />Whitchurch-Stouffville, ON</p>
                   </div>
                 </CardContent>
               </Card>
