@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Hammer, Trees, Saw, Home, Flame, Brush } from 'lucide-react';
+import { Hammer, PalmTree, Axe, Home, Flame, Brush } from 'lucide-react';
 
 const WhyChooseUsSection = () => {
   return (
@@ -10,7 +10,7 @@ const WhyChooseUsSection = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <ServiceCard 
-            icon={<Saw className="h-8 w-8" />}
+            icon={<Axe className="h-8 w-8" />}
             title="Custom Lumber Milling"
             description="We mill lumber to your exact specifications, including live edge, dimensional lumber, structural beams and posts. Any dimensions can be cut in both hardwood and softwood."
           />
@@ -40,7 +40,7 @@ const WhyChooseUsSection = () => {
           />
           
           <ServiceCard 
-            icon={<Trees className="h-8 w-8" />}
+            icon={<PalmTree className="h-8 w-8" />}
             title="Expert Consultation"
             description="We provide our knowledge and expertise to help you decide on your next project and how to go about it for the best results."
           />

@@ -40,7 +40,17 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
     }
 
     return data.map(post => ({
-      ...post,
+      id: post.id,
+      title: post.title,
+      slug: post.slug || "",
+      content: post.content,
+      excerpt: post.excerpt,
+      author_name: post.author_name || post.author || "",
+      category_id: post.category_id,
+      is_published: post.is_published,
+      featured_image_url: post.featured_image_url || post.image_url || null,
+      created_at: post.created_at,
+      updated_at: post.updated_at,
       category_name: post.blog_categories?.name || null
     }));
   } catch (error) {
@@ -67,7 +77,17 @@ export async function fetchBlogPost(id: string): Promise<BlogPost | null> {
     }
 
     return {
-      ...data,
+      id: data.id,
+      title: data.title,
+      slug: data.slug || "",
+      content: data.content,
+      excerpt: data.excerpt,
+      author_name: data.author_name || data.author || "",
+      category_id: data.category_id,
+      is_published: data.is_published,
+      featured_image_url: data.featured_image_url || data.image_url || null,
+      created_at: data.created_at,
+      updated_at: data.updated_at,
       category_name: data.blog_categories?.name || null
     };
   } catch (error) {
@@ -94,7 +114,17 @@ export async function fetchBlogPostBySlug(slug: string): Promise<BlogPost | null
     }
 
     return {
-      ...data,
+      id: data.id,
+      title: data.title,
+      slug: data.slug || "",
+      content: data.content,
+      excerpt: data.excerpt,
+      author_name: data.author_name || data.author || "",
+      category_id: data.category_id,
+      is_published: data.is_published,
+      featured_image_url: data.featured_image_url || data.image_url || null,
+      created_at: data.created_at,
+      updated_at: data.updated_at,
       category_name: data.blog_categories?.name || null
     };
   } catch (error) {
@@ -135,9 +165,21 @@ export async function createBlogPost(postData: {
   featured_image_url?: string | null;
 }): Promise<BlogPost> {
   try {
+    // Convert to database format
+    const dbData = {
+      title: postData.title,
+      slug: postData.slug,
+      content: postData.content,
+      excerpt: postData.excerpt,
+      author: postData.author_name,
+      category_id: postData.category_id,
+      is_published: postData.is_published,
+      image_url: postData.featured_image_url
+    };
+
     const { data, error } = await supabase
       .from("blog_posts")
-      .insert([postData])
+      .insert([dbData])
       .select()
       .single();
 
@@ -146,7 +188,19 @@ export async function createBlogPost(postData: {
       throw new Error(`Failed to create blog post: ${error.message}`);
     }
 
-    return data;
+    return {
+      id: data.id,
+      title: data.title,
+      slug: data.slug || "",
+      content: data.content,
+      excerpt: data.excerpt,
+      author_name: data.author,
+      category_id: data.category_id,
+      is_published: data.is_published,
+      featured_image_url: data.image_url,
+      created_at: data.created_at,
+      updated_at: data.updated_at
+    };
   } catch (error) {
     console.error("Exception creating blog post:", error);
     throw error;
@@ -168,9 +222,20 @@ export async function updateBlogPost(
   }
 ): Promise<BlogPost> {
   try {
+    // Convert to database format
+    const dbData: any = {};
+    if (postData.title) dbData.title = postData.title;
+    if (postData.slug) dbData.slug = postData.slug;
+    if (postData.content) dbData.content = postData.content;
+    if (postData.excerpt) dbData.excerpt = postData.excerpt;
+    if (postData.author_name) dbData.author = postData.author_name;
+    if (postData.category_id !== undefined) dbData.category_id = postData.category_id;
+    if (postData.is_published !== undefined) dbData.is_published = postData.is_published;
+    if (postData.featured_image_url !== undefined) dbData.image_url = postData.featured_image_url;
+
     const { data, error } = await supabase
       .from("blog_posts")
-      .update(postData)
+      .update(dbData)
       .eq("id", id)
       .select()
       .single();
@@ -180,7 +245,19 @@ export async function updateBlogPost(
       throw new Error(`Failed to update blog post: ${error.message}`);
     }
 
-    return data;
+    return {
+      id: data.id,
+      title: data.title,
+      slug: data.slug || "",
+      content: data.content,
+      excerpt: data.excerpt,
+      author_name: data.author,
+      category_id: data.category_id,
+      is_published: data.is_published,
+      featured_image_url: data.image_url,
+      created_at: data.created_at,
+      updated_at: data.updated_at
+    };
   } catch (error) {
     console.error("Exception updating blog post:", error);
     throw error;
