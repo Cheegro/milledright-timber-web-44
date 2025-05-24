@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 
@@ -209,7 +210,7 @@ export async function updateBlogPost(
 ): Promise<BlogPost> {
   try {
     // Convert to database format
-    const dbData: any = {};
+    const dbData: Record<string, any> = {};
     if (postData.title) dbData.title = postData.title;
     if (postData.slug) dbData.slug = postData.slug;
     if (postData.content) dbData.content = postData.content;

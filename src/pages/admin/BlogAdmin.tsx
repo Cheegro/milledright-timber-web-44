@@ -15,13 +15,6 @@ import {
   BlogCategory
 } from '@/api/adminBlogApi';
 
-// Define the exact type for BlogList props to match the component
-interface BlogListProps {
-  posts: BlogPost[];
-  isLoading: boolean;
-  isAdmin: boolean;
-}
-
 interface CategoryWithCount extends BlogCategory {
   count: number;
 }
@@ -64,6 +57,13 @@ const BlogAdmin = () => {
     return matchesCategory && matchesSearch;
   });
   
+  // Map BlogPost type to add author property required by BlogCard
+  const postsWithAuthor = filteredPosts.map(post => ({
+    ...post,
+    author: post.author_name,
+    imageUrl: post.featured_image_url
+  }));
+  
   return (
     <div className="space-y-6 p-6">
       <div className="flex justify-between items-center">
@@ -96,7 +96,7 @@ const BlogAdmin = () => {
         
         <div className="md:col-span-3">
           <BlogList
-            posts={filteredPosts}
+            posts={postsWithAuthor}
             isLoading={postsLoading}
             isAdmin={true}
           />

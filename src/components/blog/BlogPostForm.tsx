@@ -171,7 +171,13 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
       }
       
       const blogPostData = {
-        ...data,
+        title: data.title,
+        slug: data.slug,
+        content: data.content,
+        excerpt: data.excerpt,
+        author_name: data.author_name,
+        category_id: data.category_id,
+        is_published: data.is_published,
         featured_image_url: imageUrl,
       };
       

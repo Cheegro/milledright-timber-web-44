@@ -55,6 +55,9 @@ const MainLayout = ({ children, hideBanner = false }: { children: React.ReactNod
   </>
 );
 
+// Empty categories array for ProductForm - will be populated via API in the actual component
+const emptyCategories: {id: string; name: string}[] = [];
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -164,8 +167,8 @@ const App = () => (
             <Route path="projects/:id/edit" element={<ProjectForm />} />
             
             {/* Product Admin Routes */}
-            <Route path="products/new" element={<ProductForm />} />
-            <Route path="products/:id/edit" element={<ProductForm />} />
+            <Route path="products/new" element={<ProductForm categories={emptyCategories} />} />
+            <Route path="products/:id/edit" element={<ProductForm categories={emptyCategories} />} />
             
             {/* Blog Admin Routes */}
             <Route path="blog/new" element={<BlogPostEditor />} />

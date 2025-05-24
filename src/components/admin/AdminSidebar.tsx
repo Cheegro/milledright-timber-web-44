@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 
 const AdminSidebar = () => {
   const { logout } = useAdminAuth();
-  const { isOpen, toggle } = useSidebar();
+  const { collapsed, toggleCollapsed } = useSidebar();
   const location = useLocation();
 
   const sidebarItems = [
@@ -70,8 +70,8 @@ const AdminSidebar = () => {
         <Link to="/" className="flex items-center gap-2">
           <span className="font-bold text-xl">MilledRight</span>
         </Link>
-        <Button variant="ghost" size="icon" onClick={toggle} className="ml-auto">
-          <PanelLeft className={cn("h-4 w-4 transition-transform", !isOpen && "rotate-180")} />
+        <Button variant="ghost" size="icon" onClick={toggleCollapsed} className="ml-auto">
+          <PanelLeft className={cn("h-4 w-4 transition-transform", !collapsed && "rotate-180")} />
         </Button>
       </div>
       

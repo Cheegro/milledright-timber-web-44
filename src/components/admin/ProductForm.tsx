@@ -37,7 +37,7 @@ const productFormSchema = z.object({
   image_url: z.string().optional(),
 });
 
-interface ProductFormProps {
+export interface ProductFormProps {
   categories: { id: string; name: string }[];
   product?: any;
   isEditing?: boolean;
@@ -111,8 +111,12 @@ const ProductForm = ({ categories, product, isEditing = false }: ProductFormProp
       }
       
       const productData = {
-        ...data,
-        image_url: imageUrl,
+        name: data.name,
+        category_id: data.category_id,
+        price: data.price,
+        price_unit: data.price_unit || '',
+        description: data.description || '',
+        image_url: imageUrl || '',
       };
       
       if (isEditing && product) {
