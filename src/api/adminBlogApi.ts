@@ -125,7 +125,26 @@ export async function fetchBlogPostBySlug(slug: string): Promise<BlogPost | null
       throw new Error(error.message);
     }
 
-    return mapDbPostToBlogPost(data as DatabaseBlogPost);
+    // Fix the type instantiation issue by explicitly handling the response format
+    if (!data) return null;
+    
+    const typedData: DatabaseBlogPost = {
+      id: data.id,
+      title: data.title,
+      content: data.content,
+      excerpt: data.excerpt,
+      author: data.author,
+      category_id: data.category_id,
+      is_published: data.is_published,
+      image_url: data.image_url,
+      created_at: data.created_at,
+      updated_at: data.updated_at,
+      published_at: data.published_at,
+      slug: data.slug,
+      blog_categories: data.blog_categories
+    };
+
+    return mapDbPostToBlogPost(typedData);
   } catch (error) {
     console.error("Exception fetching blog post by slug:", error);
     throw error;
@@ -187,7 +206,23 @@ export async function createBlogPost(postData: {
       throw new Error(`Failed to create blog post: ${error.message}`);
     }
 
-    return mapDbPostToBlogPost(data as DatabaseBlogPost);
+    // Fix the type instantiation issue by explicitly handling the response format
+    const typedData: DatabaseBlogPost = {
+      id: data.id,
+      title: data.title,
+      content: data.content,
+      excerpt: data.excerpt,
+      author: data.author,
+      category_id: data.category_id,
+      is_published: data.is_published,
+      image_url: data.image_url,
+      created_at: data.created_at,
+      updated_at: data.updated_at,
+      published_at: data.published_at,
+      slug: data.slug
+    };
+
+    return mapDbPostToBlogPost(typedData);
   } catch (error) {
     console.error("Exception creating blog post:", error);
     throw error;
@@ -232,7 +267,23 @@ export async function updateBlogPost(
       throw new Error(`Failed to update blog post: ${error.message}`);
     }
 
-    return mapDbPostToBlogPost(data as DatabaseBlogPost);
+    // Fix the type instantiation issue by explicitly handling the response format
+    const typedData: DatabaseBlogPost = {
+      id: data.id,
+      title: data.title,
+      content: data.content,
+      excerpt: data.excerpt,
+      author: data.author,
+      category_id: data.category_id,
+      is_published: data.is_published,
+      image_url: data.image_url,
+      created_at: data.created_at,
+      updated_at: data.updated_at,
+      published_at: data.published_at,
+      slug: data.slug
+    };
+
+    return mapDbPostToBlogPost(typedData);
   } catch (error) {
     console.error("Exception updating blog post:", error);
     throw error;
