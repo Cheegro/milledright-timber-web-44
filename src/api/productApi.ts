@@ -7,6 +7,7 @@ export interface Product {
   name: string;
   category_id: string;
   price: string;
+  price_unit?: string;
   description: string;
   image_url: string;
   created_at: string;
@@ -125,20 +126,34 @@ export async function fetchProductCategories() {
 // Upload a product image
 export async function uploadProductImage(file: File) {
   try {
+    // Check file type and convert if necessary
+    const fileType = file.type.split('/')[1];
+    let fileToUpload = file;
+    
+    // Handle HEIC/HEIF files (requires conversion, but we'll handle them as-is for now)
+    if (fileType === 'heic' || fileType === 'heif') {
+      console.log('HEIC/HEIF file detected, continuing with upload as-is');
+    }
+    
     // Create a unique file name
-    const fileExt = file.name.split('.').pop();
+    const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
     const filePath = `${fileName}`;
+    
+    console.log(`Uploading image: ${filePath} (type: ${file.type}, size: ${file.size} bytes)`);
 
     const { data, error } = await supabase.storage
       .from('product-images')
-      .upload(filePath, file);
+      .upload(filePath, fileToUpload, {
+        contentType: file.type, // Explicitly set content type
+        cacheControl: '3600'
+      });
 
     if (error) {
       console.error("Error uploading image:", error);
       toast({
         title: "Error",
-        description: "Failed to upload image",
+        description: `Failed to upload image: ${error.message}`,
         variant: "destructive",
       });
       return null;
@@ -149,6 +164,7 @@ export async function uploadProductImage(file: File) {
       .from('product-images')
       .getPublicUrl(filePath);
 
+    console.log("Image uploaded successfully:", publicUrlData.publicUrl);
     return publicUrlData.publicUrl;
   } catch (error) {
     console.error("Exception uploading image:", error);

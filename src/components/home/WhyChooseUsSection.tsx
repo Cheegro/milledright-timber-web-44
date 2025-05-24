@@ -1,47 +1,66 @@
 
 import React from 'react';
+import { Hammer, Trees, Saw, Home, Flame, Brush } from 'lucide-react';
 
 const WhyChooseUsSection = () => {
   return (
     <section className="py-16 bg-muted">
       <div className="container-wide">
-        <h2 className="section-title text-center mx-auto">Why Choose MilledRight</h2>
+        <h2 className="section-title text-center mx-auto mb-8">Our Services</h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
-          <div className="text-center p-6">
-            <div className="w-20 h-20 rounded-full bg-sawmill-dark-brown text-white flex items-center justify-center mx-auto mb-4">
-              <span className="text-3xl font-bold">1</span>
-            </div>
-            <h3 className="text-xl font-bold mb-3 text-sawmill-dark-brown">Premium Quality</h3>
-            <p className="text-sawmill-dark-gray">Hand-selected local lumber with attention to detail, ensuring the highest quality for your projects.</p>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <ServiceCard 
+            icon={<Saw className="h-8 w-8" />}
+            title="Custom Lumber Milling"
+            description="We mill lumber to your exact specifications, including live edge, dimensional lumber, structural beams and posts. Any dimensions can be cut in both hardwood and softwood."
+          />
           
-          <div className="text-center p-6">
-            <div className="w-20 h-20 rounded-full bg-sawmill-dark-brown text-white flex items-center justify-center mx-auto mb-4">
-              <span className="text-3xl font-bold">2</span>
-            </div>
-            <h3 className="text-xl font-bold mb-3 text-sawmill-dark-brown">Local Sourcing</h3>
-            <p className="text-sawmill-dark-gray">All our lumber comes from sustainably harvested local trees, supporting the regional economy.</p>
-          </div>
+          <ServiceCard 
+            icon={<Home className="h-8 w-8" />}
+            title="Custom Built Structures"
+            description="We build sheds, chicken coops, and other wooden structures available upon inquiry. Totally custom - we help with design and provide knowledge from years of experience."
+          />
           
-          <div className="text-center p-6">
-            <div className="w-20 h-20 rounded-full bg-sawmill-dark-brown text-white flex items-center justify-center mx-auto mb-4">
-              <span className="text-3xl font-bold">3</span>
-            </div>
-            <h3 className="text-xl font-bold mb-3 text-sawmill-dark-brown">Custom Services</h3>
-            <p className="text-sawmill-dark-gray">Bring your logs to us, and we'll mill them to your exact specifications on-site.</p>
-          </div>
+          <ServiceCard 
+            icon={<Brush className="h-8 w-8" />}
+            title="Wood Finishing Services"
+            description="We offer prefinished live edge wood. We can sand, flatten, and finish wood to help speed up your project and give it a professional touch."
+          />
           
-          <div className="text-center p-6">
-            <div className="w-20 h-20 rounded-full bg-sawmill-dark-brown text-white flex items-center justify-center mx-auto mb-4">
-              <span className="text-3xl font-bold">4</span>
-            </div>
-            <h3 className="text-xl font-bold mb-3 text-sawmill-dark-brown">Expert Knowledge</h3>
-            <p className="text-sawmill-dark-gray">Our team has years of experience and can help you select the perfect wood for your project.</p>
-          </div>
+          <ServiceCard 
+            icon={<Hammer className="h-8 w-8" />}
+            title="Pre-Cut Wood & Project Materials"
+            description="Need help with your DIY project? We offer pre-cut wood to your specifications, making your building projects easier and faster to complete."
+          />
+          
+          <ServiceCard 
+            icon={<Flame className="h-8 w-8" />}
+            title="Firewood Sales"
+            description="We also sell quality firewood under our Flaming Firewood brand. Available in various quantities to meet your needs."
+          />
+          
+          <ServiceCard 
+            icon={<Trees className="h-8 w-8" />}
+            title="Expert Consultation"
+            description="We provide our knowledge and expertise to help you decide on your next project and how to go about it for the best results."
+          />
         </div>
       </div>
     </section>
+  );
+};
+
+const ServiceCard = ({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) => {
+  return (
+    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="text-sawmill-dark-brown">
+          {icon}
+        </div>
+        <h3 className="text-xl font-bold text-sawmill-dark-brown">{title}</h3>
+      </div>
+      <p className="text-sawmill-dark-gray">{description}</p>
+    </div>
   );
 };
 

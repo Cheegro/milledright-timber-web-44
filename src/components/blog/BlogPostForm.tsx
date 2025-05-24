@@ -1,145 +1,202 @@
 
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { fetchBlogCategories } from "@/api/blogApi";
-import { createBlogPost, updateBlogPost, uploadBlogImage } from "@/api/adminBlogApi";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { toast } from '@/components/ui/use-toast';
+import { Loader2, Upload } from 'lucide-react';
+import { createBlogPost, updateBlogPost, uploadBlogImage } from '@/api/adminBlogApi';
 
-// Define the form schema with Zod
-const formSchema = z.object({
-  title: z.string().min(2, {
-    message: "Title must be at least 2 characters.",
-  }),
-  excerpt: z.string().min(10, {
-    message: "Excerpt must be at least 10 characters.",
-  }),
-  content: z.string().min(20, {
-    message: "Content must be at least 20 characters.",
-  }),
-  author: z.string().min(2, {
-    message: "Author name must be at least 2 characters.",
-  }),
-  category_id: z.string().uuid({
-    message: "Please select a valid category.",
-  }),
+// Form validation schema
+const blogFormSchema = z.object({
+  title: z.string().min(3, 'Title must be at least 3 characters'),
+  slug: z.string().min(3, 'Slug must be at least 3 characters'),
+  content: z.string().min(10, 'Content must be at least 10 characters'),
+  excerpt: z.string().min(10, 'Excerpt must be at least 10 characters'),
+  category_id: z.string().optional(),
   is_published: z.boolean().default(false),
-  image_url: z.string().optional(),
+  featured_image_url: z.string().optional(),
+  author_name: z.string().min(2, 'Author name must be at least 2 characters'),
 });
 
-// Define the props for the form component
 interface BlogPostFormProps {
   initialData?: any;
   isEditing?: boolean;
 }
 
-const BlogPostForm: React.FC<BlogPostFormProps> = ({
-  initialData,
-  isEditing = false,
-}) => {
+const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => {
   const navigate = useNavigate();
-  const [categories, setCategories] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(
-    initialData?.image_url || null
+  const [previewUrl, setPreviewUrl] = useState<string | null>(
+    initialData?.featured_image_url || null
   );
-
-  // Initialize react-hook-form with zod resolver
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const [categories, setCategories] = useState<any[]>([]);
+  
+  // Initialize form with existing blog post data or defaults
+  const form = useForm<z.infer<typeof blogFormSchema>>({
+    resolver: zodResolver(blogFormSchema),
     defaultValues: {
-      title: initialData?.title || "",
-      excerpt: initialData?.excerpt || "",
-      content: initialData?.content || "",
-      author: initialData?.author || "",
-      category_id: initialData?.category_id || "",
+      title: initialData?.title || '',
+      slug: initialData?.slug || '',
+      content: initialData?.content || '',
+      excerpt: initialData?.excerpt || '',
+      category_id: initialData?.category_id || '',
       is_published: initialData?.is_published || false,
-      image_url: initialData?.image_url || "",
+      featured_image_url: initialData?.featured_image_url || '',
+      author_name: initialData?.author_name || 'Lucas Nauta',
     },
   });
 
-  // Load categories on component mount
+  // Generate slug from title
+  const generateSlug = (title: string) => {
+    return title
+      .toLowerCase()
+      .replace(/[^\w\s]/gi, '')
+      .replace(/\s+/g, '-');
+  };
+
   useEffect(() => {
-    async function loadCategories() {
-      const categoriesData = await fetchBlogCategories();
-      setCategories(categoriesData);
+    // Generate slug from title if not in edit mode and slug is empty
+    if (!isEditing) {
+      const subscription = form.watch((value, { name }) => {
+        if (name === 'title') {
+          const currentSlug = form.getValues('slug');
+          if (!currentSlug || currentSlug === '') {
+            form.setValue('slug', generateSlug(value.title || ''));
+          }
+        }
+      });
+      return () => subscription.unsubscribe();
     }
-    loadCategories();
+  }, [form, isEditing]);
+  
+  useEffect(() => {
+    // Fetch blog categories
+    async function fetchCategories() {
+      try {
+        const { supabase } = await import('@/integrations/supabase/client');
+        const { data, error } = await supabase
+          .from('blog_categories')
+          .select('*')
+          .order('name');
+          
+        if (error) {
+          throw error;
+        }
+        
+        setCategories(data || []);
+      } catch (err) {
+        console.error('Error fetching blog categories:', err);
+        toast({
+          title: 'Error',
+          description: 'Failed to load blog categories',
+          variant: 'destructive',
+        });
+      }
+    }
+    
+    fetchCategories();
   }, []);
-
-  // Handle file change
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] || null;
-    setSelectedFile(file);
-
-    if (file) {
-      // Create a preview URL
-      const objectUrl = URL.createObjectURL(file);
-      setPreviewImage(objectUrl);
+  
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      setSelectedFile(file);
+      
+      // Create a preview URL for the selected image
+      const fileReader = new FileReader();
+      fileReader.onload = () => {
+        setPreviewUrl(fileReader.result as string);
+      };
+      fileReader.readAsDataURL(file);
     }
   };
 
-  // Handle form submission
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    setIsLoading(true);
-    console.log("Form submitted with values:", values);
-
+  const handleImageUpload = async () => {
+    if (!selectedFile) return null;
+    
     try {
-      let imageUrl = values.image_url;
+      setIsUploading(true);
+      console.log("Starting blog image upload...");
+      
+      // Check file type and log information
+      const fileType = selectedFile.type;
+      const fileSize = selectedFile.size;
+      const fileName = selectedFile.name;
+      console.log(`File details: name=${fileName}, type=${fileType}, size=${fileSize} bytes`);
+      
+      // Explicitly handle HEIC files
+      if (fileType === 'image/heic' || fileType === 'image/heif' || fileName.toLowerCase().endsWith('.heic') || fileName.toLowerCase().endsWith('.heif')) {
+        console.log("HEIC/HEIF file detected, special handling may be needed");
+      }
+      
+      // Attempt upload with explicit content type
+      const imageUrl = await uploadBlogImage(selectedFile);
+      console.log("Upload result:", imageUrl ? "Success" : "Failed");
+      return imageUrl;
+    } catch (error) {
+      console.error('Error uploading blog image:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to upload image. Please try again with a different image format.',
+        variant: 'destructive',
+      });
+      return null;
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
-      // If there's a new file selected, upload it first
+  const onSubmit = async (data: z.infer<typeof blogFormSchema>) => {
+    try {
+      setIsLoading(true);
+      
+      // Upload image if a new one was selected
+      let imageUrl = data.featured_image_url;
       if (selectedFile) {
-        imageUrl = await uploadBlogImage(selectedFile);
+        console.log("Uploading new featured image...");
+        imageUrl = await handleImageUpload();
         if (!imageUrl) {
-          throw new Error("Failed to upload image");
+          console.log("Image upload failed, continuing with form submission without image");
         }
       }
-
-      // Create the post data with the image URL
-      const postData = {
-        ...values,
-        image_url: imageUrl,
-        // Set published_at if the post is being published
-        published_at: values.is_published ? new Date().toISOString() : null,
+      
+      const blogPostData = {
+        ...data,
+        featured_image_url: imageUrl,
       };
-
-      console.log("Submitting post data:", postData);
-
-      let result;
-      if (isEditing && initialData?.id) {
-        result = await updateBlogPost(initialData.id, postData);
+      
+      if (isEditing && initialData) {
+        await updateBlogPost(initialData.id, blogPostData);
+        toast({
+          title: 'Success',
+          description: 'Blog post updated successfully',
+        });
       } else {
-        result = await createBlogPost(postData);
+        await createBlogPost(blogPostData);
+        toast({
+          title: 'Success',
+          description: 'Blog post created successfully',
+        });
       }
-
-      if (result) {
-        // Navigate to the blog admin page on success
-        navigate("/admin/blog");
-      }
-    } catch (error) {
-      console.error("Error saving blog post:", error);
+      
+      navigate('/admin/blog');
+    } catch (error: any) {
+      console.error('Error saving blog post:', error);
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to save blog post. Please try again.',
+        variant: 'destructive',
+      });
     } finally {
       setIsLoading(false);
     }
@@ -149,9 +206,8 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Left column - Basic info */}
           <div className="space-y-6">
-            {/* Title field */}
+            {/* Title */}
             <FormField
               control={form.control}
               name="title"
@@ -166,10 +222,25 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({
               )}
             />
 
-            {/* Author field */}
+            {/* Slug */}
             <FormField
               control={form.control}
-              name="author"
+              name="slug"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Slug</FormLabel>
+                  <FormControl>
+                    <Input placeholder="blog-post-slug" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* Author */}
+            <FormField
+              control={form.control}
+              name="author_name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Author</FormLabel>
@@ -180,38 +251,8 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({
                 </FormItem>
               )}
             />
-
-            {/* Category field */}
-            <FormField
-              control={form.control}
-              name="category_id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Category</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    value={field.value}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a category" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Excerpt field */}
+            
+            {/* Excerpt */}
             <FormField
               control={form.control}
               name="excerpt"
@@ -219,31 +260,56 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({
                 <FormItem>
                   <FormLabel>Excerpt</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="A brief summary of the blog post"
-                      className="min-h-[120px]"
+                    <Textarea 
+                      placeholder="Short summary of the blog post" 
                       {...field}
+                      rows={3}
                     />
                   </FormControl>
-                  <FormDescription>
-                    This will be displayed in blog listings
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            {/* Published switch */}
+            {/* Category */}
+            <FormField
+              control={form.control}
+              name="category_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Category</FormLabel>
+                  <FormControl>
+                    <RadioGroup 
+                      onValueChange={field.onChange} 
+                      defaultValue={field.value}
+                      className="space-y-1"
+                    >
+                      {categories.map(category => (
+                        <div key={category.id} className="flex items-center space-x-2">
+                          <RadioGroupItem value={category.id} id={`category-${category.id}`} />
+                          <label htmlFor={`category-${category.id}`} className="text-sm">
+                            {category.name}
+                          </label>
+                        </div>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Published Status */}
             <FormField
               control={form.control}
               name="is_published"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                <FormItem className="flex items-center justify-between rounded-lg border p-3">
                   <div className="space-y-0.5">
-                    <FormLabel className="text-base">Publish</FormLabel>
-                    <FormDescription>
-                      When enabled, this post will be visible on your blog
-                    </FormDescription>
+                    <FormLabel className="text-base">Published</FormLabel>
+                    <div className="text-sm text-muted-foreground">
+                      Make this blog post visible on the site
+                    </div>
                   </div>
                   <FormControl>
                     <Switch
@@ -256,32 +322,8 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({
             />
           </div>
 
-          {/* Right column - Content and image */}
           <div className="space-y-6">
-            {/* Featured image upload */}
-            <div>
-              <FormLabel className="block mb-2">Featured Image</FormLabel>
-              <div className="space-y-4">
-                {previewImage && (
-                  <div className="w-full h-48 overflow-hidden rounded-md border border-input">
-                    <img
-                      src={previewImage}
-                      alt="Preview"
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                )}
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="cursor-pointer"
-                  id="image-upload"
-                />
-              </div>
-            </div>
-
-            {/* Content field */}
+            {/* Content */}
             <FormField
               control={form.control}
               name="content"
@@ -289,15 +331,62 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({
                 <FormItem>
                   <FormLabel>Content</FormLabel>
                   <FormControl>
-                    <Textarea
-                      placeholder="Blog post content (HTML supported)"
-                      className="min-h-[400px]"
+                    <Textarea 
+                      placeholder="Blog post content" 
                       {...field}
+                      className="min-h-[300px]"
                     />
                   </FormControl>
-                  <FormDescription>
-                    HTML tags are supported for formatting
-                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Featured Image */}
+            <FormField
+              control={form.control}
+              name="featured_image_url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Featured Image</FormLabel>
+                  <FormControl>
+                    <div className="space-y-4">
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-50 transition-colors">
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          className="hidden"
+                          id="blog-image"
+                        />
+                        <label
+                          htmlFor="blog-image"
+                          className="cursor-pointer block"
+                        >
+                          <Upload className="h-10 w-10 mx-auto text-gray-400" />
+                          <p className="mt-2 text-sm text-gray-500">
+                            Click to upload featured image
+                          </p>
+                          <p className="text-xs text-gray-400">
+                            PNG, JPG, GIF up to 5MB
+                          </p>
+                        </label>
+                      </div>
+
+                      {(previewUrl || field.value) && (
+                        <div className="mt-4">
+                          <p className="text-sm font-medium mb-2">Preview</p>
+                          <div className="border rounded p-2 bg-white">
+                            <img
+                              src={previewUrl || field.value}
+                              alt="Featured image preview"
+                              className="max-h-64 mx-auto object-contain"
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
@@ -305,21 +394,25 @@ const BlogPostForm: React.FC<BlogPostFormProps> = ({
           </div>
         </div>
 
-        <div className="flex justify-end gap-4">
+        {/* Submit buttons */}
+        <div className="flex gap-4 justify-end">
           <Button
             type="button"
             variant="outline"
-            onClick={() => navigate("/admin/blog")}
-            disabled={isLoading}
+            onClick={() => navigate('/admin/blog')}
+            disabled={isLoading || isUploading}
           >
             Cancel
           </Button>
-          <Button type="submit" className="bg-sawmill-dark-brown" disabled={isLoading}>
-            {isLoading
-              ? "Saving..."
-              : isEditing
-              ? "Update Post"
-              : "Create Post"}
+          <Button
+            type="submit"
+            disabled={isLoading || isUploading}
+            className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown"
+          >
+            {(isLoading || isUploading) && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
+            {isEditing ? 'Update' : 'Create'} Blog Post
           </Button>
         </div>
       </form>

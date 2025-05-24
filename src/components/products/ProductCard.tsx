@@ -4,12 +4,13 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
-// Interface updated to match Supabase product structure
+// Interface updated to match Supabase product structure with price_unit
 interface Product {
   id: string;
   name: string;
   category: string;
   price: string;
+  price_unit?: string;
   description: string | null;
   image_url: string | null;
 }
@@ -21,6 +22,9 @@ interface ProductCardProps {
 const ProductCard = ({ product }: ProductCardProps) => {
   // Use a placeholder image if the product doesn't have an image
   const imageUrl = product.image_url || '/placeholder.svg';
+  
+  // Format price with board foot unit if applicable
+  const priceDisplay = product.price_unit ? `${product.price} per ${product.price_unit}` : product.price;
 
   return (
     <Card key={product.id} className="overflow-hidden product-card">
@@ -38,7 +42,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </Link>
         </h3>
         <p className="text-sm text-gray-600 mb-2">{product.category}</p>
-        <p className="text-xl font-bold text-sawmill-dark-brown mb-3">{product.price}</p>
+        <p className="text-xl font-bold text-sawmill-dark-brown mb-3">{priceDisplay}</p>
         <p className="text-sm line-clamp-2 mb-4">{product.description}</p>
         <div className="flex gap-2">
           <Button className="flex-1 bg-sawmill-dark-brown hover:bg-sawmill-medium-brown">

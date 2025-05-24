@@ -1,348 +1,153 @@
 
-import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useQuery } from '@tanstack/react-query';
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
-import { Loader2, Upload, AlertCircle } from 'lucide-react';
-import { supabase } from "@/integrations/supabase/client";
+import { z } from 'zod';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { 
-  fetchProduct, 
-  fetchProductCategories, 
-  createProduct, 
-  updateProduct,
-  uploadProductImage
-} from '@/api/adminProductApi';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/components/ui/alert";
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { toast } from '@/components/ui/use-toast';
+import { Loader2, Upload } from 'lucide-react';
+import { createProduct, updateProduct, uploadProductImage } from '@/api/adminProductApi';
 
-const formSchema = z.object({
-  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  category_id: z.string().nullable(),
-  price: z.string().min(1, { message: "Price is required." }),
-  description: z.string().optional().nullable(),
-  image_url: z.string().optional().nullable(),
+// Form validation schema
+const productFormSchema = z.object({
+  name: z.string().min(3, 'Product name must be at least 3 characters'),
+  category_id: z.string().optional(),
+  price: z.string().min(1, 'Price is required'),
+  price_unit: z.string().optional(),
+  description: z.string().optional(),
+  image_url: z.string().optional(),
 });
 
-type FormValues = z.infer<typeof formSchema>;
+interface ProductFormProps {
+  categories: { id: string; name: string }[];
+  product?: any;
+  isEditing?: boolean;
+}
 
-const ProductForm = () => {
-  const { id } = useParams();
+const ProductForm = ({ categories, product, isEditing = false }: ProductFormProps) => {
   const navigate = useNavigate();
-  const isEditMode = !!id;
-  
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [sendNotification, setSendNotification] = useState(true);
-  const [notificationEmail, setNotificationEmail] = useState("admin@example.com");
-  const [showNotificationSettings, setShowNotificationSettings] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(
+    product?.image_url || null
+  );
 
-  // Fetch product categories
-  const { data: categories = [], error: categoriesError } = useQuery({
-    queryKey: ['productCategories'],
-    queryFn: fetchProductCategories,
-  });
-
-  // Fetch product data if in edit mode
-  const { data: productData, isLoading } = useQuery({
-    queryKey: ['product', id],
-    queryFn: () => fetchProduct(id!),
-    enabled: isEditMode,
-  });
-
-  // Show error if categories failed to load
-  useEffect(() => {
-    if (categoriesError) {
-      toast({
-        title: "Error",
-        description: "Failed to load product categories. Please try again.",
-        variant: "destructive",
-      });
-    }
-  }, [categoriesError]);
-
-  // Initialize form
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  // Initialize form with existing product data or defaults
+  const form = useForm<z.infer<typeof productFormSchema>>({
+    resolver: zodResolver(productFormSchema),
     defaultValues: {
-      name: '',
-      category_id: null,
-      price: '',
-      description: '',
-      image_url: '',
-    }
+      name: product?.name || '',
+      category_id: product?.category_id || '',
+      price: product?.price || '',
+      price_unit: product?.price_unit || '',
+      description: product?.description || '',
+      image_url: product?.image_url || '',
+    },
   });
 
-  // Set form values when product data is loaded
-  useEffect(() => {
-    if (productData) {
-      form.reset({
-        name: productData.name,
-        category_id: productData.category_id,
-        price: productData.price,
-        description: productData.description || '',
-        image_url: productData.image_url,
-      });
-      
-      if (productData.image_url) {
-        setImagePreview(productData.image_url);
-      }
-    }
-  }, [productData, form]);
-
-  // Send email notification
-  const sendProductNotification = async (product: any, action: 'created' | 'updated') => {
-    try {
-      if (!sendNotification) return;
-
-      // Find the category name for the product
-      let categoryName = 'Uncategorized';
-      if (product.category_id) {
-        const category = categories.find(c => c.id === product.category_id);
-        if (category) {
-          categoryName = category.name;
-        }
-      }
-
-      const response = await supabase.functions.invoke('product-notification', {
-        body: {
-          product: {
-            ...product,
-            category: categoryName
-          },
-          action: action,
-          notifyEmail: notificationEmail
-        }
-      });
-
-      if (response.error) {
-        console.error("Error sending notification:", response.error);
-        // Don't throw error here, just log it - we don't want notification failures to prevent product creation
-      }
-    } catch (error) {
-      console.error("Failed to send notification:", error);
-      // Don't throw error here, just log it - we don't want notification failures to prevent product creation
-    }
-  };
-
-  // Handle image file selection
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
+      setSelectedFile(file);
       
-      // Validate file size
-      const maxSize = 5 * 1024 * 1024; // 5MB
-      if (file.size > maxSize) {
-        toast({
-          title: "Error",
-          description: `File size exceeds limit of 5MB. Current size: ${(file.size / 1024 / 1024).toFixed(2)}MB`,
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      setImageFile(file);
-      
-      // Create a preview
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          setImagePreview(event.target.result as string);
-        }
+      // Create a preview URL for the selected image
+      const fileReader = new FileReader();
+      fileReader.onload = () => {
+        setPreviewUrl(fileReader.result as string);
       };
-      reader.readAsDataURL(file);
+      fileReader.readAsDataURL(file);
     }
   };
 
-  // Handle form submission
-  const onSubmit = async (values: FormValues) => {
+  const handleImageUpload = async () => {
+    if (!selectedFile) return null;
+    
     try {
-      setIsSubmitting(true);
-      setError(null);
+      setIsUploading(true);
+      const imageUrl = await uploadProductImage(selectedFile);
+      return imageUrl;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to upload image. Please try again.',
+        variant: 'destructive',
+      });
+      return null;
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const onSubmit = async (data: z.infer<typeof productFormSchema>) => {
+    try {
+      setIsLoading(true);
       
       // Upload image if a new one was selected
-      if (imageFile) {
-        try {
-          const imageUrl = await uploadProductImage(imageFile);
-          values.image_url = imageUrl;
-        } catch (error: any) {
-          console.error("Error uploading image:", error);
-          toast({
-            title: "Image Upload Failed",
-            description: error.message || "Product will be saved without an image. You can add an image later.",
-            variant: "destructive",
-          });
-          // Make image_url null so the product can still be created without an image
-          values.image_url = null;
-        }
+      let imageUrl = data.image_url;
+      if (selectedFile) {
+        imageUrl = await handleImageUpload();
+        if (!imageUrl) return; // Stop if image upload failed
       }
       
-      let savedProduct;
-
-      if (isEditMode && id) {
-        savedProduct = await updateProduct(id, values);
+      const productData = {
+        ...data,
+        image_url: imageUrl,
+      };
+      
+      if (isEditing && product) {
+        await updateProduct(product.id, productData);
         toast({
-          title: "Success",
-          description: "Product updated successfully.",
+          title: 'Success',
+          description: 'Product updated successfully',
         });
-        
-        // Send notification for updated product
-        try {
-          await sendProductNotification(savedProduct, 'updated');
-        } catch (error) {
-          console.error("Failed to send notification, but product was updated:", error);
-        }
       } else {
-        // For creating new product, ensure all required fields are present
-        savedProduct = await createProduct({
-          name: values.name,
-          category_id: values.category_id,
-          price: values.price,
-          description: values.description || null,
-          image_url: values.image_url || null,
-        });
+        await createProduct(productData);
         toast({
-          title: "Success",
-          description: "Product created successfully.",
+          title: 'Success',
+          description: 'Product created successfully',
         });
-        
-        // Send notification for new product
-        try {
-          await sendProductNotification(savedProduct, 'created');
-        } catch (error) {
-          console.error("Failed to send notification, but product was created:", error);
-        }
       }
       
       navigate('/admin/products');
     } catch (error: any) {
-      console.error("Error saving product:", error);
-      setError(error.message || "Failed to save product. Please try again.");
+      console.error('Error saving product:', error);
       toast({
-        title: "Error",
-        description: error.message || "Failed to save product. Please try again.",
-        variant: "destructive",
+        title: 'Error',
+        description: error.message || 'Failed to save product. Please try again.',
+        variant: 'destructive',
       });
     } finally {
-      setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <Loader2 className="h-8 w-8 animate-spin text-sawmill-dark-brown" />
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-sawmill-dark-brown">
-          {isEditMode ? 'Edit Product' : 'Create New Product'}
-        </h1>
-        
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => setShowNotificationSettings(true)}
-        >
-          Notification Settings
-        </Button>
-      </div>
-
-      {error && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Error</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
-      {/* Notification Settings Dialog */}
-      <Dialog open={showNotificationSettings} onOpenChange={setShowNotificationSettings}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Email Notification Settings</DialogTitle>
-            <DialogDescription>
-              Configure who will be notified when products are created or updated.
-            </DialogDescription>
-          </DialogHeader>
-          
-          <div className="space-y-4 py-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="send-notification" 
-                checked={sendNotification}
-                onCheckedChange={(checked) => setSendNotification(checked === true)}
-              />
-              <label htmlFor="send-notification">
-                Send email notifications when products are created or updated
-              </label>
-            </div>
-            
-            {sendNotification && (
-              <div className="space-y-2">
-                <label htmlFor="notification-email" className="text-sm font-medium">
-                  Notification Email
-                </label>
-                <Input
-                  id="notification-email"
-                  value={notificationEmail}
-                  onChange={(e) => setNotificationEmail(e.target.value)}
-                  placeholder="Enter email address"
-                />
-              </div>
-            )}
-          </div>
-          
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button>Save Settings</Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-6">
+            {/* Product Name */}
             <FormField
               control={form.control}
               name="name"
@@ -350,27 +155,14 @@ const ProductForm = () => {
                 <FormItem>
                   <FormLabel>Product Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter product name" {...field} />
+                    <Input placeholder="Product name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Price</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g. $95/board ft" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
+            {/* Category */}
             <FormField
               control={form.control}
               name="category_id"
@@ -378,8 +170,8 @@ const ProductForm = () => {
                 <FormItem>
                   <FormLabel>Category</FormLabel>
                   <Select
-                    onValueChange={(value) => field.onChange(value === "no-category" ? null : value)}
-                    value={field.value || "no-category"}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -387,7 +179,6 @@ const ProductForm = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="no-category">None</SelectItem>
                       {categories.map((category) => (
                         <SelectItem key={category.id} value={category.id}>
                           {category.name}
@@ -400,56 +191,52 @@ const ProductForm = () => {
               )}
             />
 
+            {/* Price */}
             <FormField
               control={form.control}
-              name="image_url"
+              name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Product Image <span className="text-sm text-gray-500 font-normal">(optional)</span></FormLabel>
+                  <FormLabel>Price</FormLabel>
                   <FormControl>
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-4">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => document.getElementById('image-upload')?.click()}
-                        >
-                          <Upload className="mr-2 h-4 w-4" />
-                          {field.value || imageFile ? 'Change Image' : 'Upload Image'}
-                        </Button>
-                        {(field.value || imageFile) && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            className="text-red-500 hover:text-red-700"
-                            onClick={() => {
-                              field.onChange('');
-                              setImageFile(null);
-                              setImagePreview(null);
-                            }}
-                          >
-                            Remove
-                          </Button>
-                        )}
-                      </div>
-                      <input
-                        id="image-upload"
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={handleImageChange}
-                      />
-                      {imagePreview && (
-                        <div className="relative w-40 h-40 border rounded">
-                          <img
-                            src={imagePreview}
-                            alt="Preview"
-                            className="object-cover w-full h-full rounded"
-                          />
-                        </div>
-                      )}
-                      <input type="hidden" {...field} />
-                    </div>
+                    <Input placeholder="e.g. $99.99" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            {/* Price Unit */}
+            <FormField
+              control={form.control}
+              name="price_unit"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Price Unit (optional)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g. board foot, each, sq ft" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    For lumber, use "board foot" or specific units.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Description */}
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Product description"
+                      {...field}
+                      rows={5}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -457,54 +244,82 @@ const ProductForm = () => {
             />
           </div>
 
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Description <span className="text-sm text-gray-500 font-normal">(optional)</span></FormLabel>
-                <FormControl>
-                  <Textarea 
-                    placeholder="Enter product description" 
-                    className="min-h-32" 
-                    {...field} 
-                    value={field.value || ''} 
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {/* Image Upload */}
+          <div className="space-y-6">
+            <FormField
+              control={form.control}
+              name="image_url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Product Image</FormLabel>
+                  <FormControl>
+                    <div className="space-y-4">
+                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-50 transition-colors">
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          className="hidden"
+                          id="product-image"
+                        />
+                        <label
+                          htmlFor="product-image"
+                          className="cursor-pointer block"
+                        >
+                          <Upload className="h-10 w-10 mx-auto text-gray-400" />
+                          <p className="mt-2 text-sm text-gray-500">
+                            Click to upload product image
+                          </p>
+                          <p className="text-xs text-gray-400">
+                            PNG, JPG, GIF up to 5MB
+                          </p>
+                        </label>
+                      </div>
 
-          <Alert className="bg-amber-50 text-amber-800 border-amber-200">
-            <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Note About Authentication</AlertTitle>
-            <AlertDescription>
-              The admin panel is currently using a simple authentication system. If you encounter any issues 
-              with product creation or image uploads, please ensure you are logged in correctly.
-            </AlertDescription>
-          </Alert>
-
-          <div className="flex gap-4">
-            <Button 
-              type="submit" 
-              className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown"
-              disabled={isSubmitting}
-            >
-              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isEditMode ? 'Update Product' : 'Create Product'}
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => navigate('/admin/products')}
-            >
-              Cancel
-            </Button>
+                      {(previewUrl || field.value) && (
+                        <div className="mt-4">
+                          <p className="text-sm font-medium mb-2">Preview</p>
+                          <div className="border rounded p-2 bg-white">
+                            <img
+                              src={previewUrl || field.value}
+                              alt="Product preview"
+                              className="max-h-64 mx-auto object-contain"
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
-        </form>
-      </Form>
-    </div>
+        </div>
+
+        {/* Submit buttons */}
+        <div className="flex gap-4 justify-end">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => navigate('/admin/products')}
+            disabled={isLoading || isUploading}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            disabled={isLoading || isUploading}
+            className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown"
+          >
+            {(isLoading || isUploading) && (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            )}
+            {isEditing ? 'Update' : 'Create'} Product
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 };
 

@@ -1,82 +1,77 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
 
-// This would be replaced with an API call in a real implementation
-const getProductById = (id: number) => {
-  return {
-    id,
-    name: id === 1 ? "LT40 Portable Sawmill" : "Product not found",
-    category: "Portable Sawmills",
-    price: "$8,995",
-    description: "Our flagship portable sawmill, designed for both professionals and hobbyists. The LT40 delivers precision cuts and reliability.",
-    longDescription: `
-      <p>The LT40 Portable Sawmill is our most popular model, offering the perfect balance of performance and value. With its robust construction and precision engineering, it's designed to handle logs of various sizes with ease.</p>
-      
-      <h3>Key Features:</h3>
-      <ul>
-        <li>Heavy-duty steel frame for stability and durability</li>
-        <li>Precision blade guide system for accurate cuts</li>
-        <li>Hydraulic log handling system for easy operation</li>
-        <li>25HP motor with excellent fuel efficiency</li>
-        <li>Cuts logs up to 36" in diameter and 21' long</li>
-        <li>Production capacity of up to 1,000 board feet per day</li>
-      </ul>
-      
-      <h3>Optional Accessories:</h3>
-      <ul>
-        <li>Log loading arm attachment</li>
-        <li>Debarker attachment</li>
-        <li>Blade sharpening kit</li>
-        <li>Extended log length package</li>
-      </ul>
-    `,
-    specifications: [
-      { name: "Maximum Log Diameter", value: "36 inches" },
-      { name: "Maximum Log Length", value: "21 feet" },
-      { name: "Motor", value: "25HP Kohler" },
-      { name: "Blade Size", value: "1.5\" x 0.042\" x 158\"" },
-      { name: "Cutting Capacity", value: "Up to 1,000 board feet/day" },
-      { name: "Weight", value: "1,800 lbs" },
-      { name: "Dimensions", value: "23'L x 5.5'W x 7.5'H" },
-      { name: "Warranty", value: "2 years" }
-    ],
-    image: "https://lh3.googleusercontent.com/pw/AP1GczN1IOYefycEDh-kyR3PW-NwuwJK2PVvhV_Is2mY9SiOBocgJjcv83p99G6SnGWOIXNqgFgRWVkyvgJ6ExtYJJ7lGIqebRO12YnP_5tcLic5iykE=w2400",
-    galleryImages: [
-      "https://lh3.googleusercontent.com/pw/AP1GczMF-UwqDS0mzQhvKlZMMUqQjKwTeLsMs_9Y8SwdIC6a9h2vDZKec37odDn28R83IKXkMt7gvRsUIDIF0q6QJIrum2GSCsSeGQQjbUZVMcRypTv_=w2400",
-      "https://lh3.googleusercontent.com/pw/AP1GczOAcByE5Hm4MYIMettl4emX9aNlg4wLE-Y-TPISX24hZT_d6KeYda7iviQoVVw8xZqpvwwMUohBa6xDoxPRM22HGaag8KVSxhgF7AvievLP_kIi=w2400",
-      "https://lh3.googleusercontent.com/pw/AP1GczNwsxZoR0-yVe3k_Wii5gR_FvJK_h-vkiR3vX3fW0miFTsr7FkZT6eO51tiqWzzGxgNpFmsJ9fDIw1K228F74pLeywJu11ezWCxrKEFkcUw7OhX=w2400"
-    ]
-  };
-};
+import React, { useEffect, useState } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react';
+import { fetchProduct } from '@/api/productApi';
+import { toast } from '@/components/ui/use-toast';
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [product, setProduct] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState('');
 
   useEffect(() => {
-    if (id) {
-      // Simulate API fetch
-      setTimeout(() => {
-        const fetchedProduct = getProductById(parseInt(id, 10));
-        setProduct(fetchedProduct);
-        setActiveImage(fetchedProduct.image);
+    async function getProduct() {
+      if (!id) {
+        navigate('/products');
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const productData = await fetchProduct(id);
+        
+        if (!productData) {
+          toast({
+            title: "Product Not Found",
+            description: "The requested product could not be found.",
+            variant: "destructive",
+          });
+          navigate('/products');
+          return;
+        }
+        
+        setProduct(productData);
+        setActiveImage(productData.image_url || '/placeholder.svg');
+      } catch (error) {
+        console.error("Error fetching product:", error);
+        toast({
+          title: "Error",
+          description: "Failed to load product details. Please try again.",
+          variant: "destructive",
+        });
+        navigate('/products');
+      } finally {
         setLoading(false);
-      }, 300);
+      }
     }
-  }, [id]);
+    
+    getProduct();
+  }, [id, navigate]);
 
   if (loading) {
     return (
-      <div className="container-wide py-16 text-center">
-        <p className="text-lg">Loading product details...</p>
+      <div className="min-h-screen">
+        <div className="bg-sawmill-dark-brown py-8">
+          <div className="container-wide">
+            <div className="text-white">
+              <Link to="/products" className="text-white/80 hover:text-white">Products</Link> / <span>Loading...</span>
+            </div>
+          </div>
+        </div>
+        
+        <div className="container-wide py-16 text-center">
+          <Loader2 className="h-10 w-10 animate-spin text-sawmill-dark-brown mx-auto" />
+          <p className="mt-4 text-lg">Loading product details...</p>
+        </div>
       </div>
     );
   }
 
-  if (!product || product.name === "Product not found") {
+  if (!product) {
     return (
       <div className="container-wide py-16 text-center">
         <h1 className="text-3xl font-bold mb-4">Product Not Found</h1>
@@ -87,6 +82,12 @@ const ProductDetail = () => {
       </div>
     );
   }
+
+  // Format price with board foot unit if applicable
+  const priceDisplay = product.price_unit ? `${product.price} per ${product.price_unit}` : product.price;
+
+  // Get gallery images or use empty array if none
+  const galleryImages = product.gallery_images || [];
 
   return (
     <div className="min-h-screen">
@@ -110,7 +111,7 @@ const ProductDetail = () => {
               />
             </div>
             <div className="grid grid-cols-4 gap-2">
-              {[product.image, ...product.galleryImages].map((img, index) => (
+              {[product.image_url, ...galleryImages].filter(Boolean).map((img, index) => (
                 <button 
                   key={index}
                   onClick={() => setActiveImage(img)}
@@ -130,8 +131,8 @@ const ProductDetail = () => {
           <div>
             <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
             <p className="text-sm text-gray-600 mb-4">{product.category}</p>
-            <p className="text-3xl font-bold text-sawmill-dark-brown mb-4">{product.price}</p>
-            <p className="mb-6">{product.description}</p>
+            <p className="text-3xl font-bold text-sawmill-dark-brown mb-4">{priceDisplay}</p>
+            <div className="prose max-w-none mb-6" dangerouslySetInnerHTML={{ __html: product.description }} />
             
             <div className="flex gap-4 mb-8">
               <Button size="lg" className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown">
@@ -141,23 +142,23 @@ const ProductDetail = () => {
                 <Link to="/contact" className="w-full">Ask a Question</Link>
               </Button>
             </div>
-
-            <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: product.longDescription }} />
           </div>
         </div>
 
-        {/* Specifications */}
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold mb-6 border-b border-sawmill-medium-brown pb-2">Specifications</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {product.specifications.map((spec: any, index: number) => (
-              <div key={index} className="border rounded-lg p-4">
-                <p className="text-sm text-gray-600">{spec.name}</p>
-                <p className="font-semibold">{spec.value}</p>
-              </div>
-            ))}
+        {/* Specifications if available */}
+        {product.specifications && product.specifications.length > 0 && (
+          <div className="mt-12">
+            <h2 className="text-2xl font-bold mb-6 border-b border-sawmill-medium-brown pb-2">Specifications</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {product.specifications.map((spec: any, index: number) => (
+                <div key={index} className="border rounded-lg p-4">
+                  <p className="text-sm text-gray-600">{spec.name}</p>
+                  <p className="font-semibold">{spec.value}</p>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Related products placeholder */}
         <div className="mt-12">
