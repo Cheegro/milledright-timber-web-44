@@ -36,7 +36,7 @@ interface DatabaseBlogPost {
   created_at: string;
   updated_at: string;
   published_at?: string;
-  slug: string; // Make sure slug is defined here
+  slug?: string;
   blog_categories?: {
     name: string;
   };
@@ -47,7 +47,7 @@ function mapDbPostToBlogPost(post: DatabaseBlogPost): BlogPost {
   return {
     id: post.id,
     title: post.title,
-    slug: post.slug || "",
+    slug: post.slug || post.id,
     content: post.content,
     excerpt: post.excerpt,
     author_name: post.author || "",
@@ -76,10 +76,7 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
       throw new Error(error.message);
     }
 
-    return data.map((post: any) => mapDbPostToBlogPost({
-      ...post,
-      slug: post.slug || "", // Ensure slug is always defined
-    }));
+    return data.map((post: any) => mapDbPostToBlogPost(post));
   } catch (error) {
     console.error("Exception fetching blog posts:", error);
     throw error;
@@ -103,10 +100,7 @@ export async function fetchBlogPost(id: string): Promise<BlogPost | null> {
       throw new Error(error.message);
     }
 
-    return mapDbPostToBlogPost({
-      ...data,
-      slug: data.slug || "", // Ensure slug is always defined
-    });
+    return mapDbPostToBlogPost(data);
   } catch (error) {
     console.error("Exception fetching blog post:", error);
     throw error;
@@ -130,10 +124,7 @@ export async function fetchBlogPostBySlug(slug: string): Promise<BlogPost | null
       throw new Error(error.message);
     }
 
-    return mapDbPostToBlogPost({
-      ...data, 
-      slug: data.slug || "", // Ensure slug is always defined
-    });
+    return mapDbPostToBlogPost(data);
   } catch (error) {
     console.error("Exception fetching blog post by slug:", error);
     throw error;
@@ -195,19 +186,7 @@ export async function createBlogPost(postData: {
       throw new Error(`Failed to create blog post: ${error.message}`);
     }
 
-    return {
-      id: data.id,
-      title: data.title,
-      slug: data.slug || "",
-      content: data.content,
-      excerpt: data.excerpt,
-      author_name: data.author,
-      category_id: data.category_id,
-      is_published: data.is_published,
-      featured_image_url: data.image_url,
-      created_at: data.created_at,
-      updated_at: data.updated_at
-    };
+    return mapDbPostToBlogPost(data);
   } catch (error) {
     console.error("Exception creating blog post:", error);
     throw error;
@@ -252,19 +231,7 @@ export async function updateBlogPost(
       throw new Error(`Failed to update blog post: ${error.message}`);
     }
 
-    return {
-      id: data.id,
-      title: data.title,
-      slug: data.slug || "",
-      content: data.content,
-      excerpt: data.excerpt,
-      author_name: data.author,
-      category_id: data.category_id,
-      is_published: data.is_published,
-      featured_image_url: data.image_url,
-      created_at: data.created_at,
-      updated_at: data.updated_at
-    };
+    return mapDbPostToBlogPost(data);
   } catch (error) {
     console.error("Exception updating blog post:", error);
     throw error;

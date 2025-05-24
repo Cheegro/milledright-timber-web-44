@@ -22,6 +22,7 @@ import Footer from "./components/Footer";
 import NotFound from "./pages/NotFound";
 import SharedBanner from "./components/SharedBanner";
 import Reviews from "./pages/Reviews";
+import Projects from "./pages/Projects";
 
 // Admin Pages
 import AdminLogin from "./pages/admin/Login";
@@ -37,6 +38,7 @@ import ReviewDetail from "./pages/admin/ReviewDetail";
 import ReviewForm from "./components/admin/ReviewForm";
 import ProjectsAdmin from "./pages/admin/ProjectsAdmin";
 import ProjectForm from "./components/admin/ProjectForm";
+import Settings from "./pages/admin/Settings";
 
 const queryClient = new QueryClient();
 
@@ -90,6 +92,14 @@ const App = () => (
             element={
               <MainLayout>
                 <Gallery />
+              </MainLayout>
+            } 
+          />
+          <Route 
+            path="/projects" 
+            element={
+              <MainLayout>
+                <Projects />
               </MainLayout>
             } 
           />

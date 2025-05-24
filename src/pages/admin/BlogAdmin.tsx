@@ -11,7 +11,7 @@ import { useQuery } from '@tanstack/react-query';
 import { 
   fetchBlogCategories, 
   fetchBlogPosts,
-  BlogPost as AdminBlogPost,
+  BlogPost,
   BlogCategory
 } from '@/api/adminBlogApi';
 
@@ -22,26 +22,8 @@ interface BlogListProps {
   isAdmin: boolean;
 }
 
-// Define compatible interfaces to bridge the type differences
-interface Category {
-  id: string;
-  name: string;
-  count: number; // Changed from optional to required to match component expectation
-}
-
-interface BlogPost {
-  id: string;
-  title: string;
-  slug?: string;
-  content: string;
-  excerpt: string;
-  author: string;
-  category_id: string | null;
-  is_published: boolean;
-  image_url: string | null;
-  created_at: string;
-  updated_at: string;
-  category_name?: string;
+interface CategoryWithCount extends BlogCategory {
+  count: number;
 }
 
 const BlogAdmin = () => {
@@ -61,25 +43,10 @@ const BlogAdmin = () => {
     queryFn: fetchBlogCategories
   });
   
-  // Convert to compatible types
-  const categories: Category[] = adminCategories.map(cat => ({
+  // Convert to compatible types with count property
+  const categories: CategoryWithCount[] = adminCategories.map(cat => ({
     ...cat,
-    count: 0 // Add required count property
-  }));
-  
-  const posts: BlogPost[] = adminPosts.map(post => ({
-    id: post.id,
-    title: post.title,
-    slug: post.slug,
-    content: post.content,
-    excerpt: post.excerpt,
-    author: post.author_name,
-    category_id: post.category_id,
-    is_published: post.is_published,
-    image_url: post.featured_image_url,
-    created_at: post.created_at,
-    updated_at: post.updated_at,
-    category_name: post.category_name
+    count: adminPosts.filter(post => post.category_id === cat.id).length
   }));
   
   // Handle category click
@@ -88,7 +55,7 @@ const BlogAdmin = () => {
   };
   
   // Filter posts by category and search
-  const filteredPosts = posts.filter((post) => {
+  const filteredPosts = adminPosts.filter((post) => {
     const matchesCategory = selectedCategoryId ? post.category_id === selectedCategoryId : true;
     const matchesSearch = searchQuery.trim() === '' ? true : 
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -108,7 +75,6 @@ const BlogAdmin = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="md:col-span-1 space-y-6">
-          {/* Fixed by passing an empty string for title instead of invalid prop */}
           <BlogHeader
             searchQuery={searchQuery}
             onSearch={setSearchQuery}

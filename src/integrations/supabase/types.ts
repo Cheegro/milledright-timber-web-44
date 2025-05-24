@@ -195,6 +195,39 @@ export type Database = {
           },
         ]
       }
+      projects: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          id: string
+          image_url: string
+          title: string
+          updated_at: string
+          wood_type: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description: string
+          id?: string
+          image_url: string
+          title: string
+          updated_at?: string
+          wood_type: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string
+          title?: string
+          updated_at?: string
+          wood_type?: string
+        }
+        Relationships: []
+      }
       reviews: {
         Row: {
           author: string
