@@ -18,6 +18,7 @@ interface BlogPost {
 
 interface BlogCardProps {
   post: BlogPost;
+  isAdmin?: boolean; // Add isAdmin prop
 }
 
 // Format the date in a nice readable format
@@ -26,14 +27,15 @@ const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString('en-US', options);
 };
 
-const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
+const BlogCard: React.FC<BlogCardProps> = ({ post, isAdmin = false }) => {
   // Handle both mock data and Supabase data structures
   const imageUrl = post.image_url || post.imageUrl;
   const date = post.published_at || post.date;
+  const linkPath = isAdmin ? `/admin/blog/${post.id}/edit` : `/blog/${post.id}`;
   
   return (
     <Card className="overflow-hidden hover:shadow-lg transition-shadow">
-      <Link to={`/blog/${post.id}`}>
+      <Link to={linkPath}>
         <div className="h-48 overflow-hidden">
           <img 
             src={imageUrl} 

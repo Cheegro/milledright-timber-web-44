@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import BlogSearch from './BlogSearch';
 import BlogCategories from './BlogCategories';
 import BlogRecentPosts from './BlogRecentPosts';
@@ -27,9 +27,17 @@ interface BlogSidebarProps {
   recentPosts: BlogPost[];
   categories: Category[];
   isLoading?: boolean;
+  selectedCategoryId?: string | null;
+  onCategoryClick?: (categoryId: string | null) => void;
 }
 
-const BlogSidebar: React.FC<BlogSidebarProps> = ({ recentPosts, categories, isLoading = false }) => {
+const BlogSidebar: React.FC<BlogSidebarProps> = ({ 
+  recentPosts, 
+  categories, 
+  isLoading = false,
+  selectedCategoryId = null,
+  onCategoryClick = () => {} 
+}) => {
   if (isLoading) {
     return (
       <div className="space-y-8">
@@ -43,7 +51,11 @@ const BlogSidebar: React.FC<BlogSidebarProps> = ({ recentPosts, categories, isLo
   return (
     <div className="space-y-8">
       <BlogSearch />
-      <BlogCategories categories={categories} />
+      <BlogCategories 
+        categories={categories} 
+        selectedCategoryId={selectedCategoryId}
+        onCategoryClick={onCategoryClick}
+      />
       <BlogRecentPosts posts={recentPosts} />
     </div>
   );

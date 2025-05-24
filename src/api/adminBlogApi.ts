@@ -77,7 +77,7 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
       throw new Error(error.message);
     }
 
-    return data.map((post: any) => mapDbPostToBlogPost(post));
+    return (data as DatabaseBlogPost[]).map(post => mapDbPostToBlogPost(post));
   } catch (error) {
     console.error("Exception fetching blog posts:", error);
     throw error;
@@ -101,7 +101,7 @@ export async function fetchBlogPost(id: string): Promise<BlogPost | null> {
       throw new Error(error.message);
     }
 
-    return mapDbPostToBlogPost(data);
+    return mapDbPostToBlogPost(data as DatabaseBlogPost);
   } catch (error) {
     console.error("Exception fetching blog post:", error);
     throw error;
@@ -125,7 +125,7 @@ export async function fetchBlogPostBySlug(slug: string): Promise<BlogPost | null
       throw new Error(error.message);
     }
 
-    return mapDbPostToBlogPost(data);
+    return mapDbPostToBlogPost(data as DatabaseBlogPost);
   } catch (error) {
     console.error("Exception fetching blog post by slug:", error);
     throw error;
@@ -187,7 +187,7 @@ export async function createBlogPost(postData: {
       throw new Error(`Failed to create blog post: ${error.message}`);
     }
 
-    return mapDbPostToBlogPost(data);
+    return mapDbPostToBlogPost(data as DatabaseBlogPost);
   } catch (error) {
     console.error("Exception creating blog post:", error);
     throw error;
@@ -232,7 +232,7 @@ export async function updateBlogPost(
       throw new Error(`Failed to update blog post: ${error.message}`);
     }
 
-    return mapDbPostToBlogPost(data);
+    return mapDbPostToBlogPost(data as DatabaseBlogPost);
   } catch (error) {
     console.error("Exception updating blog post:", error);
     throw error;

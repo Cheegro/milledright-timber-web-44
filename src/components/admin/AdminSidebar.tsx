@@ -18,7 +18,9 @@ import { Button } from "@/components/ui/button";
 
 const AdminSidebar = () => {
   const { logout } = useAdminAuth();
-  const { collapsed, toggleCollapsed } = useSidebar();
+  const { state, setOpen } = useSidebar();
+  const collapsed = state === "collapsed";
+  const toggleCollapsed = () => setOpen(!collapsed);
   const location = useLocation();
 
   const sidebarItems = [
