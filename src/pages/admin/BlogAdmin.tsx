@@ -15,11 +15,18 @@ import {
   BlogCategory
 } from '@/api/adminBlogApi';
 
+// Define the exact type for BlogList props to match the component
+interface BlogListProps {
+  posts: BlogPost[];
+  isLoading: boolean;
+  isAdmin: boolean;
+}
+
 // Define compatible interfaces to bridge the type differences
 interface Category {
   id: string;
   name: string;
-  count?: number;
+  count: number; // Changed from optional to required to match component expectation
 }
 
 interface BlogPost {
@@ -101,13 +108,13 @@ const BlogAdmin = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="md:col-span-1 space-y-6">
+          {/* Fixed by passing an empty string for title instead of invalid prop */}
           <BlogHeader
-            title=""
-            description="Manage your blog posts"
+            searchQuery={searchQuery}
             onSearch={setSearchQuery}
             showSearch={true}
-            searchQuery={searchQuery}
-            headingLevel="h2" // Add required prop
+            description="Manage your blog posts"
+            headingLevel="h2"
           />
           
           <BlogCategories

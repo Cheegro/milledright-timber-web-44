@@ -21,6 +21,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import NotFound from "./pages/NotFound";
 import SharedBanner from "./components/SharedBanner";
+import Reviews from "./pages/Reviews";
 
 // Admin Pages
 import AdminLogin from "./pages/admin/Login";
@@ -33,8 +34,9 @@ import GalleryAdmin from "./pages/admin/GalleryAdmin";
 import GalleryImageForm from "./pages/admin/GalleryImageForm";
 import ReviewsAdmin from "./pages/admin/ReviewsAdmin";
 import ReviewDetail from "./pages/admin/ReviewDetail";
-import Settings from "./pages/admin/Settings";
 import ReviewForm from "./components/admin/ReviewForm";
+import ProjectsAdmin from "./pages/admin/ProjectsAdmin";
+import ProjectForm from "./components/admin/ProjectForm";
 
 const queryClient = new QueryClient();
 
@@ -123,6 +125,14 @@ const App = () => (
               </MainLayout>
             } 
           />
+          <Route
+            path="/reviews"
+            element={
+              <MainLayout>
+                <Reviews />
+              </MainLayout>
+            }
+          />
           
           {/* Admin Login Route */}
           <Route path="/admin/login" element={<AdminLogin />} />
@@ -137,14 +147,21 @@ const App = () => (
             <Route path="gallery/:id/edit" element={<GalleryImageForm />} />
             <Route path="reviews" element={<ReviewsAdmin />} />
             <Route path="settings" element={<Settings />} />
+            
+            {/* Project Admin Routes */}
+            <Route path="projects" element={<ProjectsAdmin />} />
+            <Route path="projects/new" element={<ProjectForm />} />
+            <Route path="projects/:id/edit" element={<ProjectForm />} />
+            
             {/* Product Admin Routes */}
             <Route path="products/new" element={<ProductForm />} />
             <Route path="products/:id/edit" element={<ProductForm />} />
+            
             {/* Blog Admin Routes */}
             <Route path="blog/new" element={<BlogPostEditor />} />
             <Route path="blog/:id/edit" element={<BlogPostEditor />} />
+            
             {/* Review Admin Routes */}
-            <Route path="reviews" element={<ReviewsAdmin />} />
             <Route path="reviews/new" element={<ReviewForm />} />
             <Route path="reviews/:id/edit" element={<ReviewForm />} />
             <Route path="reviews/:id/detail" element={<ReviewDetail />} />

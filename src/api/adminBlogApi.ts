@@ -36,7 +36,7 @@ interface DatabaseBlogPost {
   created_at: string;
   updated_at: string;
   published_at?: string;
-  slug?: string;
+  slug: string; // Make sure slug is defined here
   blog_categories?: {
     name: string;
   };
@@ -76,7 +76,10 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
       throw new Error(error.message);
     }
 
-    return data.map(mapDbPostToBlogPost);
+    return data.map((post: any) => mapDbPostToBlogPost({
+      ...post,
+      slug: post.slug || "", // Ensure slug is always defined
+    }));
   } catch (error) {
     console.error("Exception fetching blog posts:", error);
     throw error;
@@ -100,7 +103,10 @@ export async function fetchBlogPost(id: string): Promise<BlogPost | null> {
       throw new Error(error.message);
     }
 
-    return mapDbPostToBlogPost(data);
+    return mapDbPostToBlogPost({
+      ...data,
+      slug: data.slug || "", // Ensure slug is always defined
+    });
   } catch (error) {
     console.error("Exception fetching blog post:", error);
     throw error;
@@ -124,7 +130,10 @@ export async function fetchBlogPostBySlug(slug: string): Promise<BlogPost | null
       throw new Error(error.message);
     }
 
-    return mapDbPostToBlogPost(data);
+    return mapDbPostToBlogPost({
+      ...data, 
+      slug: data.slug || "", // Ensure slug is always defined
+    });
   } catch (error) {
     console.error("Exception fetching blog post by slug:", error);
     throw error;
