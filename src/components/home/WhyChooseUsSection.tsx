@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Hammer, PalmTree, Axe, Home, Flame, Brush } from 'lucide-react';
+import { Hammer, TreePalm, Axe, Home, Flame, Brush } from 'lucide-react';
 
 const WhyChooseUsSection = () => {
   return (
@@ -40,7 +40,7 @@ const WhyChooseUsSection = () => {
           />
           
           <ServiceCard 
-            icon={<PalmTree className="h-8 w-8" />}
+            icon={<TreePalm className="h-8 w-8" />}
             title="Expert Consultation"
             description="We provide our knowledge and expertise to help you decide on your next project and how to go about it for the best results."
           />

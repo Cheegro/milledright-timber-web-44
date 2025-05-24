@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/components/ui/use-toast";
 
@@ -15,12 +14,50 @@ export interface BlogPost {
   featured_image_url: string | null;
   created_at: string;
   updated_at: string;
+  category_name?: string;
 }
 
 export interface BlogCategory {
   id: string;
   name: string;
   created_at: string;
+}
+
+// Database response type to help with mapping
+interface DatabaseBlogPost {
+  id: string;
+  title: string;
+  content: string;
+  excerpt: string;
+  author: string;
+  category_id: string | null;
+  is_published: boolean;
+  image_url: string | null;
+  created_at: string;
+  updated_at: string;
+  published_at?: string;
+  slug?: string;
+  blog_categories?: {
+    name: string;
+  };
+}
+
+// Helper function to map database response to BlogPost
+function mapDbPostToBlogPost(post: DatabaseBlogPost): BlogPost {
+  return {
+    id: post.id,
+    title: post.title,
+    slug: post.slug || "",
+    content: post.content,
+    excerpt: post.excerpt,
+    author_name: post.author || "",
+    category_id: post.category_id,
+    is_published: post.is_published,
+    featured_image_url: post.image_url || null,
+    created_at: post.created_at,
+    updated_at: post.updated_at,
+    category_name: post.blog_categories?.name
+  };
 }
 
 // Fetch all blog posts
@@ -39,20 +76,7 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
       throw new Error(error.message);
     }
 
-    return data.map(post => ({
-      id: post.id,
-      title: post.title,
-      slug: post.slug || "",
-      content: post.content,
-      excerpt: post.excerpt,
-      author_name: post.author_name || post.author || "",
-      category_id: post.category_id,
-      is_published: post.is_published,
-      featured_image_url: post.featured_image_url || post.image_url || null,
-      created_at: post.created_at,
-      updated_at: post.updated_at,
-      category_name: post.blog_categories?.name || null
-    }));
+    return data.map(mapDbPostToBlogPost);
   } catch (error) {
     console.error("Exception fetching blog posts:", error);
     throw error;
@@ -76,20 +100,7 @@ export async function fetchBlogPost(id: string): Promise<BlogPost | null> {
       throw new Error(error.message);
     }
 
-    return {
-      id: data.id,
-      title: data.title,
-      slug: data.slug || "",
-      content: data.content,
-      excerpt: data.excerpt,
-      author_name: data.author_name || data.author || "",
-      category_id: data.category_id,
-      is_published: data.is_published,
-      featured_image_url: data.featured_image_url || data.image_url || null,
-      created_at: data.created_at,
-      updated_at: data.updated_at,
-      category_name: data.blog_categories?.name || null
-    };
+    return mapDbPostToBlogPost(data);
   } catch (error) {
     console.error("Exception fetching blog post:", error);
     throw error;
@@ -113,20 +124,7 @@ export async function fetchBlogPostBySlug(slug: string): Promise<BlogPost | null
       throw new Error(error.message);
     }
 
-    return {
-      id: data.id,
-      title: data.title,
-      slug: data.slug || "",
-      content: data.content,
-      excerpt: data.excerpt,
-      author_name: data.author_name || data.author || "",
-      category_id: data.category_id,
-      is_published: data.is_published,
-      featured_image_url: data.featured_image_url || data.image_url || null,
-      created_at: data.created_at,
-      updated_at: data.updated_at,
-      category_name: data.blog_categories?.name || null
-    };
+    return mapDbPostToBlogPost(data);
   } catch (error) {
     console.error("Exception fetching blog post by slug:", error);
     throw error;
