@@ -13,7 +13,7 @@ import {
   fetchBlogPosts,
   BlogPost,
   BlogCategory
-} from '@/api/adminBlogApi';
+} from '@/api/blog';
 
 interface CategoryWithCount extends BlogCategory {
   count: number;
