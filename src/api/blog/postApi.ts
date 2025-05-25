@@ -19,7 +19,7 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
       throw new Error(error.message);
     }
 
-    return (data as DatabaseBlogPost[]).map(post => mapDbPostToBlogPost(post));
+    return (data || []).map(post => mapDbPostToBlogPost(post as DatabaseBlogPost));
   } catch (error) {
     console.error("Exception fetching blog posts:", error);
     throw error;
@@ -43,7 +43,6 @@ export async function fetchBlogPost(id: string): Promise<BlogPost | null> {
       throw new Error(error.message);
     }
 
-    // Explicitly handle the response format to avoid type instantiation issues
     if (!data) return null;
     
     const typedData: DatabaseBlogPost = {
@@ -58,7 +57,7 @@ export async function fetchBlogPost(id: string): Promise<BlogPost | null> {
       created_at: data.created_at,
       updated_at: data.updated_at,
       published_at: data.published_at,
-      slug: data.slug || data.id, // Use id as fallback if slug is missing
+      slug: data.slug || data.id,
       blog_categories: data.blog_categories
     };
 
@@ -86,7 +85,6 @@ export async function fetchBlogPostBySlug(slug: string): Promise<BlogPost | null
       throw new Error(error.message);
     }
 
-    // Explicitly handle the response format to avoid type instantiation issues
     if (!data) return null;
     
     const typedData: DatabaseBlogPost = {
@@ -101,7 +99,7 @@ export async function fetchBlogPostBySlug(slug: string): Promise<BlogPost | null
       created_at: data.created_at,
       updated_at: data.updated_at,
       published_at: data.published_at,
-      slug: data.slug || data.id, // Use id as fallback if slug is missing
+      slug: data.slug || data.id,
       blog_categories: data.blog_categories
     };
 
@@ -124,7 +122,6 @@ export async function createBlogPost(postData: {
   featured_image_url?: string | null;
 }): Promise<BlogPost> {
   try {
-    // Convert to database format
     const dbData = {
       title: postData.title,
       slug: postData.slug,
@@ -147,7 +144,6 @@ export async function createBlogPost(postData: {
       throw new Error(`Failed to create blog post: ${error.message}`);
     }
 
-    // Explicitly handle the response format to avoid type instantiation issues
     const typedData: DatabaseBlogPost = {
       id: data.id,
       title: data.title,
@@ -160,7 +156,7 @@ export async function createBlogPost(postData: {
       created_at: data.created_at,
       updated_at: data.updated_at,
       published_at: data.published_at,
-      slug: data.slug || data.id // Use id as fallback if slug is missing
+      slug: data.slug || data.id
     };
 
     return mapDbPostToBlogPost(typedData);
@@ -185,7 +181,6 @@ export async function updateBlogPost(
   }
 ): Promise<BlogPost> {
   try {
-    // Convert to database format
     const dbData: Record<string, any> = {};
     if (postData.title) dbData.title = postData.title;
     if (postData.slug) dbData.slug = postData.slug;
@@ -208,7 +203,6 @@ export async function updateBlogPost(
       throw new Error(`Failed to update blog post: ${error.message}`);
     }
 
-    // Explicitly handle the response format to avoid type instantiation issues
     const typedData: DatabaseBlogPost = {
       id: data.id,
       title: data.title,
@@ -221,7 +215,7 @@ export async function updateBlogPost(
       created_at: data.created_at,
       updated_at: data.updated_at,
       published_at: data.published_at,
-      slug: data.slug || data.id // Use id as fallback if slug is missing
+      slug: data.slug || data.id
     };
 
     return mapDbPostToBlogPost(typedData);
