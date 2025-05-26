@@ -10,7 +10,6 @@ export async function fetchBlogPosts(): Promise<BlogPost[]> {
       .from("blog_posts")
       .select(`
         *,
-        slug,
         blog_categories(name)
       `)
       .order("created_at", { ascending: false });
@@ -34,7 +33,6 @@ export async function fetchBlogPost(id: string): Promise<BlogPost | null> {
       .from("blog_posts")
       .select(`
         *,
-        slug,
         blog_categories(name)
       `)
       .eq("id", id)
@@ -47,21 +45,7 @@ export async function fetchBlogPost(id: string): Promise<BlogPost | null> {
 
     if (!data) return null;
     
-    return mapDbPostToBlogPost({
-      id: data.id,
-      title: data.title,
-      content: data.content,
-      excerpt: data.excerpt,
-      author: data.author,
-      category_id: data.category_id,
-      is_published: data.is_published,
-      image_url: data.image_url,
-      created_at: data.created_at,
-      updated_at: data.updated_at,
-      published_at: data.published_at,
-      slug: data.slug || data.id,
-      blog_categories: data.blog_categories
-    });
+    return mapDbPostToBlogPost(data as DatabaseBlogPost);
   } catch (error) {
     console.error("Exception fetching blog post:", error);
     throw error;
@@ -75,7 +59,6 @@ export async function fetchBlogPostBySlug(slug: string): Promise<BlogPost | null
       .from("blog_posts")
       .select(`
         *,
-        slug,
         blog_categories(name)
       `)
       .eq("slug", slug)
@@ -88,21 +71,7 @@ export async function fetchBlogPostBySlug(slug: string): Promise<BlogPost | null
 
     if (!data) return null;
     
-    return mapDbPostToBlogPost({
-      id: data.id,
-      title: data.title,
-      content: data.content,
-      excerpt: data.excerpt,
-      author: data.author,
-      category_id: data.category_id,
-      is_published: data.is_published,
-      image_url: data.image_url,
-      created_at: data.created_at,
-      updated_at: data.updated_at,
-      published_at: data.published_at,
-      slug: data.slug || data.id,
-      blog_categories: data.blog_categories
-    });
+    return mapDbPostToBlogPost(data as DatabaseBlogPost);
   } catch (error) {
     console.error("Exception fetching blog post by slug:", error);
     throw error;
@@ -136,8 +105,7 @@ export async function createBlogPost(postData: {
       .from("blog_posts")
       .insert([dbData])
       .select(`
-        *,
-        slug
+        *
       `)
       .single();
 
@@ -146,20 +114,7 @@ export async function createBlogPost(postData: {
       throw new Error(`Failed to create blog post: ${error.message}`);
     }
 
-    return mapDbPostToBlogPost({
-      id: data.id,
-      title: data.title,
-      content: data.content,
-      excerpt: data.excerpt,
-      author: data.author,
-      category_id: data.category_id,
-      is_published: data.is_published,
-      image_url: data.image_url,
-      created_at: data.created_at,
-      updated_at: data.updated_at,
-      published_at: data.published_at,
-      slug: data.slug || data.id
-    });
+    return mapDbPostToBlogPost(data as DatabaseBlogPost);
   } catch (error) {
     console.error("Exception creating blog post:", error);
     throw error;
@@ -196,8 +151,7 @@ export async function updateBlogPost(
       .update(dbData)
       .eq("id", id)
       .select(`
-        *,
-        slug
+        *
       `)
       .single();
 
@@ -206,20 +160,7 @@ export async function updateBlogPost(
       throw new Error(`Failed to update blog post: ${error.message}`);
     }
 
-    return mapDbPostToBlogPost({
-      id: data.id,
-      title: data.title,
-      content: data.content,
-      excerpt: data.excerpt,
-      author: data.author,
-      category_id: data.category_id,
-      is_published: data.is_published,
-      image_url: data.image_url,
-      created_at: data.created_at,
-      updated_at: data.updated_at,
-      published_at: data.published_at,
-      slug: data.slug || data.id
-    });
+    return mapDbPostToBlogPost(data as DatabaseBlogPost);
   } catch (error) {
     console.error("Exception updating blog post:", error);
     throw error;
