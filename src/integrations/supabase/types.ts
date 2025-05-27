@@ -80,6 +80,165 @@ export type Database = {
           },
         ]
       }
+      conversation_entries: {
+        Row: {
+          attachments: Json | null
+          author: string
+          conversation_id: number
+          entry_id: number
+          entry_text: string
+          entry_timestamp: string | null
+        }
+        Insert: {
+          attachments?: Json | null
+          author: string
+          conversation_id: number
+          entry_id?: number
+          entry_text: string
+          entry_timestamp?: string | null
+        }
+        Update: {
+          attachments?: Json | null
+          author?: string
+          conversation_id?: number
+          entry_id?: number
+          entry_text?: string
+          entry_timestamp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_entries_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["conversation_id"]
+          },
+        ]
+      }
+      conversations: {
+        Row: {
+          conversation_id: number
+          created_at: string | null
+          customer_id: number
+          dream_board_snapshot: Json | null
+          estimated_budget_range: string | null
+          estimated_completion_date: string | null
+          next_follow_up_date: string | null
+          status: string
+          subject: string
+          updated_at: string | null
+        }
+        Insert: {
+          conversation_id?: number
+          created_at?: string | null
+          customer_id: number
+          dream_board_snapshot?: Json | null
+          estimated_budget_range?: string | null
+          estimated_completion_date?: string | null
+          next_follow_up_date?: string | null
+          status?: string
+          subject: string
+          updated_at?: string | null
+        }
+        Update: {
+          conversation_id?: number
+          created_at?: string | null
+          customer_id?: number
+          dream_board_snapshot?: Json | null
+          estimated_budget_range?: string | null
+          estimated_completion_date?: string | null
+          next_follow_up_date?: string | null
+          status?: string
+          subject?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["customer_id"]
+          },
+        ]
+      }
+      customer_journal: {
+        Row: {
+          customer_id: number
+          entry_date: string | null
+          entry_text: string
+          entry_type: string | null
+          journal_entry_id: number
+          next_action_due_date: string | null
+          next_action_item: string | null
+        }
+        Insert: {
+          customer_id: number
+          entry_date?: string | null
+          entry_text: string
+          entry_type?: string | null
+          journal_entry_id?: number
+          next_action_due_date?: string | null
+          next_action_item?: string | null
+        }
+        Update: {
+          customer_id?: number
+          entry_date?: string | null
+          entry_text?: string
+          entry_type?: string | null
+          journal_entry_id?: number
+          next_action_due_date?: string | null
+          next_action_item?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_journal_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["customer_id"]
+          },
+        ]
+      }
+      customers: {
+        Row: {
+          company_name: string | null
+          created_at: string | null
+          customer_id: number
+          design_style_preferences: string | null
+          email: string
+          initial_contact_channel: string | null
+          location_city_preference: string | null
+          name: string
+          phone: string | null
+          preferred_wood_species_notes: string | null
+        }
+        Insert: {
+          company_name?: string | null
+          created_at?: string | null
+          customer_id?: number
+          design_style_preferences?: string | null
+          email: string
+          initial_contact_channel?: string | null
+          location_city_preference?: string | null
+          name: string
+          phone?: string | null
+          preferred_wood_species_notes?: string | null
+        }
+        Update: {
+          company_name?: string | null
+          created_at?: string | null
+          customer_id?: number
+          design_style_preferences?: string | null
+          email?: string
+          initial_contact_channel?: string | null
+          location_city_preference?: string | null
+          name?: string
+          phone?: string | null
+          preferred_wood_species_notes?: string | null
+        }
+        Relationships: []
+      }
       gallery_categories: {
         Row: {
           created_at: string
@@ -139,54 +298,196 @@ export type Database = {
           },
         ]
       }
+      log_stock: {
+        Row: {
+          acquisition_cost: number | null
+          created_at: string | null
+          date_acquired: string
+          date_milled_into_slabs: string | null
+          diameter_at_base_inches: number | null
+          estimated_yield_board_feet: number | null
+          length_feet: number | null
+          log_id: number
+          moisture_content_initial: number | null
+          source_location_gis_latitude: number | null
+          source_location_gis_longitude: number | null
+          source_location_text: string | null
+          species_id: number
+          storage_location_in_yard: string | null
+          story_of_origin: string | null
+          supplier_notes: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          acquisition_cost?: number | null
+          created_at?: string | null
+          date_acquired: string
+          date_milled_into_slabs?: string | null
+          diameter_at_base_inches?: number | null
+          estimated_yield_board_feet?: number | null
+          length_feet?: number | null
+          log_id?: number
+          moisture_content_initial?: number | null
+          source_location_gis_latitude?: number | null
+          source_location_gis_longitude?: number | null
+          source_location_text?: string | null
+          species_id: number
+          storage_location_in_yard?: string | null
+          story_of_origin?: string | null
+          supplier_notes?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          acquisition_cost?: number | null
+          created_at?: string | null
+          date_acquired?: string
+          date_milled_into_slabs?: string | null
+          diameter_at_base_inches?: number | null
+          estimated_yield_board_feet?: number | null
+          length_feet?: number | null
+          log_id?: number
+          moisture_content_initial?: number | null
+          source_location_gis_latitude?: number | null
+          source_location_gis_longitude?: number | null
+          source_location_text?: string | null
+          species_id?: number
+          storage_location_in_yard?: string | null
+          story_of_origin?: string | null
+          supplier_notes?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "log_stock_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "wood_species"
+            referencedColumns: ["species_id"]
+          },
+        ]
+      }
       product_categories: {
         Row: {
           created_at: string
+          description: string | null
           id: string
           name: string
+          parent_category_id: string | null
+          slug: string | null
         }
         Insert: {
           created_at?: string
+          description?: string | null
           id?: string
           name: string
+          parent_category_id?: string | null
+          slug?: string | null
         }
         Update: {
           created_at?: string
+          description?: string | null
           id?: string
           name?: string
+          parent_category_id?: string | null
+          slug?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "product_categories_parent_category_id_fkey"
+            columns: ["parent_category_id"]
+            isOneToOne: false
+            referencedRelation: "product_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       products: {
         Row: {
+          board_feet: number | null
           category_id: string | null
           created_at: string
+          customization_options_text: string | null
+          date_added: string | null
+          date_modified: string | null
           description: string | null
+          dimensions_inches: Json | null
+          drying_method: string | null
+          expert_notes: string | null
           id: string
           image_url: string | null
+          images: Json | null
+          is_active: boolean | null
+          is_featured_on_homepage: boolean | null
+          is_one_of_a_kind: boolean | null
+          meta_seo_description: string | null
+          meta_seo_title: string | null
           name: string
+          parent_log_id: number | null
           price: string
+          price_display_text: string | null
+          slug: string | null
+          species_id: number | null
+          surface_finish_options: string[] | null
           updated_at: string
+          weight_lbs: number | null
         }
         Insert: {
+          board_feet?: number | null
           category_id?: string | null
           created_at?: string
+          customization_options_text?: string | null
+          date_added?: string | null
+          date_modified?: string | null
           description?: string | null
+          dimensions_inches?: Json | null
+          drying_method?: string | null
+          expert_notes?: string | null
           id?: string
           image_url?: string | null
+          images?: Json | null
+          is_active?: boolean | null
+          is_featured_on_homepage?: boolean | null
+          is_one_of_a_kind?: boolean | null
+          meta_seo_description?: string | null
+          meta_seo_title?: string | null
           name: string
+          parent_log_id?: number | null
           price: string
+          price_display_text?: string | null
+          slug?: string | null
+          species_id?: number | null
+          surface_finish_options?: string[] | null
           updated_at?: string
+          weight_lbs?: number | null
         }
         Update: {
+          board_feet?: number | null
           category_id?: string | null
           created_at?: string
+          customization_options_text?: string | null
+          date_added?: string | null
+          date_modified?: string | null
           description?: string | null
+          dimensions_inches?: Json | null
+          drying_method?: string | null
+          expert_notes?: string | null
           id?: string
           image_url?: string | null
+          images?: Json | null
+          is_active?: boolean | null
+          is_featured_on_homepage?: boolean | null
+          is_one_of_a_kind?: boolean | null
+          meta_seo_description?: string | null
+          meta_seo_title?: string | null
           name?: string
+          parent_log_id?: number | null
           price?: string
+          price_display_text?: string | null
+          slug?: string | null
+          species_id?: number | null
+          surface_finish_options?: string[] | null
           updated_at?: string
+          weight_lbs?: number | null
         }
         Relationships: [
           {
@@ -195,6 +496,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "product_categories"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_parent_log_id_fkey"
+            columns: ["parent_log_id"]
+            isOneToOne: false
+            referencedRelation: "log_stock"
+            referencedColumns: ["log_id"]
+          },
+          {
+            foreignKeyName: "products_species_id_fkey"
+            columns: ["species_id"]
+            isOneToOne: false
+            referencedRelation: "wood_species"
+            referencedColumns: ["species_id"]
           },
         ]
       }
@@ -277,6 +592,101 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      roles: {
+        Row: {
+          role_id: number
+          role_name: string
+        }
+        Insert: {
+          role_id?: number
+          role_name: string
+        }
+        Update: {
+          role_id?: number
+          role_name?: string
+        }
+        Relationships: []
+      }
+      site_users: {
+        Row: {
+          created_at: string | null
+          email: string
+          full_name: string | null
+          hashed_password: string
+          is_active: boolean | null
+          role_id: number | null
+          user_id: number
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          full_name?: string | null
+          hashed_password: string
+          is_active?: boolean | null
+          role_id?: number | null
+          user_id?: number
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          full_name?: string | null
+          hashed_password?: string
+          is_active?: boolean | null
+          role_id?: number | null
+          user_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "site_users_role_id_fkey"
+            columns: ["role_id"]
+            isOneToOne: false
+            referencedRelation: "roles"
+            referencedColumns: ["role_id"]
+          },
+        ]
+      }
+      wood_species: {
+        Row: {
+          common_name: string
+          created_at: string | null
+          description: string | null
+          hardness_janka: number | null
+          image_representative_grain_url: string | null
+          scientific_name: string | null
+          species_id: number
+          sustainability_notes: string | null
+          typical_uses: string[] | null
+          updated_at: string | null
+          workability_notes: string | null
+        }
+        Insert: {
+          common_name: string
+          created_at?: string | null
+          description?: string | null
+          hardness_janka?: number | null
+          image_representative_grain_url?: string | null
+          scientific_name?: string | null
+          species_id?: number
+          sustainability_notes?: string | null
+          typical_uses?: string[] | null
+          updated_at?: string | null
+          workability_notes?: string | null
+        }
+        Update: {
+          common_name?: string
+          created_at?: string | null
+          description?: string | null
+          hardness_janka?: number | null
+          image_representative_grain_url?: string | null
+          scientific_name?: string | null
+          species_id?: number
+          sustainability_notes?: string | null
+          typical_uses?: string[] | null
+          updated_at?: string | null
+          workability_notes?: string | null
+        }
+        Relationships: []
       }
     }
     Views: {

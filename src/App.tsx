@@ -1,195 +1,87 @@
-
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "@/components/ui/toaster";
+import "./App.css";
 
 // Layouts
-import AdminLayout from "./layouts/AdminLayout";
+import AdminLayout from "@/layouts/AdminLayout";
 
-// Main Website Pages
-import Home from "./pages/Home";
-import Products from "./pages/Products";
-import ProductDetail from "./pages/ProductDetail";
-import Gallery from "./pages/Gallery";
-import Blog from "./pages/Blog";
-import BlogPost from "./pages/BlogPost";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import NotFound from "./pages/NotFound";
-import SharedBanner from "./components/SharedBanner";
-import Reviews from "./pages/Reviews";
-import Projects from "./pages/Projects";
+// Public Pages
+import Index from "@/pages/Index";
+import Home from "@/pages/Home";
+import About from "@/pages/About";
+import Products from "@/pages/Products";
+import ProductDetail from "@/pages/ProductDetail";
+import Projects from "@/pages/Projects";
+import Gallery from "@/pages/Gallery";
+import Blog from "@/pages/Blog";
+import BlogPost from "@/pages/BlogPost";
+import Reviews from "@/pages/Reviews";
+import Contact from "@/pages/Contact";
+import NotFound from "@/pages/NotFound";
 
 // Admin Pages
-import AdminLogin from "./pages/admin/Login";
-import Dashboard from "./pages/admin/Dashboard";
-import ProductsAdmin from "./pages/admin/ProductsAdmin";
-import ProductForm from "./components/admin/ProductForm";
-import BlogAdmin from "./pages/admin/BlogAdmin";
-import BlogPostEditor from "./pages/admin/BlogPostEditor";
-import GalleryAdmin from "./pages/admin/GalleryAdmin";
-import GalleryImageForm from "./pages/admin/GalleryImageForm";
-import ReviewsAdmin from "./pages/admin/ReviewsAdmin";
-import ReviewDetail from "./pages/admin/ReviewDetail";
-import ReviewForm from "./components/admin/ReviewForm";
-import ProjectsAdmin from "./pages/admin/ProjectsAdmin";
-import ProjectForm from "./components/admin/ProjectForm";
-import Settings from "./pages/admin/Settings";
+import Login from "@/pages/admin/Login";
+import Dashboard from "@/pages/admin/Dashboard";
+import ProductsAdmin from "@/pages/admin/ProductsAdmin";
+import ProjectsAdmin from "@/pages/admin/ProjectsAdmin";
+import BlogAdmin from "@/pages/admin/BlogAdmin";
+import BlogPostEditor from "@/pages/admin/BlogPostEditor";
+import GalleryAdmin from "@/pages/admin/GalleryAdmin";
+import GalleryImageForm from "@/pages/admin/GalleryImageForm";
+import ReviewsAdmin from "@/pages/admin/ReviewsAdmin";
+import ReviewDetail from "@/pages/admin/ReviewDetail";
+import Settings from "@/pages/admin/Settings";
+import WoodSpeciesAdmin from "@/pages/admin/WoodSpeciesAdmin";
+import LogStockAdmin from "@/pages/admin/LogStockAdmin";
 
 const queryClient = new QueryClient();
 
-const MainLayout = ({ children, hideBanner = false }: { children: React.ReactNode, hideBanner?: boolean }) => (
-  <>
-    <Header />
-    <div className="flex flex-col min-h-screen">
-      <div className="flex-grow">
-        {children}
-      </div>
-      {!hideBanner && <SharedBanner variant="compact" />}
-      <Footer />
-    </div>
-  </>
-);
-
-// Empty categories array for ProductForm - will be populated via API in the actual component
-const emptyCategories: {id: string; name: string}[] = [];
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <Router>
         <Routes>
-          {/* Main Website Routes */}
-          <Route 
-            path="/" 
-            element={
-              <MainLayout hideBanner={true}>
-                <Home />
-              </MainLayout>
-            } 
-          />
-          <Route 
-            path="/products" 
-            element={
-              <MainLayout>
-                <Products />
-              </MainLayout>
-            } 
-          />
-          <Route 
-            path="/products/:id" 
-            element={
-              <MainLayout>
-                <ProductDetail />
-              </MainLayout>
-            } 
-          />
-          <Route 
-            path="/gallery" 
-            element={
-              <MainLayout>
-                <Gallery />
-              </MainLayout>
-            } 
-          />
-          <Route 
-            path="/projects" 
-            element={
-              <MainLayout>
-                <Projects />
-              </MainLayout>
-            } 
-          />
-          <Route 
-            path="/blog" 
-            element={
-              <MainLayout>
-                <Blog />
-              </MainLayout>
-            } 
-          />
-          <Route 
-            path="/blog/:id" 
-            element={
-              <MainLayout>
-                <BlogPost />
-              </MainLayout>
-            } 
-          />
-          <Route 
-            path="/about" 
-            element={
-              <MainLayout>
-                <About />
-              </MainLayout>
-            } 
-          />
-          <Route 
-            path="/contact" 
-            element={
-              <MainLayout>
-                <Contact />
-              </MainLayout>
-            } 
-          />
-          <Route
-            path="/reviews"
-            element={
-              <MainLayout>
-                <Reviews />
-              </MainLayout>
-            }
-          />
-          
-          {/* Admin Login Route */}
-          <Route path="/admin/login" element={<AdminLogin />} />
-          
-          {/* Protected Admin Routes */}
+          {/* Public Routes */}
+          <Route path="/" element={<Index />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/products/:id" element={<ProductDetail />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/gallery" element={<Gallery />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/reviews" element={<Reviews />} />
+          <Route path="/contact" element={<Contact />} />
+
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<Login />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
+            <Route path="wood-species" element={<WoodSpeciesAdmin />} />
+            <Route path="log-stock" element={<LogStockAdmin />} />
             <Route path="products" element={<ProductsAdmin />} />
+            <Route path="projects" element={<ProjectsAdmin />} />
             <Route path="blog" element={<BlogAdmin />} />
+            <Route path="blog/new" element={<BlogPostEditor />} />
+            <Route path="blog/edit/:id" element={<BlogPostEditor />} />
             <Route path="gallery" element={<GalleryAdmin />} />
             <Route path="gallery/new" element={<GalleryImageForm />} />
-            <Route path="gallery/:id/edit" element={<GalleryImageForm />} />
+            <Route path="gallery/edit/:id" element={<GalleryImageForm />} />
             <Route path="reviews" element={<ReviewsAdmin />} />
+            <Route path="reviews/:id" element={<ReviewDetail />} />
             <Route path="settings" element={<Settings />} />
-            
-            {/* Project Admin Routes */}
-            <Route path="projects" element={<ProjectsAdmin />} />
-            <Route path="projects/new" element={<ProjectForm />} />
-            <Route path="projects/:id/edit" element={<ProjectForm />} />
-            
-            {/* Product Admin Routes */}
-            <Route path="products/new" element={<ProductForm categories={emptyCategories} />} />
-            <Route path="products/:id/edit" element={<ProductForm categories={emptyCategories} />} />
-            
-            {/* Blog Admin Routes */}
-            <Route path="blog/new" element={<BlogPostEditor />} />
-            <Route path="blog/:id/edit" element={<BlogPostEditor />} />
-            
-            {/* Review Admin Routes */}
-            <Route path="reviews/new" element={<ReviewForm />} />
-            <Route path="reviews/:id/edit" element={<ReviewForm />} />
-            <Route path="reviews/:id/detail" element={<ReviewDetail />} />
           </Route>
-          
-          {/* 404 Page */}
-          <Route path="*" element={
-            <MainLayout>
-              <NotFound />
-            </MainLayout>
-          } />
+
+          {/* 404 Route */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+        <Toaster />
+      </Router>
+    </QueryClientProvider>
+  );
+}
 
 export default App;

@@ -1,109 +1,92 @@
 
-import { Link, useLocation } from "react-router-dom";
-import { cn } from "@/lib/utils";
-import { useAdminAuth } from "@/hooks/useAdminAuth";
-import { Sidebar, useSidebar } from "@/components/ui/sidebar";
+import { Home, Package, FolderOpen, Star, Settings, BookOpen, TreePine, Archive, Users, MessageSquare } from "lucide-react";
 import {
-  Home,
-  Package,
-  FileText,
-  Image,
-  Star,
-  Settings,
-  LogOut,
-  PanelLeft,
-  Workflow,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar";
+import { Link, useLocation } from "react-router-dom";
 
 const AdminSidebar = () => {
-  const { logout } = useAdminAuth();
-  const { state, setOpen } = useSidebar();
-  const collapsed = state === "collapsed";
-  const toggleCollapsed = () => setOpen(!collapsed);
   const location = useLocation();
 
-  const sidebarItems = [
+  const menuItems = [
     {
       title: "Dashboard",
-      icon: <Home className="h-5 w-5" />,
-      path: "/admin",
+      url: "/admin",
+      icon: Home,
+    },
+    {
+      title: "Wood Species",
+      url: "/admin/wood-species",
+      icon: TreePine,
+    },
+    {
+      title: "Log Stock",
+      url: "/admin/log-stock", 
+      icon: Archive,
     },
     {
       title: "Products",
-      icon: <Package className="h-5 w-5" />,
-      path: "/admin/products",
-    },
-    {
-      title: "Blog",
-      icon: <FileText className="h-5 w-5" />,
-      path: "/admin/blog",
-    },
-    {
-      title: "Gallery",
-      icon: <Image className="h-5 w-5" />,
-      path: "/admin/gallery",
+      url: "/admin/products",
+      icon: Package,
     },
     {
       title: "Projects",
-      icon: <Workflow className="h-5 w-5" />,
-      path: "/admin/projects",
+      url: "/admin/projects",
+      icon: FolderOpen,
+    },
+    {
+      title: "Blog Posts",
+      url: "/admin/blog",
+      icon: BookOpen,
+    },
+    {
+      title: "Gallery",
+      url: "/admin/gallery",
+      icon: FolderOpen,
     },
     {
       title: "Reviews",
-      icon: <Star className="h-5 w-5" />,
-      path: "/admin/reviews",
+      url: "/admin/reviews",
+      icon: Star,
     },
     {
       title: "Settings",
-      icon: <Settings className="h-5 w-5" />,
-      path: "/admin/settings",
+      url: "/admin/settings",
+      icon: Settings,
     },
   ];
 
-  const isActive = (path: string) => {
-    return location.pathname === path || 
-           (path !== "/admin" && location.pathname.startsWith(path));
-  };
-
   return (
-    <Sidebar className="border-r z-20 bg-background">
-      <div className="p-3 h-16 flex items-center border-b">
-        <Link to="/" className="flex items-center gap-2">
-          <span className="font-bold text-xl">MilledRight</span>
-        </Link>
-        <Button variant="ghost" size="icon" onClick={toggleCollapsed} className="ml-auto">
-          <PanelLeft className={cn("h-4 w-4 transition-transform", !collapsed && "rotate-180")} />
-        </Button>
-      </div>
-      
-      <div className="flex flex-col gap-1 p-3">
-        {sidebarItems.map((item) => (
-          <Link
-            key={item.path}
-            to={item.path}
-            className={cn(
-              "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
-              isActive(item.path)
-                ? "bg-accent text-accent-foreground"
-                : "text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground"
-            )}
-          >
-            {item.icon}
-            <span>{item.title}</span>
-          </Link>
-        ))}
-      </div>
-      
-      <div className="p-3 mt-auto border-t">
-        <button
-          onClick={logout}
-          className="flex items-center w-full gap-3 px-3 py-2 rounded-md text-sm text-muted-foreground hover:bg-accent/50 hover:text-accent-foreground transition-colors"
-        >
-          <LogOut className="h-5 w-5" />
-          <span>Logout</span>
-        </button>
-      </div>
+    <Sidebar>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>MilledRight Admin</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {menuItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton 
+                    asChild
+                    isActive={location.pathname === item.url}
+                  >
+                    <Link to={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
     </Sidebar>
   );
 };
