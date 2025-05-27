@@ -39,7 +39,8 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
     initialData?.featured_image_url || null
   );
   const [categories, setCategories] = useState<any[]>([]);
-  const [keepExistingImage, setKeepExistingImage] = useState(true); // Track if we want to keep existing image
+  const [keepExistingImage, setKeepExistingImage] = useState(true);
+  const [hasExistingImage, setHasExistingImage] = useState(false);
   
   // Initialize form with existing blog post data or defaults
   const form = useForm<z.infer<typeof blogFormSchema>>({
@@ -55,6 +56,15 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
       author_name: initialData?.author_name || 'Lucas Nauta',
     },
   });
+
+  // Check if there's an existing image when component mounts
+  useEffect(() => {
+    if (initialData?.featured_image_url) {
+      setHasExistingImage(true);
+      setKeepExistingImage(true);
+      setPreviewUrl(initialData.featured_image_url);
+    }
+  }, [initialData]);
 
   // Generate slug from title
   const generateSlug = (title: string) => {
@@ -111,7 +121,7 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       setSelectedFile(file);
-      setKeepExistingImage(false); // User selected a new file
+      setKeepExistingImage(false);
       
       // Create a preview URL for the selected image
       const fileReader = new FileReader();
@@ -126,6 +136,7 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
     setSelectedFile(null);
     setPreviewUrl(null);
     setKeepExistingImage(false);
+    setHasExistingImage(false);
     form.setValue('featured_image_url', '');
   };
 
@@ -133,6 +144,7 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
     setSelectedFile(null);
     setPreviewUrl(initialData?.featured_image_url || null);
     setKeepExistingImage(true);
+    form.setValue('featured_image_url', initialData?.featured_image_url || '');
   };
 
   const handleImageUpload = async () => {
@@ -163,7 +175,7 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
       setIsLoading(true);
       
       // Handle image logic
-      let imageUrl = data.featured_image_url;
+      let imageUrl = '';
       
       if (selectedFile) {
         // Upload new image
@@ -173,11 +185,12 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
           console.log("Image upload failed, continuing with form submission without image");
           imageUrl = '';
         }
-      } else if (isEditing && keepExistingImage && initialData?.featured_image_url) {
+      } else if (isEditing && keepExistingImage && hasExistingImage && initialData?.featured_image_url) {
         // Keep existing image when editing
         imageUrl = initialData.featured_image_url;
+        console.log("Keeping existing image:", imageUrl);
       } else {
-        // No image selected
+        // No image selected or existing image removed
         imageUrl = '';
       }
       
@@ -368,16 +381,16 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
                   <FormLabel>Featured Image</FormLabel>
                   <FormControl>
                     <div className="space-y-4">
-                      {/* Show existing image controls when editing */}
-                      {isEditing && initialData?.featured_image_url && !selectedFile && (
+                      {/* Show existing image controls when editing and has existing image */}
+                      {isEditing && hasExistingImage && !selectedFile && (
                         <div className="space-y-2">
+                          <p className="text-sm text-muted-foreground">Current image:</p>
                           <div className="flex items-center gap-2">
                             <Button
                               type="button"
-                              variant="outline"
+                              variant={keepExistingImage ? "default" : "outline"}
                               size="sm"
                               onClick={handleKeepExistingImage}
-                              className={keepExistingImage ? "bg-green-50 border-green-200" : ""}
                             >
                               Keep Current Image
                             </Button>
@@ -415,7 +428,7 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
                         </label>
                       </div>
 
-                      {(previewUrl || field.value) && (
+                      {previewUrl && (
                         <div className="mt-4">
                           <div className="flex items-center justify-between mb-2">
                             <p className="text-sm font-medium">
@@ -432,7 +445,7 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
                           </div>
                           <div className="border rounded p-2 bg-white">
                             <img
-                              src={previewUrl || field.value}
+                              src={previewUrl}
                               alt="Featured image preview"
                               className="max-h-64 mx-auto object-contain"
                             />
