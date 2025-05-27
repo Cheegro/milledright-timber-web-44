@@ -1,66 +1,87 @@
 
 import React from 'react';
-import { Hammer, TreePalm, Axe, Home, Flame, Brush } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Hammer, Wrench, TreePine, Truck } from 'lucide-react';
 
 const WhyChooseUsSection = () => {
+  const services = [
+    {
+      icon: <TreePine className="h-8 w-8" />,
+      title: "Custom Log Milling",
+      description: "Bring your logs to us and we'll mill them to your exact specifications. From rough lumber to finished boards.",
+      projectType: "mill-logs",
+      ctaText: "Get Milling Quote"
+    },
+    {
+      icon: <Hammer className="h-8 w-8" />,
+      title: "Custom Built Structures",
+      description: "Tables, countertops, furniture, and more. We create beautiful pieces from your vision.",
+      projectType: "custom-table",
+      ctaText: "Get Custom Quote"
+    },
+    {
+      icon: <Wrench className="h-8 w-8" />,
+      title: "Expert Craftsmanship",
+      description: "With years of experience, we ensure every cut is precise and every piece meets our high standards.",
+      projectType: "furniture",
+      ctaText: "Get Furniture Quote"
+    },
+    {
+      icon: <Truck className="h-8 w-8" />,
+      title: "Delivery Available",
+      description: "We can deliver your lumber and custom pieces directly to your location in the Greater Toronto Area.",
+      projectType: "other",
+      ctaText: "Get Delivery Quote"
+    }
+  ];
+
   return (
-    <section className="py-16 bg-muted">
+    <section className="py-16 bg-white">
       <div className="container-wide">
-        <h2 className="section-title text-center mx-auto mb-8">Our Services</h2>
+        <div className="text-center mb-12">
+          <h2 className="section-title">Why Choose MilledRight?</h2>
+          <p className="text-lg text-gray-600 mt-4 max-w-3xl mx-auto">
+            From raw logs to finished masterpieces, we provide quality milling services 
+            and custom woodworking that brings your vision to life.
+          </p>
+        </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <ServiceCard 
-            icon={<Axe className="h-8 w-8" />}
-            title="Custom Lumber Milling"
-            description="We mill lumber to your exact specifications, including live edge, dimensional lumber, structural beams and posts. Any dimensions can be cut in both hardwood and softwood."
-          />
-          
-          <ServiceCard 
-            icon={<Home className="h-8 w-8" />}
-            title="Custom Built Structures"
-            description="We build sheds, chicken coops, and other wooden structures available upon inquiry. Totally custom - we help with design and provide knowledge from years of experience."
-          />
-          
-          <ServiceCard 
-            icon={<Brush className="h-8 w-8" />}
-            title="Wood Finishing Services"
-            description="We offer prefinished live edge wood. We can sand, flatten, and finish wood to help speed up your project and give it a professional touch."
-          />
-          
-          <ServiceCard 
-            icon={<Hammer className="h-8 w-8" />}
-            title="Pre-Cut Wood & Project Materials"
-            description="Need help with your DIY project? We offer pre-cut wood to your specifications, making your building projects easier and faster to complete."
-          />
-          
-          <ServiceCard 
-            icon={<Flame className="h-8 w-8" />}
-            title="Firewood Sales"
-            description="We also sell quality firewood under our Flaming Firewood brand. Available in various quantities to meet your needs."
-          />
-          
-          <ServiceCard 
-            icon={<TreePalm className="h-8 w-8" />}
-            title="Expert Consultation"
-            description="We provide our knowledge and expertise to help you decide on your next project and how to go about it for the best results."
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {services.map((service, index) => (
+            <Card key={index} className="text-center hover:shadow-lg transition-shadow duration-300">
+              <CardContent className="p-6">
+                <div className="bg-sawmill-orange rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 text-white">
+                  {service.icon}
+                </div>
+                <h3 className="text-xl font-bold mb-3 text-sawmill-dark-brown">{service.title}</h3>
+                <p className="text-gray-600 mb-4">{service.description}</p>
+                <Button 
+                  className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown text-white"
+                  onClick={() => {
+                    // Scroll to quote section with pre-selected project type
+                    const quoteSection = document.getElementById('quote-section');
+                    if (quoteSection) {
+                      quoteSection.scrollIntoView({ behavior: 'smooth' });
+                      // Update URL with project type parameter
+                      const url = new URL(window.location.href);
+                      url.searchParams.set('project', service.projectType);
+                      window.history.replaceState({}, '', url.toString());
+                      // Small delay to allow scroll to complete, then trigger form update
+                      setTimeout(() => {
+                        window.location.reload();
+                      }, 500);
+                    }
+                  }}
+                >
+                  {service.ctaText}
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </div>
     </section>
-  );
-};
-
-const ServiceCard = ({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) => {
-  return (
-    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-      <div className="flex items-center gap-3 mb-3">
-        <div className="text-sawmill-dark-brown">
-          {icon}
-        </div>
-        <h3 className="text-xl font-bold text-sawmill-dark-brown">{title}</h3>
-      </div>
-      <p className="text-sawmill-dark-gray">{description}</p>
-    </div>
   );
 };
 

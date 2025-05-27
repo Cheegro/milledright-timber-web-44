@@ -12,11 +12,15 @@ import MapEmbed from '@/components/MapEmbed';
 import SharedBanner from '@/components/SharedBanner';
 import FAQSection from '@/components/home/FAQSection';
 import ProjectShowcaseSection from '@/components/home/ProjectShowcaseSection';
-import QuickQuoteForm from '@/components/home/QuickQuoteForm';
+import MultiStepQuoteForm from '@/components/home/MultiStepQuoteForm';
 
 const Home = () => {
   const location = useLocation();
   const quoteRef = useRef<HTMLDivElement>(null);
+  
+  // Get pre-selected project type from URL params
+  const searchParams = new URLSearchParams(location.search);
+  const preSelectedProject = searchParams.get('project');
   
   useEffect(() => {
     // Check if hash exists and scroll to the section
@@ -42,7 +46,7 @@ const Home = () => {
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
-              <QuickQuoteForm />
+              <MultiStepQuoteForm preSelectedProject={preSelectedProject || undefined} />
             </div>
             
             <div className="space-y-6">
