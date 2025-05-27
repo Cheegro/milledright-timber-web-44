@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -11,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from '@/components/ui/use-toast';
-import { Loader2, Upload } from 'lucide-react';
+import { Loader2, Upload, X } from 'lucide-react';
 import { createBlogPost, updateBlogPost, uploadBlogImage } from '@/api/adminBlogApi';
 
 // Form validation schema
@@ -40,6 +39,7 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
     initialData?.featured_image_url || null
   );
   const [categories, setCategories] = useState<any[]>([]);
+  const [keepExistingImage, setKeepExistingImage] = useState(true); // Track if we want to keep existing image
   
   // Initialize form with existing blog post data or defaults
   const form = useForm<z.infer<typeof blogFormSchema>>({
@@ -111,6 +111,7 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       setSelectedFile(file);
+      setKeepExistingImage(false); // User selected a new file
       
       // Create a preview URL for the selected image
       const fileReader = new FileReader();
@@ -121,6 +122,19 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
     }
   };
 
+  const handleRemoveImage = () => {
+    setSelectedFile(null);
+    setPreviewUrl(null);
+    setKeepExistingImage(false);
+    form.setValue('featured_image_url', '');
+  };
+
+  const handleKeepExistingImage = () => {
+    setSelectedFile(null);
+    setPreviewUrl(initialData?.featured_image_url || null);
+    setKeepExistingImage(true);
+  };
+
   const handleImageUpload = async () => {
     if (!selectedFile) return null;
     
@@ -128,18 +142,6 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
       setIsUploading(true);
       console.log("Starting blog image upload...");
       
-      // Check file type and log information
-      const fileType = selectedFile.type;
-      const fileSize = selectedFile.size;
-      const fileName = selectedFile.name;
-      console.log(`File details: name=${fileName}, type=${fileType}, size=${fileSize} bytes`);
-      
-      // Explicitly handle HEIC files
-      if (fileType === 'image/heic' || fileType === 'image/heif' || fileName.toLowerCase().endsWith('.heic') || fileName.toLowerCase().endsWith('.heif')) {
-        console.log("HEIC/HEIF file detected, special handling may be needed");
-      }
-      
-      // Attempt upload with explicit content type
       const imageUrl = await uploadBlogImage(selectedFile);
       console.log("Upload result:", imageUrl ? "Success" : "Failed");
       return imageUrl;
@@ -160,14 +162,23 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
     try {
       setIsLoading(true);
       
-      // Upload image if a new one was selected
+      // Handle image logic
       let imageUrl = data.featured_image_url;
+      
       if (selectedFile) {
+        // Upload new image
         console.log("Uploading new featured image...");
         imageUrl = await handleImageUpload();
         if (!imageUrl) {
           console.log("Image upload failed, continuing with form submission without image");
+          imageUrl = '';
         }
+      } else if (isEditing && keepExistingImage && initialData?.featured_image_url) {
+        // Keep existing image when editing
+        imageUrl = initialData.featured_image_url;
+      } else {
+        // No image selected
+        imageUrl = '';
       }
       
       const blogPostData = {
@@ -357,6 +368,31 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
                   <FormLabel>Featured Image</FormLabel>
                   <FormControl>
                     <div className="space-y-4">
+                      {/* Show existing image controls when editing */}
+                      {isEditing && initialData?.featured_image_url && !selectedFile && (
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={handleKeepExistingImage}
+                              className={keepExistingImage ? "bg-green-50 border-green-200" : ""}
+                            >
+                              Keep Current Image
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={handleRemoveImage}
+                            >
+                              Remove Image
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+
                       <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-50 transition-colors">
                         <Input
                           type="file"
@@ -371,7 +407,7 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
                         >
                           <Upload className="h-10 w-10 mx-auto text-gray-400" />
                           <p className="mt-2 text-sm text-gray-500">
-                            Click to upload featured image
+                            {isEditing ? 'Click to change featured image' : 'Click to upload featured image'}
                           </p>
                           <p className="text-xs text-gray-400">
                             PNG, JPG, GIF up to 5MB
@@ -381,7 +417,19 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
 
                       {(previewUrl || field.value) && (
                         <div className="mt-4">
-                          <p className="text-sm font-medium mb-2">Preview</p>
+                          <div className="flex items-center justify-between mb-2">
+                            <p className="text-sm font-medium">
+                              {selectedFile ? 'New Image Preview' : 'Current Image'}
+                            </p>
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={handleRemoveImage}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
                           <div className="border rounded p-2 bg-white">
                             <img
                               src={previewUrl || field.value}

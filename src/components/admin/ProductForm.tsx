@@ -27,12 +27,11 @@ import { toast } from '@/components/ui/use-toast';
 import { Loader2, Upload } from 'lucide-react';
 import { createProduct, updateProduct, uploadProductImage } from '@/api/adminProductApi';
 
-// Form validation schema
+// Form validation schema - removed price_unit as it doesn't exist in DB
 const productFormSchema = z.object({
   name: z.string().min(3, 'Product name must be at least 3 characters'),
   category_id: z.string().optional(),
   price: z.string().min(1, 'Price is required'),
-  price_unit: z.string().optional(),
   description: z.string().optional(),
   image_url: z.string().optional(),
 });
@@ -59,7 +58,6 @@ const ProductForm = ({ categories, product, isEditing = false }: ProductFormProp
       name: product?.name || '',
       category_id: product?.category_id || '',
       price: product?.price || '',
-      price_unit: product?.price_unit || '',
       description: product?.description || '',
       image_url: product?.image_url || '',
     },
@@ -112,11 +110,10 @@ const ProductForm = ({ categories, product, isEditing = false }: ProductFormProp
       
       const productData = {
         name: data.name,
-        category_id: data.category_id,
+        category_id: data.category_id || null,
         price: data.price,
-        price_unit: data.price_unit || '',
-        description: data.description || '',
-        image_url: imageUrl || '',
+        description: data.description || null,
+        image_url: imageUrl || null,
       };
       
       if (isEditing && product) {
@@ -203,25 +200,10 @@ const ProductForm = ({ categories, product, isEditing = false }: ProductFormProp
                 <FormItem>
                   <FormLabel>Price</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g. $99.99" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            {/* Price Unit */}
-            <FormField
-              control={form.control}
-              name="price_unit"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Price Unit (optional)</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g. board foot, each, sq ft" {...field} />
+                    <Input placeholder="e.g. $99.99/board ft" {...field} />
                   </FormControl>
                   <FormDescription>
-                    For lumber, use "board foot" or specific units.
+                    Include the unit in the price (e.g. $99.99/board ft, $25.00 each)
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -272,7 +254,7 @@ const ProductForm = ({ categories, product, isEditing = false }: ProductFormProp
                         >
                           <Upload className="h-10 w-10 mx-auto text-gray-400" />
                           <p className="mt-2 text-sm text-gray-500">
-                            Click to upload product image
+                            {isEditing ? 'Click to change product image' : 'Click to upload product image'}
                           </p>
                           <p className="text-xs text-gray-400">
                             PNG, JPG, GIF up to 5MB
@@ -282,7 +264,9 @@ const ProductForm = ({ categories, product, isEditing = false }: ProductFormProp
 
                       {(previewUrl || field.value) && (
                         <div className="mt-4">
-                          <p className="text-sm font-medium mb-2">Preview</p>
+                          <p className="text-sm font-medium mb-2">
+                            {selectedFile ? 'New Image Preview' : 'Current Image'}
+                          </p>
                           <div className="border rounded p-2 bg-white">
                             <img
                               src={previewUrl || field.value}
