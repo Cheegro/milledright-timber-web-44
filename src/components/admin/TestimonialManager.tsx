@@ -22,8 +22,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { fetchAllTestimonials, TestimonialFormValues } from '@/api/adminTestimonialApi';
-import { createReview, updateReview, deleteReview } from '@/api/adminReviewApi';
+import { 
+  fetchAllTestimonials, 
+  TestimonialFormValues,
+  createTestimonial,
+  updateTestimonial,
+  deleteTestimonial,
+  fetchProductsForTestimonial
+} from '@/api/adminTestimonialApi';
 
 const TestimonialManager = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -43,10 +49,16 @@ const TestimonialManager = () => {
     queryFn: fetchAllTestimonials,
   });
 
+  const { data: products = [] } = useQuery({
+    queryKey: ['products-for-testimonial'],
+    queryFn: fetchProductsForTestimonial,
+  });
+
   const createMutation = useMutation({
-    mutationFn: createReview,
+    mutationFn: createTestimonial,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-testimonials'] });
+      queryClient.invalidateQueries({ queryKey: ['published-testimonials'] });
       setIsDialogOpen(false);
       resetForm();
       toast({
@@ -65,9 +77,10 @@ const TestimonialManager = () => {
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }: { id: string; data: TestimonialFormValues }) => 
-      updateReview(id, data),
+      updateTestimonial(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-testimonials'] });
+      queryClient.invalidateQueries({ queryKey: ['published-testimonials'] });
       setIsDialogOpen(false);
       resetForm();
       toast({
@@ -85,9 +98,10 @@ const TestimonialManager = () => {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: deleteReview,
+    mutationFn: deleteTestimonial,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-testimonials'] });
+      queryClient.invalidateQueries({ queryKey: ['published-testimonials'] });
       toast({
         title: "Success",
         description: "Testimonial deleted successfully.",
@@ -131,6 +145,7 @@ const TestimonialManager = () => {
       rating: testimonial.rating,
       text: testimonial.text,
       status: testimonial.status,
+      product_id: testimonial.product_id,
     });
     setIsDialogOpen(true);
   };
@@ -232,6 +247,26 @@ const TestimonialManager = () => {
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium">Related Product (Optional)</label>
+                <Select
+                  value={formData.product_id || ''}
+                  onValueChange={(value) => setFormData({ ...formData, product_id: value || null })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a product" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">None</SelectItem>
+                    {products.map((product) => (
+                      <SelectItem key={product.id} value={product.id}>
+                        {product.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               
               <div>

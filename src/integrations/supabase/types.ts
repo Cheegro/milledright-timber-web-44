@@ -646,6 +646,53 @@ export type Database = {
           },
         ]
       }
+      testimonials: {
+        Row: {
+          author: string
+          created_at: string
+          date: string
+          id: string
+          location: string | null
+          product_id: string | null
+          rating: number
+          status: string
+          text: string
+          updated_at: string
+        }
+        Insert: {
+          author: string
+          created_at?: string
+          date?: string
+          id?: string
+          location?: string | null
+          product_id?: string | null
+          rating: number
+          status?: string
+          text: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string
+          created_at?: string
+          date?: string
+          id?: string
+          location?: string | null
+          product_id?: string | null
+          rating?: number
+          status?: string
+          text?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "testimonials_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       wood_species: {
         Row: {
           common_name: string
