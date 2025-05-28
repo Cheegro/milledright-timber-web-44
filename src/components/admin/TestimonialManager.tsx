@@ -252,14 +252,14 @@ const TestimonialManager = () => {
               <div>
                 <label className="text-sm font-medium">Related Product (Optional)</label>
                 <Select
-                  value={formData.product_id || ''}
-                  onValueChange={(value) => setFormData({ ...formData, product_id: value || null })}
+                  value={formData.product_id || 'none'}
+                  onValueChange={(value) => setFormData({ ...formData, product_id: value === 'none' ? null : value })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select a product" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None</SelectItem>
+                    <SelectItem value="none">None</SelectItem>
                     {products.map((product) => (
                       <SelectItem key={product.id} value={product.id}>
                         {product.name}
