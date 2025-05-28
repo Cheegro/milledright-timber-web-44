@@ -1,3 +1,4 @@
+
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -6,9 +7,10 @@ import "./App.css";
 
 // Layouts
 import AdminLayout from "@/layouts/AdminLayout";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 // Public Pages
-import Index from "@/pages/Index";
 import Home from "@/pages/Home";
 import About from "@/pages/About";
 import Products from "@/pages/Products";
@@ -38,23 +40,34 @@ import LogStockAdmin from "@/pages/admin/LogStockAdmin";
 
 const queryClient = new QueryClient();
 
+// Layout wrapper for public pages
+const PublicPageLayout = ({ children }: { children: React.ReactNode }) => (
+  <div className="min-h-screen flex flex-col">
+    <Header />
+    <main className="flex-1">
+      {children}
+    </main>
+    <Footer />
+  </div>
+);
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
         <Routes>
-          {/* Public Routes */}
-          <Route path="/" element={<Index />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/products/:id" element={<ProductDetail />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/gallery" element={<Gallery />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
-          <Route path="/reviews" element={<Reviews />} />
-          <Route path="/contact" element={<Contact />} />
+          {/* Public Routes with Header/Footer */}
+          <Route path="/" element={<PublicPageLayout><Home /></PublicPageLayout>} />
+          <Route path="/home" element={<PublicPageLayout><Home /></PublicPageLayout>} />
+          <Route path="/about" element={<PublicPageLayout><About /></PublicPageLayout>} />
+          <Route path="/products" element={<PublicPageLayout><Products /></PublicPageLayout>} />
+          <Route path="/products/:id" element={<PublicPageLayout><ProductDetail /></PublicPageLayout>} />
+          <Route path="/projects" element={<PublicPageLayout><Projects /></PublicPageLayout>} />
+          <Route path="/gallery" element={<PublicPageLayout><Gallery /></PublicPageLayout>} />
+          <Route path="/blog" element={<PublicPageLayout><Blog /></PublicPageLayout>} />
+          <Route path="/blog/:slug" element={<PublicPageLayout><BlogPost /></PublicPageLayout>} />
+          <Route path="/reviews" element={<PublicPageLayout><Reviews /></PublicPageLayout>} />
+          <Route path="/contact" element={<PublicPageLayout><Contact /></PublicPageLayout>} />
 
           {/* Admin Routes */}
           <Route path="/admin/login" element={<Login />} />
@@ -76,7 +89,7 @@ function App() {
           </Route>
 
           {/* 404 Route */}
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<PublicPageLayout><NotFound /></PublicPageLayout>} />
         </Routes>
         <Toaster />
       </Router>

@@ -32,7 +32,7 @@ const Home = () => {
   }, [location]);
   
   return (
-    <div className="flex flex-col min-h-screen">
+    <>
       {/* Hero Section */}
       <HeroSection />
       
@@ -95,7 +95,7 @@ const Home = () => {
       
       {/* Call to Action - Bottom */}
       <BottomCTASection />
-    </div>
+    </>
   );
 };
 
