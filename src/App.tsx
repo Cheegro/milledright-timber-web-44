@@ -34,6 +34,7 @@ import GalleryAdmin from "@/pages/admin/GalleryAdmin";
 import GalleryImageForm from "@/pages/admin/GalleryImageForm";
 import ReviewsAdmin from "@/pages/admin/ReviewsAdmin";
 import ReviewDetail from "@/pages/admin/ReviewDetail";
+import TestimonialsAdmin from "@/pages/admin/TestimonialsAdmin";
 import Settings from "@/pages/admin/Settings";
 import WoodSpeciesAdmin from "@/pages/admin/WoodSpeciesAdmin";
 import LogStockAdmin from "@/pages/admin/LogStockAdmin";
@@ -85,6 +86,7 @@ function App() {
             <Route path="gallery/edit/:id" element={<GalleryImageForm />} />
             <Route path="reviews" element={<ReviewsAdmin />} />
             <Route path="reviews/:id" element={<ReviewDetail />} />
+            <Route path="testimonials" element={<TestimonialsAdmin />} />
             <Route path="settings" element={<Settings />} />
           </Route>
 

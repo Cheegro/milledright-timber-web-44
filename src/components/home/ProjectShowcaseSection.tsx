@@ -12,34 +12,23 @@ import { Badge } from '@/components/ui/badge';
 import { fetchProjects, Project } from '@/api/projectApi';
 import { Link } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 
 const ProjectShowcaseSection = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
   const [activeProject, setActiveProject] = useState<Project | null>(null);
-  const [loading, setLoading] = useState(true);
+
+  const { data: projects = [], isLoading } = useQuery({
+    queryKey: ['projects-showcase'],
+    queryFn: fetchProjects,
+  });
 
   useEffect(() => {
-    const loadProjects = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchProjects();
-        
-        if (data.length > 0) {
-          setProjects(data);
-          setActiveProject(data[0]);
-        }
-        
-        setLoading(false);
-      } catch (error) {
-        console.error("Error loading projects:", error);
-        setLoading(false);
-      }
-    };
+    if (projects.length > 0 && !activeProject) {
+      setActiveProject(projects[0]);
+    }
+  }, [projects, activeProject]);
 
-    loadProjects();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <section className="py-16">
         <div className="container-wide">
@@ -63,9 +52,11 @@ const ProjectShowcaseSection = () => {
           </p>
           <div className="text-center py-10">
             <p className="text-muted-foreground">Check back soon to see our latest customer projects!</p>
-            <Button className="mt-4 bg-sawmill-dark-brown hover:bg-sawmill-medium-brown">
-              Contact Us For Custom Work
-            </Button>
+            <Link to="/contact">
+              <Button className="mt-4 bg-sawmill-dark-brown hover:bg-sawmill-medium-brown">
+                Contact Us For Custom Work
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

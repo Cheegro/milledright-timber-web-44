@@ -1,5 +1,5 @@
 
-import { Home, Package, FolderOpen, Star, Settings, BookOpen, TreePine, Archive, Users, MessageSquare } from "lucide-react";
+import { Home, Package, FolderOpen, Star, Settings, BookOpen, TreePine, Archive, Users, MessageSquare, Quote } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -55,6 +55,11 @@ const AdminSidebar = () => {
       title: "Reviews",
       url: "/admin/reviews",
       icon: Star,
+    },
+    {
+      title: "Testimonials",
+      url: "/admin/testimonials",
+      icon: Quote,
     },
     {
       title: "Settings",
