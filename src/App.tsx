@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   BrowserRouter,
@@ -14,18 +15,16 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
-import RequestQuote from './pages/RequestQuote';
 import Gallery from './pages/Gallery';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
-import ComingSoon from './pages/ComingSoon';
 import NotFound from './pages/NotFound';
-import AdminLayout from './components/admin/AdminLayout';
+import AdminLayout from './layouts/AdminLayout';
 import Dashboard from './pages/admin/Dashboard';
 import ProductsAdmin from './pages/admin/ProductsAdmin';
 import ProjectsAdmin from './pages/admin/ProjectsAdmin';
 import BlogAdmin from './pages/admin/BlogAdmin';
-import BlogPostEditor from './components/admin/BlogPostEditor';
+import BlogPostEditor from './pages/admin/BlogPostEditor';
 import GalleryAdmin from './pages/admin/GalleryAdmin';
 import GalleryImageForm from './components/admin/GalleryImageForm';
 import ReviewsAdmin from './pages/admin/ReviewsAdmin';
@@ -34,7 +33,6 @@ import TestimonialsAdmin from './pages/admin/TestimonialsAdmin';
 import LogStockAdmin from './pages/admin/LogStockAdmin';
 import WoodSpeciesAdmin from './pages/admin/WoodSpeciesAdmin';
 import Settings from './pages/admin/Settings';
-import AuthWrapper from './components/AuthWrapper';
 import { Toaster } from "@/components/ui/toaster"
 
 import ProductFormPage from './pages/admin/ProductFormPage';
@@ -54,18 +52,12 @@ function App() {
               <Route path="/contact" element={<Contact />} />
               <Route path="/products" element={<Products />} />
               <Route path="/products/:id" element={<ProductDetail />} />
-              <Route path="/request-quote" element={<RequestQuote />} />
               <Route path="/gallery" element={<Gallery />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:id" element={<BlogPost />} />
-              <Route path="/coming-soon" element={<ComingSoon />} />
               
               {/* Admin Routes */}
-              <Route path="/admin" element={
-                <AuthWrapper>
-                  <AdminLayout />
-                </AuthWrapper>
-              }>
+              <Route path="/admin" element={<AdminLayout />}>
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="products" element={<ProductsAdmin />} />
                 <Route path="products/new" element={<ProductFormPage />} />
