@@ -64,6 +64,8 @@ function App() {
                 <Route path="products/new" element={<ProductFormPage />} />
                 <Route path="products/:id/edit" element={<ProductFormPage />} />
                 <Route path="projects" element={<ProjectsAdmin />} />
+                <Route path="projects/new" element={<ProjectFormPage />} />
+                <Route path="projects/:id/edit" element={<ProjectFormPage />} />
                 <Route path="blog" element={<BlogAdmin />} />
                 <Route path="blog/new" element={<BlogPostEditor />} />
                 <Route path="blog/:id/edit" element={<BlogPostEditor />} />
