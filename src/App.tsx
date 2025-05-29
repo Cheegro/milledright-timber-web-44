@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import {
   BrowserRouter,
@@ -26,7 +27,7 @@ import ProjectsAdmin from './pages/admin/ProjectsAdmin';
 import BlogAdmin from './pages/admin/BlogAdmin';
 import BlogPostEditor from './pages/admin/BlogPostEditor';
 import GalleryAdmin from './pages/admin/GalleryAdmin';
-import GalleryImageForm from './components/admin/GalleryImageForm';
+import GalleryImageForm from './pages/admin/GalleryImageForm';
 import ReviewsAdmin from './pages/admin/ReviewsAdmin';
 import ReviewDetail from './pages/admin/ReviewDetail';
 import TestimonialsAdmin from './pages/admin/TestimonialsAdmin';
@@ -90,3 +91,4 @@ function App() {
 }
 
 export default App;
+
