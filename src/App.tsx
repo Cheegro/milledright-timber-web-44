@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import {
   BrowserRouter,
@@ -37,6 +35,7 @@ import Settings from './pages/admin/Settings';
 import { Toaster } from "@/components/ui/toaster"
 
 import ProductFormPage from './pages/admin/ProductFormPage';
+import ProjectFormPage from './pages/admin/ProjectFormPage';
 
 const queryClient = new QueryClient();
 
@@ -93,4 +92,3 @@ function App() {
 }
 
 export default App;
-
