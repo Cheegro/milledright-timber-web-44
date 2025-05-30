@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   BrowserRouter,
@@ -58,6 +59,7 @@ function App() {
               
               {/* Admin Routes */}
               <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<Navigate to="/admin/dashboard" replace />} />
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="products" element={<ProductsAdmin />} />
                 <Route path="products/new" element={<ProductFormPage />} />
