@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   BrowserRouter,
@@ -35,6 +36,7 @@ import TestimonialsAdmin from './pages/admin/TestimonialsAdmin';
 import LogStockAdmin from './pages/admin/LogStockAdmin';
 import WoodSpeciesAdmin from './pages/admin/WoodSpeciesAdmin';
 import Settings from './pages/admin/Settings';
+import CustomerPipeline from './pages/admin/CustomerPipeline';
 import { Toaster } from "@/components/ui/toaster"
 
 import ProductFormPage from './pages/admin/ProductFormPage';
