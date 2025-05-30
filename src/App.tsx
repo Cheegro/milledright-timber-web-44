@@ -38,6 +38,7 @@ import { Toaster } from "@/components/ui/toaster"
 
 import ProductFormPage from './pages/admin/ProductFormPage';
 import ProjectFormPage from './pages/admin/ProjectFormPage';
+import ReviewFormPage from './pages/admin/ReviewFormPage';
 
 const queryClient = new QueryClient();
 
@@ -78,7 +79,9 @@ function App() {
                 <Route path="gallery/new" element={<GalleryImageForm />} />
                 <Route path="gallery/:id/edit" element={<GalleryImageForm />} />
                 <Route path="reviews" element={<ReviewsAdmin />} />
+                <Route path="reviews/new" element={<ReviewFormPage />} />
                 <Route path="reviews/:id" element={<ReviewDetail />} />
+                <Route path="reviews/:id/edit" element={<ReviewFormPage />} />
                 <Route path="testimonials" element={<TestimonialsAdmin />} />
                 <Route path="log-stock" element={<LogStockAdmin />} />
                 <Route path="wood-species" element={<WoodSpeciesAdmin />} />
