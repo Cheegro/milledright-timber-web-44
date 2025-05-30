@@ -20,6 +20,7 @@ import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
 import NotFound from './pages/NotFound';
 import AdminLayout from './layouts/AdminLayout';
+import AdminLogin from './pages/admin/Login';
 import Dashboard from './pages/admin/Dashboard';
 import ProductsAdmin from './pages/admin/ProductsAdmin';
 import ProjectsAdmin from './pages/admin/ProjectsAdmin';
@@ -56,6 +57,9 @@ function App() {
               <Route path="/gallery" element={<Gallery />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:id" element={<BlogPost />} />
+              
+              {/* Admin Login Route - Outside of AdminLayout */}
+              <Route path="/admin/login" element={<AdminLogin />} />
               
               {/* Admin Routes */}
               <Route path="/admin" element={<AdminLayout />}>
