@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { toast } from '@/hooks/use-toast';
+import { trackFormSubmission, trackQuoteRequest } from '@/utils/analytics';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -38,6 +39,9 @@ const QuickQuoteForm = () => {
     setIsSubmitting(true);
     
     try {
+      // Track the quote request
+      trackQuoteRequest(values.projectType);
+      
       // Send form data to your notification email
       await fetch('https://formsubmit.co/Lucas@Flamingfirewood.ca', {
         method: 'POST',
@@ -49,6 +53,12 @@ const QuickQuoteForm = () => {
           ...values,
           _subject: `New Quote Request: ${values.projectType}`,
         }),
+      });
+      
+      // Track successful form submission
+      trackFormSubmission('quick_quote_form', {
+        project_type: values.projectType,
+        has_phone: !!values.phone
       });
       
       console.log('Form submitted:', values);

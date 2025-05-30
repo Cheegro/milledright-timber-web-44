@@ -1,5 +1,7 @@
-
 import React from 'react';
+import SEOHead from '@/components/SEOHead';
+import ContactInfo from '@/components/ContactInfo';
+import { useSettings } from '@/hooks/useSettings';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -13,16 +15,15 @@ import MapEmbed from '@/components/MapEmbed';
 import MultiStepQuoteForm from '@/components/home/MultiStepQuoteForm';
 
 const Contact = () => {
+  const { getSetting } = useSettings();
+
   return (
-    <div className="min-h-screen">
-      <div className="bg-sawmill-dark-brown py-12">
-        <div className="container-wide">
-          <h1 className="text-4xl font-bold text-white mb-4">Contact Us</h1>
-          <p className="text-sawmill-light-brown text-lg">
-            Get in touch with our team for quotes, questions, or custom orders
-          </p>
-        </div>
-      </div>
+    <>
+      <SEOHead 
+        title="Contact Us"
+        description="Get in touch with MilledRight Sawmill for custom lumber milling, live edge slabs, and wood products. Located in Whitchurch-Stouffville, Ontario."
+        keywords="contact sawmill, lumber quotes, custom milling services, Whitchurch-Stouffville lumber"
+      />
       
       {/* Contact Information & Form */}
       <div className="container-wide py-12">
@@ -147,7 +148,7 @@ const Contact = () => {
           </div>
         </div>
       </section>
-    </div>
+    </>
   );
 };
 
