@@ -1,6 +1,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
+import SEOHead from '@/components/SEOHead';
 import HeroSection from '@/components/home/HeroSection';
 import WhyChooseUsSection from '@/components/home/WhyChooseUsSection';
 import FeaturedProductsSection from '@/components/home/FeaturedProductsSection';
@@ -33,6 +34,8 @@ const Home = () => {
   
   return (
     <>
+      <SEOHead />
+      
       {/* Hero Section */}
       <HeroSection />
       
