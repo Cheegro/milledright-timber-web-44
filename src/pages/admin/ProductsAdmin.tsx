@@ -1,11 +1,10 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import { Loader2, Search } from 'lucide-react';
+import { Loader2, Search, Plus, Image } from 'lucide-react';
 import { 
   Table, 
   TableBody, 
@@ -16,10 +15,12 @@ import {
   TableRow 
 } from "@/components/ui/table";
 import { fetchProducts, deleteProduct } from '@/api/adminProductApi';
+import { addProductsFromUploadedImages } from '@/utils/addProductsFromImages';
 
 const ProductsAdmin = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentCategory, setCurrentCategory] = useState('All');
+  const [isAddingImages, setIsAddingImages] = useState(false);
   
   // Fetch products using React Query
   const { data: products = [], isLoading, error, refetch } = useQuery({
@@ -69,13 +70,59 @@ const ProductsAdmin = () => {
     }
   };
 
+  // Handle adding uploaded images as products
+  const handleAddUploadedImages = async () => {
+    setIsAddingImages(true);
+    try {
+      const { results, errors } = await addProductsFromUploadedImages();
+      
+      toast({
+        title: 'Images Added as Products',
+        description: `Successfully added ${results.length} products from uploaded images`,
+      });
+
+      if (errors.length > 0) {
+        console.error('Some products failed to add:', errors);
+      }
+
+      refetch();
+    } catch (error) {
+      console.error('Error adding images as products:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to add images as products',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsAddingImages(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <h1 className="text-2xl md:text-3xl font-bold text-sawmill-dark-brown">Lumber Products</h1>
-        <Button className="bg-sawmill-orange hover:bg-sawmill-auburn">
-          <Link to="/admin/products/new">Add New Lumber</Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            onClick={handleAddUploadedImages}
+            disabled={isAddingImages}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            {isAddingImages ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Image className="h-4 w-4" />
+            )}
+            Add Uploaded Images
+          </Button>
+          <Button className="bg-sawmill-orange hover:bg-sawmill-auburn">
+            <Link to="/admin/products/new" className="flex items-center gap-2">
+              <Plus className="h-4 w-4" />
+              Add New Lumber
+            </Link>
+          </Button>
+        </div>
       </div>
       
       <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
