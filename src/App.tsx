@@ -1,129 +1,101 @@
-
 import React from 'react';
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-  useLocation,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from '@/components/ui/toaster';
 import { HelmetProvider } from 'react-helmet-async';
 
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Analytics from './components/Analytics';
-import Home from './pages/Home';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import Products from './pages/Products';
-import ProductDetail from './pages/ProductDetail';
-import Gallery from './pages/Gallery';
-import Blog from './pages/Blog';
-import BlogPost from './pages/BlogPost';
-import NotFound from './pages/NotFound';
-import AdminLayout from './layouts/AdminLayout';
-import AdminLogin from './pages/admin/Login';
-import Dashboard from './pages/admin/Dashboard';
-import ProductsAdmin from './pages/admin/ProductsAdmin';
-import ProjectsAdmin from './pages/admin/ProjectsAdmin';
-import BlogAdmin from './pages/admin/BlogAdmin';
-import BlogPostEditor from './pages/admin/BlogPostEditor';
-import GalleryAdmin from './pages/admin/GalleryAdmin';
-import GalleryImageForm from './pages/admin/GalleryImageForm';
-import ReviewsAdmin from './pages/admin/ReviewsAdmin';
-import ReviewDetail from './pages/admin/ReviewDetail';
-import TestimonialsAdmin from './pages/admin/TestimonialsAdmin';
-import LogStockAdmin from './pages/admin/LogStockAdmin';
-import WoodSpeciesAdmin from './pages/admin/WoodSpeciesAdmin';
-import Settings from './pages/admin/Settings';
-import CustomerPipeline from './pages/admin/CustomerPipeline';
-import { Toaster } from "@/components/ui/toaster"
+// Regular pages
+import Index from '@/pages/Index';
+import Home from '@/pages/Home';
+import Products from '@/pages/Products';
+import ProductDetail from '@/pages/ProductDetail';
+import Projects from '@/pages/Projects';
+import Gallery from '@/pages/Gallery';
+import About from '@/pages/About';
+import Contact from '@/pages/Contact';
+import Blog from '@/pages/Blog';
+import BlogPost from '@/pages/BlogPost';
+import Reviews from '@/pages/Reviews';
+import NotFound from '@/pages/NotFound';
 
-import ProductFormPage from './pages/admin/ProductFormPage';
-import ProjectFormPage from './pages/admin/ProjectFormPage';
-import ReviewFormPage from './pages/admin/ReviewFormPage';
+// Admin pages
+import AdminLayout from '@/layouts/AdminLayout';
+import Login from '@/pages/admin/Login';
+import Dashboard from '@/pages/admin/Dashboard';
+import ProductsAdmin from '@/pages/admin/ProductsAdmin';
+import ProductFormPage from '@/pages/admin/ProductFormPage';
+import ProjectsAdmin from '@/pages/admin/ProjectsAdmin';
+import ProjectFormPage from '@/pages/admin/ProjectFormPage';
+import GalleryAdmin from '@/pages/admin/GalleryAdmin';
+import GalleryImageForm from '@/pages/admin/GalleryImageForm';
+import BulkGalleryUploadPage from '@/pages/admin/BulkGalleryUploadPage';
+import TestimonialsAdmin from '@/pages/admin/TestimonialsAdmin';
+import ReviewsAdmin from '@/pages/admin/ReviewsAdmin';
+import ReviewDetail from '@/pages/admin/ReviewDetail';
+import ReviewFormPage from '@/pages/admin/ReviewFormPage';
+import CustomerPipeline from '@/pages/admin/CustomerPipeline';
+import BlogAdmin from '@/pages/admin/BlogAdmin';
+import BlogPostEditor from '@/pages/admin/BlogPostEditor';
+import WoodSpeciesAdmin from '@/pages/admin/WoodSpeciesAdmin';
+import LogStockAdmin from '@/pages/admin/LogStockAdmin';
+import Settings from '@/pages/admin/Settings';
 
-// Create QueryClient instance with proper error handling
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+import Analytics from '@/components/Analytics';
 
-// Component to handle conditional footer rendering
-const ConditionalFooter = () => {
-  const location = useLocation();
-  const isAdminPage = location.pathname.startsWith('/admin');
-  
-  // Don't render footer on admin pages
-  if (isAdminPage) {
-    return null;
-  }
-  
-  return <Footer />;
-};
+const queryClient = new QueryClient();
 
 function App() {
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
+        <Router>
           <Analytics />
-          <div className="flex flex-col min-h-screen">
-            <Header />
-            <main className="flex-1">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/products/:id" element={<ProductDetail />} />
-                <Route path="/gallery" element={<Gallery />} />
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/blog/:id" element={<BlogPost />} />
-                
-                {/* Admin Login Route - Outside of AdminLayout */}
-                <Route path="/admin/login" element={<AdminLogin />} />
-                
-                {/* Admin Routes */}
-                <Route path="/admin" element={<AdminLayout />}>
-                  <Route index element={<Navigate to="/admin/dashboard" replace />} />
-                  <Route path="dashboard" element={<Dashboard />} />
-                  <Route path="products" element={<ProductsAdmin />} />
-                  <Route path="products/new" element={<ProductFormPage />} />
-                  <Route path="products/:id/edit" element={<ProductFormPage />} />
-                  <Route path="projects" element={<ProjectsAdmin />} />
-                  <Route path="projects/new" element={<ProjectFormPage />} />
-                  <Route path="projects/:id/edit" element={<ProjectFormPage />} />
-                  <Route path="blog" element={<BlogAdmin />} />
-                  <Route path="blog/new" element={<BlogPostEditor />} />
-                  <Route path="blog/:id/edit" element={<BlogPostEditor />} />
-                  <Route path="gallery" element={<GalleryAdmin />} />
-                  <Route path="gallery/new" element={<GalleryImageForm />} />
-                  <Route path="gallery/:id/edit" element={<GalleryImageForm />} />
-                  <Route path="reviews" element={<ReviewsAdmin />} />
-                  <Route path="reviews/new" element={<ReviewFormPage />} />
-                  <Route path="reviews/:id" element={<ReviewDetail />} />
-                  <Route path="reviews/:id/edit" element={<ReviewFormPage />} />
-                  <Route path="testimonials" element={<TestimonialsAdmin />} />
-                  <Route path="customers" element={<CustomerPipeline />} />
-                  <Route path="log-stock" element={<LogStockAdmin />} />
-                  <Route path="wood-species" element={<WoodSpeciesAdmin />} />
-                  <Route path="settings" element={<Settings />} />
-                </Route>
+          <Routes>
+            {/* Public routes */}
+            <Route path="/" element={<Index />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/products/:slug" element={<ProductDetail />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/gallery" element={<Gallery />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/blog/:slug" element={<BlogPost />} />
+            <Route path="/reviews" element={<Reviews />} />
 
-                <Route path="/404" element={<NotFound />} />
-                <Route path="*" element={<Navigate to="/404" replace />} />
-              </Routes>
-            </main>
-            <ConditionalFooter />
-          </div>
+            {/* Admin routes */}
+            <Route path="/admin/login" element={<Login />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="products" element={<ProductsAdmin />} />
+              <Route path="products/new" element={<ProductFormPage />} />
+              <Route path="products/:id/edit" element={<ProductFormPage />} />
+              <Route path="projects" element={<ProjectsAdmin />} />
+              <Route path="projects/new" element={<ProjectFormPage />} />
+              <Route path="projects/:id/edit" element={<ProjectFormPage />} />
+              <Route path="gallery" element={<GalleryAdmin />} />
+              <Route path="gallery/new" element={<GalleryImageForm />} />
+              <Route path="gallery/bulk-upload" element={<BulkGalleryUploadPage />} />
+              <Route path="gallery/:id/edit" element={<GalleryImageForm />} />
+              <Route path="testimonials" element={<TestimonialsAdmin />} />
+              <Route path="reviews" element={<ReviewsAdmin />} />
+              <Route path="reviews/:id" element={<ReviewDetail />} />
+              <Route path="reviews/:id/edit" element={<ReviewFormPage />} />
+              <Route path="customers" element={<CustomerPipeline />} />
+              <Route path="blog" element={<BlogAdmin />} />
+              <Route path="blog/new" element={<BlogPostEditor />} />
+              <Route path="blog/:id/edit" element={<BlogPostEditor />} />
+              <Route path="wood-species" element={<WoodSpeciesAdmin />} />
+              <Route path="log-stock" element={<LogStockAdmin />} />
+              <Route path="settings" element={<Settings />} />
+            </Route>
+
+            {/* 404 catch-all */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
           <Toaster />
-        </BrowserRouter>
+        </Router>
       </QueryClientProvider>
     </HelmetProvider>
   );

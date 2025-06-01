@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
+import { Upload } from 'lucide-react';
 import { fetchGalleryImages, fetchCategories, deleteGalleryImage, GalleryImage, GalleryCategory } from '@/services/galleryService';
 import { toast } from '@/hooks/use-toast';
 
@@ -83,11 +83,19 @@ const GalleryAdmin = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <h1 className="text-2xl md:text-3xl font-bold text-sawmill-dark-brown">Gallery</h1>
-        <Link to="/admin/gallery/new">
-          <Button className="bg-sawmill-orange hover:bg-sawmill-auburn w-full md:w-auto">
-            Add New Image
-          </Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link to="/admin/gallery/bulk-upload">
+            <Button className="bg-sawmill-orange hover:bg-sawmill-auburn">
+              <Upload className="h-4 w-4 mr-2" />
+              Bulk Upload
+            </Button>
+          </Link>
+          <Link to="/admin/gallery/new">
+            <Button variant="outline">
+              Add Single Image
+            </Button>
+          </Link>
+        </div>
       </div>
       
       <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
