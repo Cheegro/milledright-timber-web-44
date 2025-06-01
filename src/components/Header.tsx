@@ -1,8 +1,10 @@
+
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, ShieldCheck } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
+
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
@@ -12,12 +14,14 @@ const Header = () => {
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
+
   const handleAdminAccess = () => {
     toast({
       title: "Admin Dashboard",
       description: "Redirecting to admin dashboard..."
     });
   };
+
   const handleGetQuote = () => {
     const isHomePage = location.pathname === '/';
     if (isHomePage) {
@@ -34,29 +38,20 @@ const Header = () => {
     }
     setIsOpen(false); // Close mobile menu
   };
-  return <header className="bg-white shadow-md sticky top-0 z-50">
+
+  return (
+    <header className="bg-white shadow-md sticky top-0 z-50">
       <div className="container-wide py-3 md:py-4 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 touch-manipulation">
-          {/* Desktop Logo */}
-          <div className="hidden md:block">
-            <img alt="MilledRight Sawmill" className="h-16 w-auto" src="/lovable-uploads/603668fb-dea8-47a5-a9b9-2c7d15b86bfb.jpg" />
-          </div>
-          
-          {/* Mobile Text Logo */}
-          <div className="md:hidden flex items-center gap-2">
+          {/* Text Logo for all screen sizes */}
+          <div className="flex items-center gap-2">
             <div className="bg-sawmill-dark-brown text-white p-2 rounded">
               <span className="font-bold text-lg">MR</span>
             </div>
             <div>
-              <h1 className="text-lg font-bold text-sawmill-dark-brown">MilledRight</h1>
-              <p className="text-xs text-sawmill-medium-brown">Sawmill Solutions</p>
+              <h1 className="text-lg md:text-xl font-bold text-sawmill-dark-brown">MilledRight</h1>
+              <p className="text-xs md:text-sm text-sawmill-medium-brown">Sawmill Solutions</p>
             </div>
-          </div>
-          
-          {/* Desktop Text (shown next to logo) */}
-          <div className="hidden lg:block">
-            <h1 className="text-lg md:text-xl font-bold text-sawmill-dark-brown">MilledRight</h1>
-            <p className="text-xs md:text-sm text-sawmill-medium-brown">Sawmill Solutions</p>
           </div>
         </Link>
         
@@ -84,7 +79,8 @@ const Header = () => {
       </div>
       
       {/* Mobile Navigation Overlay */}
-      {isOpen && <>
+      {isOpen && (
+        <>
           <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setIsOpen(false)} />
           <div className="fixed top-0 right-0 h-full w-80 max-w-[90vw] bg-white shadow-xl z-50 lg:hidden transform transition-transform duration-300">
             <div className="p-4 border-b">
@@ -106,9 +102,9 @@ const Header = () => {
               <div className="mt-6 space-y-3">
                 <Button className="bg-sawmill-orange hover:bg-sawmill-auburn text-white w-full h-12 text-base" onClick={handleGetQuote}>Get Quote</Button>
                 <Link to="/admin" onClick={() => {
-              handleAdminAccess();
-              setIsOpen(false);
-            }}>
+                  handleAdminAccess();
+                  setIsOpen(false);
+                }}>
                   <Button variant="outline" className="border-sawmill-dark-brown text-sawmill-dark-brown hover:bg-sawmill-dark-brown hover:text-white w-full h-12 text-base">
                     <ShieldCheck className="mr-2 h-4 w-4" />
                     Admin
@@ -117,7 +113,10 @@ const Header = () => {
               </div>
             </nav>
           </div>
-        </>}
-    </header>;
+        </>
+      )}
+    </header>
+  );
 };
+
 export default Header;

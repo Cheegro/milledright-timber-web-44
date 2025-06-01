@@ -13,7 +13,7 @@ const Footer = () => {
           {/* Company Info */}
           <div>
             <h3 className="text-xl font-bold mb-4 border-b border-sawmill-medium-brown pb-2">MilledRight Sawmill</h3>
-            <p className="mb-4">Premium quality sawmill equipment and solutions for professional and hobbyist woodworkers.</p>
+            <p className="mb-4">Premium quality lumber and custom milling services for professional and hobbyist woodworkers.</p>
             <p className="flex items-center">
               <span className="font-bold mr-2">Call Us:</span> (437) 898-0642
             </p>
@@ -45,15 +45,15 @@ const Footer = () => {
             </ul>
           </div>
           
-          {/* Products */}
+          {/* Wood Products */}
           <div>
-            <h3 className="text-xl font-bold mb-4 border-b border-sawmill-medium-brown pb-2">Products</h3>
+            <h3 className="text-xl font-bold mb-4 border-b border-sawmill-medium-brown pb-2">Wood Products</h3>
             <ul className="space-y-2">
-              <li><Link to="/products/category/portable-sawmills" className="hover:text-sawmill-light-brown transition-colors">Portable Sawmills</Link></li>
-              <li><Link to="/products/category/industrial-mills" className="hover:text-sawmill-light-brown transition-colors">Industrial Mills</Link></li>
-              <li><Link to="/products/category/blades" className="hover:text-sawmill-light-brown transition-colors">Sawmill Blades</Link></li>
-              <li><Link to="/products/category/accessories" className="hover:text-sawmill-light-brown transition-colors">Accessories</Link></li>
-              <li><Link to="/products/category/parts" className="hover:text-sawmill-light-brown transition-colors">Parts & Maintenance</Link></li>
+              <li><Link to="/products/category/live-edge-slabs" className="hover:text-sawmill-light-brown transition-colors">Live Edge Slabs</Link></li>
+              <li><Link to="/products/category/dimensional-lumber" className="hover:text-sawmill-light-brown transition-colors">Dimensional Lumber</Link></li>
+              <li><Link to="/products/category/custom-beams" className="hover:text-sawmill-light-brown transition-colors">Custom Beams</Link></li>
+              <li><Link to="/products/category/mantelpieces" className="hover:text-sawmill-light-brown transition-colors">Mantelpieces</Link></li>
+              <li><Link to="/products/category/reclaimed-wood" className="hover:text-sawmill-light-brown transition-colors">Reclaimed Wood</Link></li>
             </ul>
           </div>
           
