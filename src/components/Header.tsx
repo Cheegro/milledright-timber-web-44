@@ -1,10 +1,8 @@
-
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, ShieldCheck } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
@@ -14,22 +12,21 @@ const Header = () => {
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
-
   const handleAdminAccess = () => {
     toast({
       title: "Admin Dashboard",
-      description: "Redirecting to admin dashboard...",
+      description: "Redirecting to admin dashboard..."
     });
   };
-
   const handleGetQuote = () => {
     const isHomePage = location.pathname === '/';
-    
     if (isHomePage) {
       // If already on home page, just scroll to the section
       const quoteSection = document.getElementById('quote-section');
       if (quoteSection) {
-        quoteSection.scrollIntoView({ behavior: 'smooth' });
+        quoteSection.scrollIntoView({
+          behavior: 'smooth'
+        });
       }
     } else {
       // If on another page, navigate to home with hash
@@ -37,18 +34,12 @@ const Header = () => {
     }
     setIsOpen(false); // Close mobile menu
   };
-
-  return (
-    <header className="bg-white shadow-md sticky top-0 z-50">
+  return <header className="bg-white shadow-md sticky top-0 z-50">
       <div className="container-wide py-3 md:py-4 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 touch-manipulation">
           {/* Desktop Logo */}
           <div className="hidden md:block">
-            <img 
-              src="/lovable-uploads/d906364d-00c6-465a-9564-bac82cde9fff.png" 
-              alt="MilledRight Sawmill" 
-              className="h-16 w-auto"
-            />
+            <img alt="MilledRight Sawmill" className="h-16 w-auto" src="/lovable-uploads/603668fb-dea8-47a5-a9b9-2c7d15b86bfb.jpg" />
           </div>
           
           {/* Mobile Text Logo */}
@@ -79,10 +70,7 @@ const Header = () => {
           <Link to="/contact" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium transition-colors">Contact</Link>
           <Button className="bg-sawmill-orange hover:bg-sawmill-auburn text-white" onClick={handleGetQuote}>Get Quote</Button>
           <Link to="/admin" onClick={handleAdminAccess}>
-            <Button 
-              variant="outline" 
-              className="border-sawmill-dark-brown text-sawmill-dark-brown hover:bg-sawmill-dark-brown hover:text-white"
-            >
+            <Button variant="outline" className="border-sawmill-dark-brown text-sawmill-dark-brown hover:bg-sawmill-dark-brown hover:text-white">
               <ShieldCheck className="mr-2 h-4 w-4" />
               Admin
             </Button>
@@ -90,28 +78,19 @@ const Header = () => {
         </nav>
         
         {/* Mobile menu button */}
-        <button 
-          className="lg:hidden text-sawmill-dark-brown p-2 touch-manipulation"
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label="Toggle menu"
-        >
+        <button className="lg:hidden text-sawmill-dark-brown p-2 touch-manipulation" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle menu">
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
       
       {/* Mobile Navigation Overlay */}
-      {isOpen && (
-        <>
+      {isOpen && <>
           <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setIsOpen(false)} />
           <div className="fixed top-0 right-0 h-full w-80 max-w-[90vw] bg-white shadow-xl z-50 lg:hidden transform transition-transform duration-300">
             <div className="p-4 border-b">
               <div className="flex items-center justify-between">
                 <span className="font-semibold text-sawmill-dark-brown">Menu</span>
-                <button 
-                  onClick={() => setIsOpen(false)}
-                  className="p-2 text-sawmill-dark-brown touch-manipulation"
-                  aria-label="Close menu"
-                >
+                <button onClick={() => setIsOpen(false)} className="p-2 text-sawmill-dark-brown touch-manipulation" aria-label="Close menu">
                   <X size={20} />
                 </button>
               </div>
@@ -126,11 +105,11 @@ const Header = () => {
               
               <div className="mt-6 space-y-3">
                 <Button className="bg-sawmill-orange hover:bg-sawmill-auburn text-white w-full h-12 text-base" onClick={handleGetQuote}>Get Quote</Button>
-                <Link to="/admin" onClick={() => {handleAdminAccess(); setIsOpen(false);}}>
-                  <Button 
-                    variant="outline" 
-                    className="border-sawmill-dark-brown text-sawmill-dark-brown hover:bg-sawmill-dark-brown hover:text-white w-full h-12 text-base"
-                  >
+                <Link to="/admin" onClick={() => {
+              handleAdminAccess();
+              setIsOpen(false);
+            }}>
+                  <Button variant="outline" className="border-sawmill-dark-brown text-sawmill-dark-brown hover:bg-sawmill-dark-brown hover:text-white w-full h-12 text-base">
                     <ShieldCheck className="mr-2 h-4 w-4" />
                     Admin
                   </Button>
@@ -138,10 +117,7 @@ const Header = () => {
               </div>
             </nav>
           </div>
-        </>
-      )}
-    </header>
-  );
+        </>}
+    </header>;
 };
-
 export default Header;
