@@ -1,104 +1,42 @@
 
-import React, { useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import React from 'react';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import SEOHead from '@/components/SEOHead';
 import HeroSection from '@/components/home/HeroSection';
 import WhyChooseUsSection from '@/components/home/WhyChooseUsSection';
 import FeaturedProductsSection from '@/components/home/FeaturedProductsSection';
-import MiddleCTASection from '@/components/home/MiddleCTASection';
+import ProjectShowcaseSection from '@/components/home/ProjectShowcaseSection';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
 import BlogPostsSection from '@/components/home/BlogPostsSection';
-import BottomCTASection from '@/components/home/BottomCTASection';
-import MapEmbed from '@/components/MapEmbed';
-import SharedBanner from '@/components/SharedBanner';
 import FAQSection from '@/components/home/FAQSection';
-import ProjectShowcaseSection from '@/components/home/ProjectShowcaseSection';
-import MultiStepQuoteForm from '@/components/home/MultiStepQuoteForm';
+import MiddleCTASection from '@/components/home/MiddleCTASection';
+import BottomCTASection from '@/components/home/BottomCTASection';
 
 const Home = () => {
-  const location = useLocation();
-  const quoteRef = useRef<HTMLDivElement>(null);
-  
-  // Get pre-selected project type from URL params
-  const searchParams = new URLSearchParams(location.search);
-  const preSelectedProject = searchParams.get('project');
-  
-  useEffect(() => {
-    // Check if hash exists and scroll to the section
-    if (location.hash === '#quote-section' && quoteRef.current) {
-      setTimeout(() => {
-        quoteRef.current?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    }
-  }, [location]);
-  
   return (
-    <>
-      <SEOHead />
+    <div className="min-h-screen flex flex-col">
+      <SEOHead 
+        title="Premium Lumber & Custom Milling Services"
+        description="MilledRight Sawmill provides premium quality lumber, live edge slabs, and custom milling services in Whitchurch-Stouffville, Ontario."
+      />
       
-      {/* Hero Section */}
-      <HeroSection />
+      <Header />
       
-      {/* Why Choose Us */}
-      <WhyChooseUsSection />
+      <main className="flex-1">
+        <HeroSection />
+        <WhyChooseUsSection />
+        <FeaturedProductsSection />
+        <ProjectShowcaseSection />
+        <TestimonialsSection />
+        <MiddleCTASection />
+        <BlogPostsSection />
+        <FAQSection />
+        <BottomCTASection />
+      </main>
       
-      {/* Quick Quote Form & Value Props */}
-      <section id="quote-section" ref={quoteRef} className="py-16 bg-gray-50">
-        <div className="container-wide">
-          <h2 className="section-title text-center mx-auto mb-10">Get a Free Quote for Your Project</h2>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              <MultiStepQuoteForm preSelectedProject={preSelectedProject || undefined} />
-            </div>
-            
-            <div className="space-y-6">
-              <div className="bg-white p-6 rounded-lg shadow-lg border-l-4 border-sawmill-orange">
-                <h3 className="font-bold text-lg mb-2 text-sawmill-dark-brown">Premium Quality</h3>
-                <p className="text-gray-700">Our lumber is carefully selected, properly dried, and expertly milled to ensure the highest quality for your projects.</p>
-              </div>
-              
-              <div className="bg-white p-6 rounded-lg shadow-lg border-l-4 border-sawmill-orange">
-                <h3 className="font-bold text-lg mb-2 text-sawmill-dark-brown">Expert Advice</h3>
-                <p className="text-gray-700">Not sure what wood is best for your project? Our team can help you choose the perfect species and cut.</p>
-              </div>
-              
-              <div className="bg-white p-6 rounded-lg shadow-lg border-l-4 border-sawmill-orange">
-                <h3 className="font-bold text-lg mb-2 text-sawmill-dark-brown">Satisfaction Guaranteed</h3>
-                <p className="text-gray-700">We stand behind the quality of our lumber with a satisfaction guarantee on every purchase.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      {/* Featured Products */}
-      <FeaturedProductsSection />
-      
-      {/* Project Showcase */}
-      <ProjectShowcaseSection />
-      
-      {/* Call to Action - Middle */}
-      <MiddleCTASection />
-      
-      {/* Testimonials */}
-      <TestimonialsSection />
-      
-      {/* FAQ Section */}
-      <FAQSection />
-      
-      {/* Map Location */}
-      <MapEmbed />
-      
-      {/* Latest Blog Posts */}
-      <BlogPostsSection />
-      
-      {/* Banners - Full Size for Home page */}
-      <SharedBanner variant="full" />
-      
-      {/* Call to Action - Bottom */}
-      <BottomCTASection />
-    </>
+      <Footer />
+    </div>
   );
 };
 

@@ -1,24 +1,19 @@
 
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import Home from './Home';
 
 const Index = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Redirect to /home to show the proper homepage content
+    // Immediately redirect to /home
     navigate('/home', { replace: true });
   }, [navigate]);
 
-  // Show the full home page content while redirecting
+  // Show a simple loading state while redirecting
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <Home />
-      <Footer />
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sawmill-dark-brown"></div>
     </div>
   );
 };
