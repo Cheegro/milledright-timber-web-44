@@ -1,10 +1,26 @@
 
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import NewsletterSubscription from './NewsletterSubscription';
 import SocialMediaLinks from './SocialMediaLinks';
+import { fetchProductCategories } from '@/api/productApi';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const [productCategories, setProductCategories] = useState<any[]>([]);
+  
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const categories = await fetchProductCategories();
+        setProductCategories(categories);
+      } catch (error) {
+        console.error('Error loading product categories:', error);
+      }
+    };
+    
+    loadCategories();
+  }, []);
   
   return (
     <footer className="bg-sawmill-dark-brown text-white">
@@ -45,15 +61,20 @@ const Footer = () => {
             </ul>
           </div>
           
-          {/* Wood Products */}
+          {/* Product Categories */}
           <div>
-            <h3 className="text-xl font-bold mb-4 border-b border-sawmill-medium-brown pb-2">Wood Products</h3>
+            <h3 className="text-xl font-bold mb-4 border-b border-sawmill-medium-brown pb-2">Product Categories</h3>
             <ul className="space-y-2">
-              <li><Link to="/products/category/live-edge-slabs" className="hover:text-sawmill-light-brown transition-colors">Live Edge Slabs</Link></li>
-              <li><Link to="/products/category/dimensional-lumber" className="hover:text-sawmill-light-brown transition-colors">Dimensional Lumber</Link></li>
-              <li><Link to="/products/category/custom-beams" className="hover:text-sawmill-light-brown transition-colors">Custom Beams</Link></li>
-              <li><Link to="/products/category/mantelpieces" className="hover:text-sawmill-light-brown transition-colors">Mantelpieces</Link></li>
-              <li><Link to="/products/category/reclaimed-wood" className="hover:text-sawmill-light-brown transition-colors">Reclaimed Wood</Link></li>
+              {productCategories.map((category) => (
+                <li key={category.id}>
+                  <Link 
+                    to={`/products?category=${encodeURIComponent(category.name)}`} 
+                    className="hover:text-sawmill-light-brown transition-colors"
+                  >
+                    {category.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
           
