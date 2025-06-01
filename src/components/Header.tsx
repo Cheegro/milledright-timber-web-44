@@ -45,9 +45,9 @@ const Header = () => {
           {/* Desktop Logo */}
           <div className="hidden md:block">
             <img 
-              src="/lovable-uploads/46e45d1a-ad1a-4971-8e60-f54e280b5f86.png" 
+              src="/lovable-uploads/d906364d-00c6-465a-9564-bac82cde9fff.png" 
               alt="MilledRight Sawmill" 
-              className="h-12 w-auto"
+              className="h-16 w-auto"
             />
           </div>
           
