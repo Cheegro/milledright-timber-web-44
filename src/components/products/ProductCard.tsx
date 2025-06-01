@@ -1,57 +1,86 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-
-// Interface updated to match Supabase product structure with price_unit
-interface Product {
-  id: string;
-  name: string;
-  category: string;
-  price: string;
-  price_unit?: string;
-  description: string | null;
-  image_url: string | null;
-}
+import OptimizedImage from '@/components/OptimizedImage';
+import { getOptimizedImageUrl, getThumbnailUrl } from '@/services/imageOptimizationService';
 
 interface ProductCardProps {
-  product: Product;
+  product: {
+    id: string;
+    name: string;
+    price: string;
+    category?: string;
+    image_url?: string;
+    optimized_image_url?: string;
+    optimized_image_webp_url?: string;
+    thumbnail_url?: string;
+    thumbnail_webp_url?: string;
+    description?: string;
+  };
+  variant?: 'default' | 'featured';
 }
 
-const ProductCard = ({ product }: ProductCardProps) => {
-  // Use a placeholder image if the product doesn't have an image
-  const imageUrl = product.image_url || '/placeholder.svg';
-  
-  // Format price with board foot unit if applicable
-  const priceDisplay = product.price_unit ? `${product.price} per ${product.price_unit}` : product.price;
+const ProductCard = ({ product, variant = 'default' }: ProductCardProps) => {
+  const optimizedSrc = getOptimizedImageUrl(product.optimized_image_url, product.image_url);
+  const thumbnailSrc = getThumbnailUrl(
+    product.thumbnail_url,
+    product.optimized_image_url,
+    product.image_url
+  );
 
   return (
-    <Card className="overflow-hidden product-card group hover:shadow-xl transition-all duration-300">
-      <div className="aspect-square bg-white relative overflow-hidden">
-        <img 
-          src={imageUrl} 
+    <Card className={`overflow-hidden hover:shadow-lg transition-shadow ${
+      variant === 'featured' ? 'ring-2 ring-sawmill-orange' : ''
+    }`}>
+      <div className="aspect-[4/3] relative overflow-hidden bg-gray-100">
+        <OptimizedImage
+          src={optimizedSrc}
+          webpSrc={product.optimized_image_webp_url}
+          thumbnailSrc={thumbnailSrc}
+          thumbnailWebpSrc={product.thumbnail_webp_url}
           alt={product.name}
-          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+          className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
+          loading="lazy"
+          useThumbnail={true}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
-        {/* Mobile-friendly overlay for quick view */}
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 md:hidden" />
+        {variant === 'featured' && (
+          <Badge className="absolute top-2 left-2 bg-sawmill-orange text-white">
+            Featured
+          </Badge>
+        )}
       </div>
-      <CardContent className="p-4 md:p-6">
-        <h3 className="font-bold text-lg md:text-xl mb-2 line-clamp-2">
-          <Link to={`/products/${product.id}`} className="text-sawmill-dark-brown hover:text-sawmill-medium-brown transition-colors">
-            {product.name}
-          </Link>
-        </h3>
-        <p className="text-sm text-gray-600 mb-2">{product.category}</p>
-        <p className="text-lg md:text-xl font-bold text-sawmill-dark-brown mb-3">{priceDisplay}</p>
-        <p className="text-sm text-gray-700 line-clamp-2 mb-4">{product.description}</p>
-        <div className="space-y-2 md:space-y-0 md:flex md:gap-2">
-          <Button className="w-full md:flex-1 bg-sawmill-dark-brown hover:bg-sawmill-medium-brown h-11 md:h-10 text-sm md:text-base">
-            <Link to={`/products/${product.id}`} className="w-full">View Details</Link>
-          </Button>
-        </div>
+      
+      <CardHeader className="pb-2">
+        <CardTitle className="text-lg line-clamp-2">{product.name}</CardTitle>
+        {product.category && (
+          <Badge variant="outline" className="w-fit">
+            {product.category}
+          </Badge>
+        )}
+      </CardHeader>
+      
+      <CardContent>
+        <p className="text-2xl font-bold text-sawmill-dark-brown mb-2">
+          {product.price}
+        </p>
+        {product.description && (
+          <p className="text-sm text-gray-600 line-clamp-3">
+            {product.description}
+          </p>
+        )}
       </CardContent>
+      
+      <CardFooter className="pt-2">
+        <Link to={`/products/${product.id}`} className="w-full">
+          <Button className="w-full bg-sawmill-dark-brown hover:bg-sawmill-medium-brown">
+            View Details
+          </Button>
+        </Link>
+      </CardFooter>
     </Card>
   );
 };

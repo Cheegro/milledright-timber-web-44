@@ -37,8 +37,12 @@ export type Database = {
           id: string
           image_url: string | null
           is_published: boolean | null
+          optimized_featured_image_url: string | null
+          optimized_featured_image_webp_url: string | null
           published_at: string | null
           slug: string
+          thumbnail_featured_image_url: string | null
+          thumbnail_featured_image_webp_url: string | null
           title: string
           updated_at: string
         }
@@ -51,8 +55,12 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_published?: boolean | null
+          optimized_featured_image_url?: string | null
+          optimized_featured_image_webp_url?: string | null
           published_at?: string | null
           slug: string
+          thumbnail_featured_image_url?: string | null
+          thumbnail_featured_image_webp_url?: string | null
           title: string
           updated_at?: string
         }
@@ -65,8 +73,12 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_published?: boolean | null
+          optimized_featured_image_url?: string | null
+          optimized_featured_image_webp_url?: string | null
           published_at?: string | null
           slug?: string
+          thumbnail_featured_image_url?: string | null
+          thumbnail_featured_image_webp_url?: string | null
           title?: string
           updated_at?: string
         }
@@ -264,7 +276,10 @@ export type Database = {
           description: string | null
           id: string
           image_url: string
+          optimized_image_url: string | null
+          optimized_image_webp_url: string | null
           thumbnail_url: string
+          thumbnail_webp_url: string | null
           title: string
           updated_at: string
         }
@@ -274,7 +289,10 @@ export type Database = {
           description?: string | null
           id?: string
           image_url: string
+          optimized_image_url?: string | null
+          optimized_image_webp_url?: string | null
           thumbnail_url: string
+          thumbnail_webp_url?: string | null
           title: string
           updated_at?: string
         }
@@ -284,7 +302,10 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string
+          optimized_image_url?: string | null
+          optimized_image_webp_url?: string | null
           thumbnail_url?: string
+          thumbnail_webp_url?: string | null
           title?: string
           updated_at?: string
         }
@@ -452,12 +473,16 @@ export type Database = {
           meta_seo_description: string | null
           meta_seo_title: string | null
           name: string
+          optimized_image_url: string | null
+          optimized_image_webp_url: string | null
           parent_log_id: number | null
           price: string
           price_display_text: string | null
           slug: string | null
           species_id: number | null
           surface_finish_options: string[] | null
+          thumbnail_url: string | null
+          thumbnail_webp_url: string | null
           updated_at: string
           weight_lbs: number | null
         }
@@ -481,12 +506,16 @@ export type Database = {
           meta_seo_description?: string | null
           meta_seo_title?: string | null
           name: string
+          optimized_image_url?: string | null
+          optimized_image_webp_url?: string | null
           parent_log_id?: number | null
           price: string
           price_display_text?: string | null
           slug?: string | null
           species_id?: number | null
           surface_finish_options?: string[] | null
+          thumbnail_url?: string | null
+          thumbnail_webp_url?: string | null
           updated_at?: string
           weight_lbs?: number | null
         }
@@ -510,12 +539,16 @@ export type Database = {
           meta_seo_description?: string | null
           meta_seo_title?: string | null
           name?: string
+          optimized_image_url?: string | null
+          optimized_image_webp_url?: string | null
           parent_log_id?: number | null
           price?: string
           price_display_text?: string | null
           slug?: string | null
           species_id?: number | null
           surface_finish_options?: string[] | null
+          thumbnail_url?: string | null
+          thumbnail_webp_url?: string | null
           updated_at?: string
           weight_lbs?: number | null
         }
@@ -550,6 +583,10 @@ export type Database = {
           description: string
           id: string
           image_url: string
+          optimized_image_url: string | null
+          optimized_image_webp_url: string | null
+          thumbnail_url: string | null
+          thumbnail_webp_url: string | null
           title: string
           updated_at: string
           wood_type: string
@@ -560,6 +597,10 @@ export type Database = {
           description: string
           id?: string
           image_url: string
+          optimized_image_url?: string | null
+          optimized_image_webp_url?: string | null
+          thumbnail_url?: string | null
+          thumbnail_webp_url?: string | null
           title: string
           updated_at?: string
           wood_type: string
@@ -570,6 +611,10 @@ export type Database = {
           description?: string
           id?: string
           image_url?: string
+          optimized_image_url?: string | null
+          optimized_image_webp_url?: string | null
+          thumbnail_url?: string | null
+          thumbnail_webp_url?: string | null
           title?: string
           updated_at?: string
           wood_type?: string
