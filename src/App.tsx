@@ -44,7 +44,15 @@ import ProductFormPage from './pages/admin/ProductFormPage';
 import ProjectFormPage from './pages/admin/ProjectFormPage';
 import ReviewFormPage from './pages/admin/ReviewFormPage';
 
-const queryClient = new QueryClient();
+// Create QueryClient instance with proper error handling
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 // Component to handle conditional footer rendering
 const ConditionalFooter = () => {

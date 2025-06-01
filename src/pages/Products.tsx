@@ -31,13 +31,19 @@ const Products = () => {
   // Format categories to match the expected format
   const productCategories = ['All', ...categoriesData.map(cat => cat.name)];
   
-  // Extract unique wood types from products
+  // Extract unique wood types from product names and descriptions
   const woodTypes = useMemo(() => {
     const types = new Set<string>();
     products.forEach(product => {
-      if (product.wood_type) {
-        types.add(product.wood_type);
-      }
+      // Extract wood types from product names (e.g., "Walnut Live Edge Slab" -> "Walnut")
+      const name = product.name.toLowerCase();
+      const commonWoodTypes = ['walnut', 'maple', 'oak', 'cherry', 'ash', 'hickory', 'elm', 'pine', 'cedar', 'birch'];
+      
+      commonWoodTypes.forEach(wood => {
+        if (name.includes(wood)) {
+          types.add(wood.charAt(0).toUpperCase() + wood.slice(1));
+        }
+      });
     });
     return Array.from(types).sort();
   }, [products]);
@@ -63,11 +69,13 @@ const Products = () => {
       // Category filter
       const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
       
-      // Wood type filter
-      const matchesWoodType = selectedWoodType === 'All' || product.wood_type === selectedWoodType;
+      // Wood type filter - check if product name contains the selected wood type
+      const matchesWoodType = selectedWoodType === 'All' || 
+                             product.name.toLowerCase().includes(selectedWoodType.toLowerCase());
       
-      // Price filter
-      const productPrice = parseFloat(product.price.replace(/[^0-9.]/g, '')) || 0;
+      // Price filter - extract price from price string
+      const priceMatch = product.price.match(/\$?(\d+(?:\.\d{2})?)/);
+      const productPrice = priceMatch ? parseFloat(priceMatch[1]) : 0;
       const matchesPrice = productPrice >= priceRange[0] && productPrice <= priceRange[1];
       
       // Dimensions filter (simplified logic for demonstration)
