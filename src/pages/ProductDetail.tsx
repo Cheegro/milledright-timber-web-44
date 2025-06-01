@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 import { fetchProduct } from '@/api/productApi';
 import { toast } from '@/components/ui/use-toast';
+import SocialMediaShare from '@/components/SocialMediaShare';
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -89,6 +90,9 @@ const ProductDetail = () => {
   // Get gallery images or use empty array if none
   const galleryImages = product.gallery_images || [];
 
+  // Get current URL for sharing
+  const currentUrl = window.location.href;
+
   return (
     <div className="min-h-screen">
       <div className="bg-sawmill-dark-brown py-8">
@@ -132,6 +136,17 @@ const ProductDetail = () => {
             <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
             <p className="text-sm text-gray-600 mb-4">{product.category}</p>
             <p className="text-3xl font-bold text-sawmill-dark-brown mb-4">{priceDisplay}</p>
+            
+            {/* Social Media Share */}
+            <div className="mb-6">
+              <SocialMediaShare
+                url={currentUrl}
+                title={product.name}
+                description={product.description || `Check out this ${product.category} from MilledRight Sawmill`}
+                variant="buttons"
+              />
+            </div>
+            
             <div className="prose max-w-none mb-6" dangerouslySetInnerHTML={{ __html: product.description }} />
             
             <div className="flex gap-4 mb-8">

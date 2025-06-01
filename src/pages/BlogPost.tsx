@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { fetchBlogPost, fetchRelatedBlogPosts } from '@/api/blogApi';
+import SocialMediaShare from '@/components/SocialMediaShare';
 
 const BlogPost = () => {
   const { id } = useParams();
@@ -98,6 +99,9 @@ const BlogPost = () => {
   // Define tags from the post content if needed
   const tags = post.tags || ['sawmill', 'lumber', 'woodworking'];
   
+  // Get current URL for sharing
+  const currentUrl = window.location.href;
+  
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -134,6 +138,16 @@ const BlogPost = () => {
               </Link>
             </Button>
             
+            {/* Social Media Share */}
+            <div className="mb-6">
+              <SocialMediaShare
+                url={currentUrl}
+                title={post.title}
+                description={post.excerpt}
+                variant="buttons"
+              />
+            </div>
+            
             {/* Article Content */}
             <article className="prose prose-lg max-w-none">
               <div dangerouslySetInnerHTML={{ __html: post.content }} />
@@ -149,6 +163,17 @@ const BlogPost = () => {
                   </Badge>
                 ))}
               </div>
+            </div>
+            
+            {/* Share Again */}
+            <div className="mt-8 p-6 bg-gray-50 rounded-lg">
+              <h3 className="font-semibold mb-4">Share this article</h3>
+              <SocialMediaShare
+                url={currentUrl}
+                title={post.title}
+                description={post.excerpt}
+                variant="buttons"
+              />
             </div>
           </div>
           

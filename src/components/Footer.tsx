@@ -1,5 +1,7 @@
 
 import { Link } from 'react-router-dom';
+import NewsletterSubscription from './NewsletterSubscription';
+import SocialMediaLinks from './SocialMediaLinks';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -24,6 +26,11 @@ const Footer = () => {
             <p className="flex items-center mt-2">
               <span className="font-bold mr-2">Address:</span> 16720 Hwy 48, Whitchurch-Stouffville, ON
             </p>
+            
+            {/* Social Media Links */}
+            <div className="mt-4">
+              <SocialMediaLinks showLabels />
+            </div>
           </div>
           
           {/* Quick Links */}
@@ -51,23 +58,7 @@ const Footer = () => {
           </div>
           
           {/* Newsletter */}
-          <div>
-            <h3 className="text-xl font-bold mb-4 border-b border-sawmill-medium-brown pb-2">Stay Updated</h3>
-            <p className="mb-4">Subscribe to our newsletter for the latest products, tips, and promotions.</p>
-            <form className="flex flex-col space-y-2">
-              <input 
-                type="email" 
-                placeholder="Your email" 
-                className="px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-sawmill-orange text-sawmill-dark-gray"
-              />
-              <button 
-                type="submit" 
-                className="bg-sawmill-orange hover:bg-sawmill-auburn transition-colors px-4 py-2 rounded font-bold"
-              >
-                Subscribe
-              </button>
-            </form>
-          </div>
+          <NewsletterSubscription variant="footer" />
         </div>
         
         {/* Bottom Bar */}
