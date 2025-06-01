@@ -42,10 +42,28 @@ const Header = () => {
     <header className="bg-white shadow-md sticky top-0 z-50">
       <div className="container-wide py-3 md:py-4 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 touch-manipulation">
-          <div className="bg-sawmill-dark-brown text-white p-2 rounded">
-            <span className="font-bold text-lg md:text-xl">MR</span>
+          {/* Desktop Logo */}
+          <div className="hidden md:block">
+            <img 
+              src="/placeholder.svg" 
+              alt="MilledRight Sawmill" 
+              className="h-12 w-auto"
+            />
           </div>
-          <div className="hidden sm:block">
+          
+          {/* Mobile Text Logo */}
+          <div className="md:hidden flex items-center gap-2">
+            <div className="bg-sawmill-dark-brown text-white p-2 rounded">
+              <span className="font-bold text-lg">MR</span>
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-sawmill-dark-brown">MilledRight</h1>
+              <p className="text-xs text-sawmill-medium-brown">Sawmill Solutions</p>
+            </div>
+          </div>
+          
+          {/* Desktop Text (shown next to logo) */}
+          <div className="hidden lg:block">
             <h1 className="text-lg md:text-xl font-bold text-sawmill-dark-brown">MilledRight</h1>
             <p className="text-xs md:text-sm text-sawmill-medium-brown">Sawmill Solutions</p>
           </div>
