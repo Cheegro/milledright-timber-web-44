@@ -5,6 +5,7 @@ import {
   Routes,
   Route,
   Navigate,
+  useLocation,
 } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HelmetProvider } from 'react-helmet-async';
@@ -44,6 +45,19 @@ import ProjectFormPage from './pages/admin/ProjectFormPage';
 import ReviewFormPage from './pages/admin/ReviewFormPage';
 
 const queryClient = new QueryClient();
+
+// Component to handle conditional footer rendering
+const ConditionalFooter = () => {
+  const location = useLocation();
+  const isAdminPage = location.pathname.startsWith('/admin');
+  
+  // Don't render footer on admin pages
+  if (isAdminPage) {
+    return null;
+  }
+  
+  return <Footer />;
+};
 
 function App() {
   return (
@@ -98,7 +112,7 @@ function App() {
                 <Route path="*" element={<Navigate to="/404" replace />} />
               </Routes>
             </main>
-            <Footer />
+            <ConditionalFooter />
           </div>
           <Toaster />
         </BrowserRouter>
