@@ -45,7 +45,7 @@ const Header = () => {
           {/* Desktop Logo */}
           <div className="hidden md:block">
             <img 
-              src="/placeholder.svg" 
+              src="/lovable-uploads/46e45d1a-ad1a-4971-8e60-f54e280b5f86.png" 
               alt="MilledRight Sawmill" 
               className="h-12 w-auto"
             />
