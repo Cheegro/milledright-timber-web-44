@@ -4,10 +4,12 @@ import { useQuery } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
 import ProductsHeader from '@/components/products/ProductsHeader';
 import ProductFilters from '@/components/products/ProductFilters';
+import MobileProductFilters from '@/components/products/MobileProductFilters';
 import ProductsList from '@/components/products/ProductsList';
 import ProductsCallToAction from '@/components/products/ProductsCallToAction';
 import { fetchProducts, fetchProductCategories } from '@/api/productApi';
 import { toast } from '@/components/ui/use-toast';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Products = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -15,6 +17,8 @@ const Products = () => {
   const [selectedWoodType, setSelectedWoodType] = useState('All');
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000]);
   const [selectedDimensions, setSelectedDimensions] = useState('All Sizes');
+  
+  const isMobile = useIsMobile();
   
   // Fetch products using React Query
   const { data: products = [], isLoading: productsLoading, error: productsError } = useQuery({
@@ -108,24 +112,48 @@ const Products = () => {
     <div className="min-h-screen">
       <ProductsHeader />
 
-      <div className="container-wide py-12">
-        <div className="flex flex-col md:flex-row gap-8">
-          {/* Enhanced sidebar filters */}
-          <ProductFilters
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-            selectedWoodType={selectedWoodType}
-            setSelectedWoodType={setSelectedWoodType}
-            priceRange={priceRange}
-            setPriceRange={setPriceRange}
-            selectedDimensions={selectedDimensions}
-            setSelectedDimensions={setSelectedDimensions}
-            productCategories={productCategories}
-            woodTypes={woodTypes}
-            onResetFilters={handleResetFilters}
-          />
+      <div className="container-wide py-6 md:py-12">
+        {/* Mobile Filters */}
+        {isMobile && (
+          <div className="mb-6">
+            <MobileProductFilters
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+              selectedWoodType={selectedWoodType}
+              setSelectedWoodType={setSelectedWoodType}
+              priceRange={priceRange}
+              setPriceRange={setPriceRange}
+              selectedDimensions={selectedDimensions}
+              setSelectedDimensions={setSelectedDimensions}
+              productCategories={productCategories}
+              woodTypes={woodTypes}
+              onResetFilters={handleResetFilters}
+              filteredCount={filteredProducts.length}
+            />
+          </div>
+        )}
+
+        <div className="flex flex-col md:flex-row gap-6 md:gap-8">
+          {/* Desktop sidebar filters */}
+          {!isMobile && (
+            <ProductFilters
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+              selectedWoodType={selectedWoodType}
+              setSelectedWoodType={setSelectedWoodType}
+              priceRange={priceRange}
+              setPriceRange={setPriceRange}
+              selectedDimensions={selectedDimensions}
+              setSelectedDimensions={setSelectedDimensions}
+              productCategories={productCategories}
+              woodTypes={woodTypes}
+              onResetFilters={handleResetFilters}
+            />
+          )}
 
           {/* Products grid */}
           <ProductsList 

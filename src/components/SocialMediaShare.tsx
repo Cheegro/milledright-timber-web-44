@@ -52,50 +52,57 @@ const SocialMediaShare: React.FC<SocialMediaShareProps> = ({
 
   if (variant === 'buttons') {
     return (
-      <div className={`flex items-center gap-2 ${className}`}>
+      <div className={`flex flex-col sm:flex-row sm:items-center gap-3 ${className}`}>
         <span className="text-sm font-medium text-gray-600">Share:</span>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => handleShare('Facebook', shareLinks.facebook)}
-          className="p-2"
-        >
-          <Facebook className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => handleShare('Twitter', shareLinks.twitter)}
-          className="p-2"
-        >
-          <Twitter className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => handleShare('LinkedIn', shareLinks.linkedin)}
-          className="p-2"
-        >
-          <Linkedin className="h-4 w-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => handleShare('WhatsApp', shareLinks.whatsapp)}
-          className="p-2"
-        >
-          <MessageCircle className="h-4 w-4" />
-        </Button>
-        {navigator.share && (
+        <div className="flex items-center gap-2 flex-wrap">
           <Button
             variant="outline"
             size="sm"
-            onClick={handleNativeShare}
-            className="p-2"
+            onClick={() => handleShare('Facebook', shareLinks.facebook)}
+            className="h-10 px-3 touch-manipulation"
           >
-            <Share2 className="h-4 w-4" />
+            <Facebook className="h-4 w-4 mr-2" />
+            <span className="hidden sm:inline">Facebook</span>
           </Button>
-        )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleShare('Twitter', shareLinks.twitter)}
+            className="h-10 px-3 touch-manipulation"
+          >
+            <Twitter className="h-4 w-4 mr-2" />
+            <span className="hidden sm:inline">Twitter</span>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleShare('LinkedIn', shareLinks.linkedin)}
+            className="h-10 px-3 touch-manipulation"
+          >
+            <Linkedin className="h-4 w-4 mr-2" />
+            <span className="hidden sm:inline">LinkedIn</span>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handleShare('WhatsApp', shareLinks.whatsapp)}
+            className="h-10 px-3 touch-manipulation"
+          >
+            <MessageCircle className="h-4 w-4 mr-2" />
+            <span className="hidden sm:inline">WhatsApp</span>
+          </Button>
+          {navigator.share && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleNativeShare}
+              className="h-10 px-3 touch-manipulation"
+            >
+              <Share2 className="h-4 w-4 mr-2" />
+              <span className="hidden sm:inline">Share</span>
+            </Button>
+          )}
+        </div>
       </div>
     );
   }
