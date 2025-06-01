@@ -20,6 +20,8 @@ Deno.serve(async (req) => {
   }
 
   try {
+    console.log('Starting image optimization process...')
+    
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
@@ -27,7 +29,7 @@ Deno.serve(async (req) => {
 
     const { bucketPath, entityType, entityId, originalFileName }: OptimizationRequest = await req.json()
     
-    console.log(`Starting image optimization for ${entityType}:${entityId}, file: ${originalFileName}`)
+    console.log(`Processing optimization for ${entityType}:${entityId}, file: ${originalFileName}`)
 
     // Download the original image from unprocessed-images bucket
     const { data: originalImageData, error: downloadError } = await supabaseAdmin.storage
@@ -35,21 +37,29 @@ Deno.serve(async (req) => {
       .download(bucketPath)
 
     if (downloadError || !originalImageData) {
+      console.error(`Failed to download original image: ${downloadError?.message}`)
       throw new Error(`Failed to download original image: ${downloadError?.message}`)
     }
 
+    console.log(`Downloaded original image, size: ${originalImageData.size} bytes`)
+    
     const imageBuffer = await originalImageData.arrayBuffer()
     
-    // Create optimized versions using Canvas API (available in Deno)
+    // Create optimized versions
     const optimizedVersions = await processImage(imageBuffer, originalFileName)
+    
+    console.log(`Generated ${optimizedVersions.length} optimized versions`)
     
     // Upload optimized versions to processed-images bucket
     const uploadPromises = optimizedVersions.map(async (version) => {
+      console.log(`Uploading ${version.type}: ${version.path}`)
+      
       const { data, error } = await supabaseAdmin.storage
         .from('processed-images')
         .upload(version.path, version.buffer, {
           contentType: version.contentType,
-          upsert: true
+          upsert: true,
+          cacheControl: '3600'
         })
       
       if (error) {
@@ -57,6 +67,7 @@ Deno.serve(async (req) => {
         throw error
       }
       
+      console.log(`Successfully uploaded ${version.type}: ${data.path}`)
       return { ...version, uploadPath: data.path }
     })
 
@@ -70,20 +81,27 @@ Deno.serve(async (req) => {
       thumbnailWebp: getPublicUrl(supabaseAdmin, uploadResults.find(r => r.type === 'thumbnail-webp')?.uploadPath)
     }
 
+    console.log('Generated URLs:', urls)
+
     // Update the database record with optimized URLs
     await updateDatabaseRecord(supabaseAdmin, entityType, entityId, urls)
     
     // Clean up: delete original image from unprocessed-images bucket
-    await supabaseAdmin.storage
+    const { error: deleteError } = await supabaseAdmin.storage
       .from('unprocessed-images')
       .remove([bucketPath])
+    
+    if (deleteError) {
+      console.error('Failed to delete original file:', deleteError)
+      // Don't throw here, as the optimization was successful
+    }
 
-    console.log(`Image optimization completed for ${entityType}:${entityId}`)
+    console.log(`Image optimization completed successfully for ${entityType}:${entityId}`)
 
     return new Response(JSON.stringify({ 
       success: true, 
       urls,
-      message: 'Image optimization completed'
+      message: 'Image optimization completed successfully'
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 200
@@ -92,6 +110,7 @@ Deno.serve(async (req) => {
   } catch (error) {
     console.error('Image optimization error:', error)
     return new Response(JSON.stringify({ 
+      success: false,
       error: error.message 
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -101,41 +120,43 @@ Deno.serve(async (req) => {
 })
 
 async function processImage(imageBuffer: ArrayBuffer, originalFileName: string) {
-  // Note: This is a simplified version. In production, you'd use a proper image processing library
-  // For now, we'll simulate the processing and return the original buffer with different names
-  // In a real implementation, you'd use libraries like Sharp or ImageMagick
+  console.log(`Processing image: ${originalFileName}`)
   
   const baseName = originalFileName.split('.')[0]
   const ext = originalFileName.split('.').pop()?.toLowerCase()
   
-  // Simulate different versions (in production, implement actual resizing/compression)
+  // For now, we'll create copies with different names
+  // In a production environment, you would use a proper image processing library
+  // like Sharp or ImageMagick to actually resize and optimize the images
+  
   const versions = [
     {
       type: 'optimized',
-      path: `optimized/${baseName}_1200.${ext}`,
+      path: `optimized/${baseName}_optimized.${ext}`,
       buffer: imageBuffer,
       contentType: getContentType(ext || 'jpg')
     },
     {
       type: 'optimized-webp',
-      path: `optimized/${baseName}_1200.webp`,
+      path: `optimized/${baseName}_optimized.webp`,
       buffer: imageBuffer, // In production, convert to WebP
       contentType: 'image/webp'
     },
     {
       type: 'thumbnail',
-      path: `thumbnails/${baseName}_300.${ext}`,
-      buffer: imageBuffer, // In production, resize to 300px
+      path: `thumbnails/${baseName}_thumb.${ext}`,
+      buffer: imageBuffer, // In production, resize to thumbnail
       contentType: getContentType(ext || 'jpg')
     },
     {
       type: 'thumbnail-webp',
-      path: `thumbnails/${baseName}_300.webp`,
+      path: `thumbnails/${baseName}_thumb.webp`,
       buffer: imageBuffer, // In production, resize and convert to WebP
       contentType: 'image/webp'
     }
   ]
   
+  console.log(`Created ${versions.length} image versions for processing`)
   return versions
 }
 
@@ -145,22 +166,30 @@ function getContentType(extension: string): string {
     'jpeg': 'image/jpeg',
     'png': 'image/png',
     'webp': 'image/webp',
-    'gif': 'image/gif'
+    'gif': 'image/gif',
+    'heic': 'image/jpeg',
+    'heif': 'image/jpeg'
   }
   return contentTypes[extension] || 'image/jpeg'
 }
 
 function getPublicUrl(supabase: any, path: string | undefined): string | null {
-  if (!path) return null
+  if (!path) {
+    console.log('No path provided for public URL generation')
+    return null
+  }
   
   const { data } = supabase.storage
     .from('processed-images')
     .getPublicUrl(path)
   
+  console.log(`Generated public URL for ${path}: ${data.publicUrl}`)
   return data.publicUrl
 }
 
 async function updateDatabaseRecord(supabase: any, entityType: string, entityId: string, urls: any) {
+  console.log(`Updating database record for ${entityType}:${entityId}`)
+  
   let updateData: any = {}
   
   switch (entityType) {
@@ -198,6 +227,8 @@ async function updateDatabaseRecord(supabase: any, entityType: string, entityId:
       break
   }
   
+  console.log('Update data:', updateData)
+  
   const { error } = await supabase
     .from(entityType)
     .update(updateData)
@@ -207,4 +238,6 @@ async function updateDatabaseRecord(supabase: any, entityType: string, entityId:
     console.error(`Failed to update ${entityType} record:`, error)
     throw error
   }
+  
+  console.log(`Successfully updated ${entityType} record`)
 }

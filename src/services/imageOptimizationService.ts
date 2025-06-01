@@ -27,13 +27,20 @@ export async function uploadAndOptimizeImage(
     // Upload to unprocessed-images bucket
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from('unprocessed-images')
-      .upload(bucketPath, file)
+      .upload(bucketPath, file, {
+        cacheControl: '3600',
+        upsert: true // Allow overwriting if file exists
+      })
 
     if (uploadError) {
+      console.error('Upload error:', uploadError)
       throw new Error(`Upload failed: ${uploadError.message}`)
     }
 
-    console.log(`Image uploaded, triggering optimization...`)
+    console.log(`Image uploaded successfully, triggering optimization...`)
+
+    // Wait a moment for upload to complete
+    await new Promise(resolve => setTimeout(resolve, 1000))
 
     // Trigger the optimization function
     const { data: optimizationResult, error: optimizationError } = await supabase.functions
@@ -47,14 +54,16 @@ export async function uploadAndOptimizeImage(
       })
 
     if (optimizationError) {
+      console.error('Optimization error:', optimizationError)
       throw new Error(`Optimization failed: ${optimizationError.message}`)
     }
 
-    if (!optimizationResult.success) {
-      throw new Error(`Optimization failed: ${optimizationResult.error}`)
+    if (!optimizationResult || !optimizationResult.success) {
+      console.error('Optimization result:', optimizationResult)
+      throw new Error(`Optimization failed: ${optimizationResult?.error || 'Unknown error'}`)
     }
 
-    console.log(`Image optimization completed successfully`)
+    console.log(`Image optimization completed successfully:`, optimizationResult.urls)
 
     return optimizationResult.urls
   } catch (error) {
