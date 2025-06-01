@@ -1,9 +1,10 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
-import ProductsHeader from '@/components/products/ProductsHeader';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import SEOHead from '@/components/SEOHead';
 import ProductFilters from '@/components/products/ProductFilters';
 import MobileProductFilters from '@/components/products/MobileProductFilters';
 import ProductsList from '@/components/products/ProductsList';
@@ -125,75 +126,103 @@ const Products = () => {
 
   if (productsLoading || categoriesLoading) {
     return (
-      <div className="min-h-screen">
-        <ProductsHeader />
-        <div className="container-wide py-12 flex justify-center items-center">
+      <div className="min-h-screen flex flex-col">
+        <SEOHead 
+          title="Premium Lumber Products | MilledRight Sawmill"
+          description="Browse our selection of premium live edge slabs, dimensional lumber, and custom wood products."
+        />
+        <Header />
+        <div className="flex-1 flex justify-center items-center">
           <Loader2 className="h-10 w-10 animate-spin text-sawmill-dark-brown" />
         </div>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen">
-      <ProductsHeader />
-
-      <div className="container-wide py-6 md:py-12">
-        {/* Mobile Filters */}
-        {isMobile && (
-          <div className="mb-6">
-            <MobileProductFilters
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              selectedCategory={selectedCategory}
-              setSelectedCategory={handleCategoryChange}
-              selectedWoodType={selectedWoodType}
-              setSelectedWoodType={setSelectedWoodType}
-              priceRange={priceRange}
-              setPriceRange={setPriceRange}
-              selectedDimensions={selectedDimensions}
-              setSelectedDimensions={setSelectedDimensions}
-              productCategories={productCategories}
-              woodTypes={woodTypes}
-              onResetFilters={handleResetFilters}
-              filteredCount={filteredProducts.length}
-            />
+    <div className="min-h-screen flex flex-col">
+      <SEOHead 
+        title="Premium Lumber Products | MilledRight Sawmill"
+        description="Browse our selection of premium live edge slabs, dimensional lumber, and custom wood products."
+      />
+      
+      <Header />
+      
+      <main className="flex-1">
+        {/* Hero section */}
+        <div className="bg-gradient-to-r from-sawmill-dark-brown to-sawmill-medium-brown text-white">
+          <div className="container-wide py-12 md:py-16">
+            <div className="text-center">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+                Premium Wood Products
+              </h1>
+              <p className="text-lg md:text-xl text-sawmill-light-brown max-w-3xl mx-auto">
+                Discover our carefully selected collection of live edge slabs, dimensional lumber, and custom wood products.
+              </p>
+            </div>
           </div>
-        )}
+        </div>
 
-        <div className="flex flex-col md:flex-row gap-6 md:gap-8">
-          {/* Desktop sidebar filters */}
-          {!isMobile && (
-            <ProductFilters
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              selectedCategory={selectedCategory}
-              setSelectedCategory={handleCategoryChange}
-              selectedWoodType={selectedWoodType}
-              setSelectedWoodType={setSelectedWoodType}
-              priceRange={priceRange}
-              setPriceRange={setPriceRange}
-              selectedDimensions={selectedDimensions}
-              setSelectedDimensions={setSelectedDimensions}
-              productCategories={productCategories}
-              woodTypes={woodTypes}
-              onResetFilters={handleResetFilters}
-            />
+        <div className="container-wide py-6 md:py-12">
+          {/* Mobile Filters */}
+          {isMobile && (
+            <div className="mb-6">
+              <MobileProductFilters
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={handleCategoryChange}
+                selectedWoodType={selectedWoodType}
+                setSelectedWoodType={setSelectedWoodType}
+                priceRange={priceRange}
+                setPriceRange={setPriceRange}
+                selectedDimensions={selectedDimensions}
+                setSelectedDimensions={setSelectedDimensions}
+                productCategories={productCategories}
+                woodTypes={woodTypes}
+                onResetFilters={handleResetFilters}
+                filteredCount={filteredProducts.length}
+              />
+            </div>
           )}
 
-          {/* Products grid */}
-          <ProductsList 
-            filteredProducts={filteredProducts}
-            selectedCategory={selectedCategory}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            setSelectedCategory={handleCategoryChange}
-          />
-        </div>
-      </div>
+          <div className="flex flex-col md:flex-row gap-6 md:gap-8">
+            {/* Desktop sidebar filters */}
+            {!isMobile && (
+              <ProductFilters
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={handleCategoryChange}
+                selectedWoodType={selectedWoodType}
+                setSelectedWoodType={setSelectedWoodType}
+                priceRange={priceRange}
+                setPriceRange={setPriceRange}
+                selectedDimensions={selectedDimensions}
+                setSelectedDimensions={setSelectedDimensions}
+                productCategories={productCategories}
+                woodTypes={woodTypes}
+                onResetFilters={handleResetFilters}
+              />
+            )}
 
-      {/* Call to action */}
-      <ProductsCallToAction />
+            {/* Products grid */}
+            <ProductsList 
+              filteredProducts={filteredProducts}
+              selectedCategory={selectedCategory}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              setSelectedCategory={handleCategoryChange}
+            />
+          </div>
+        </div>
+
+        {/* Call to action */}
+        <ProductsCallToAction />
+      </main>
+      
+      <Footer />
     </div>
   );
 };
