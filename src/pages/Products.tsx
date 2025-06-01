@@ -1,6 +1,7 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import ProductsHeader from '@/components/products/ProductsHeader';
 import ProductFilters from '@/components/products/ProductFilters';
@@ -12,6 +13,7 @@ import { toast } from '@/components/ui/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const Products = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedWoodType, setSelectedWoodType] = useState('All');
@@ -19,6 +21,14 @@ const Products = () => {
   const [selectedDimensions, setSelectedDimensions] = useState('All Sizes');
   
   const isMobile = useIsMobile();
+  
+  // Read category from URL parameters on component mount
+  useEffect(() => {
+    const categoryFromUrl = searchParams.get('category');
+    if (categoryFromUrl) {
+      setSelectedCategory(categoryFromUrl);
+    }
+  }, [searchParams]);
   
   // Fetch products using React Query
   const { data: products = [], isLoading: productsLoading, error: productsError } = useQuery({
@@ -95,6 +105,22 @@ const Products = () => {
     setSelectedWoodType('All');
     setPriceRange([0, 5000]);
     setSelectedDimensions('All Sizes');
+    // Clear URL parameters
+    setSearchParams({});
+  };
+
+  // Update URL when category changes
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    if (category === 'All') {
+      // Remove category parameter if "All" is selected
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete('category');
+      setSearchParams(newParams);
+    } else {
+      // Set category parameter
+      setSearchParams({ category });
+    }
   };
 
   if (productsLoading || categoriesLoading) {
@@ -120,7 +146,7 @@ const Products = () => {
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
               selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
+              setSelectedCategory={handleCategoryChange}
               selectedWoodType={selectedWoodType}
               setSelectedWoodType={setSelectedWoodType}
               priceRange={priceRange}
@@ -142,7 +168,7 @@ const Products = () => {
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
               selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
+              setSelectedCategory={handleCategoryChange}
               selectedWoodType={selectedWoodType}
               setSelectedWoodType={setSelectedWoodType}
               priceRange={priceRange}
@@ -161,7 +187,7 @@ const Products = () => {
             selectedCategory={selectedCategory}
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
-            setSelectedCategory={setSelectedCategory}
+            setSelectedCategory={handleCategoryChange}
           />
         </div>
       </div>
