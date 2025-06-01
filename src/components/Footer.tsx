@@ -4,10 +4,12 @@ import { Link } from 'react-router-dom';
 import NewsletterSubscription from './NewsletterSubscription';
 import SocialMediaLinks from './SocialMediaLinks';
 import { fetchProductCategories } from '@/api/productApi';
+import { fetchRecentBlogPosts } from '@/api/blogApi';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   const [productCategories, setProductCategories] = useState<any[]>([]);
+  const [recentPosts, setRecentPosts] = useState<any[]>([]);
   
   useEffect(() => {
     const loadCategories = async () => {
@@ -19,15 +21,25 @@ const Footer = () => {
       }
     };
     
+    const loadRecentPosts = async () => {
+      try {
+        const posts = await fetchRecentBlogPosts(3);
+        setRecentPosts(posts);
+      } catch (error) {
+        console.error('Error loading recent blog posts:', error);
+      }
+    };
+    
     loadCategories();
+    loadRecentPosts();
   }, []);
   
   return (
     <footer className="bg-sawmill-dark-brown text-white">
       <div className="container-wide py-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Company Info */}
-          <div>
+          <div className="lg:col-span-2">
             <h3 className="text-xl font-bold mb-4 border-b border-sawmill-medium-brown pb-2">MilledRight Sawmill</h3>
             <p className="mb-4">Premium quality lumber and custom milling services for professional and hobbyist woodworkers.</p>
             <p className="flex items-center">
@@ -78,7 +90,35 @@ const Footer = () => {
             </ul>
           </div>
           
-          {/* Newsletter */}
+          {/* Recent Blog Posts */}
+          <div>
+            <h3 className="text-xl font-bold mb-4 border-b border-sawmill-medium-brown pb-2">Latest Blog Posts</h3>
+            <ul className="space-y-3">
+              {recentPosts.map((post) => (
+                <li key={post.id}>
+                  <Link 
+                    to={`/blog/${post.id}`} 
+                    className="hover:text-sawmill-light-brown transition-colors block"
+                  >
+                    <h4 className="text-sm font-medium line-clamp-2">{post.title}</h4>
+                    <p className="text-xs text-sawmill-light-brown mt-1">
+                      {new Date(post.published_at).toLocaleDateString()}
+                    </p>
+                  </Link>
+                </li>
+              ))}
+              {recentPosts.length === 0 && (
+                <li className="text-sm text-sawmill-light-brown">No recent posts</li>
+              )}
+            </ul>
+            <Link to="/blog" className="inline-block mt-3 text-sm text-sawmill-orange hover:text-sawmill-light-brown transition-colors">
+              View All Posts →
+            </Link>
+          </div>
+        </div>
+        
+        {/* Newsletter Subscription */}
+        <div className="mt-8 pt-6 border-t border-sawmill-medium-brown">
           <NewsletterSubscription variant="footer" />
         </div>
         
