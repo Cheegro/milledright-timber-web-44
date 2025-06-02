@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -26,6 +25,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
 import { Loader2, Upload } from 'lucide-react';
 import { createProduct, updateProduct, uploadProductImage } from '@/api/adminProductApi';
+import { uploadGalleryImage } from '@/services/galleryService';
 
 // Form validation schema - removed price_unit as it doesn't exist in DB
 const productFormSchema = z.object({
@@ -82,7 +82,26 @@ const ProductForm = ({ categories, product, isEditing = false }: ProductFormProp
     
     try {
       setIsUploading(true);
+      
+      // Upload to product images
       const imageUrl = await uploadProductImage(selectedFile);
+      
+      // Also upload to gallery automatically
+      if (imageUrl) {
+        try {
+          await uploadGalleryImage(
+            selectedFile,
+            null, // No specific category
+            `Product Image: ${form.getValues('name') || 'Untitled Product'}`,
+            `Automatically uploaded from product: ${form.getValues('name') || 'Untitled Product'}`
+          );
+          console.log('Image also uploaded to gallery successfully');
+        } catch (galleryError) {
+          console.warn('Failed to upload to gallery, but product upload succeeded:', galleryError);
+          // Don't fail the whole process if gallery upload fails
+        }
+      }
+      
       return imageUrl;
     } catch (error) {
       console.error('Error uploading image:', error);
