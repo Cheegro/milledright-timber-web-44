@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -6,6 +5,7 @@ import { Loader2 } from 'lucide-react';
 import { fetchProduct } from '@/api/productApi';
 import { toast } from '@/components/ui/use-toast';
 import SocialMediaShare from '@/components/SocialMediaShare';
+import RelatedProducts from '@/components/products/RelatedProducts';
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -175,11 +175,11 @@ const ProductDetail = () => {
           </div>
         )}
 
-        {/* Related products placeholder */}
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold mb-6 border-b border-sawmill-medium-brown pb-2">Related Products</h2>
-          <p className="text-center py-8 bg-gray-100 rounded">Related products would be displayed here</p>
-        </div>
+        {/* Related products */}
+        <RelatedProducts 
+          currentProductId={product.id} 
+          currentProductCategory={product.category}
+        />
       </div>
     </div>
   );
