@@ -1,228 +1,181 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'react-router-dom';
-import { Loader2 } from 'lucide-react';
+
+import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import SEOHead from '@/components/SEOHead';
-import ProductFilters from '@/components/products/ProductFilters';
-import MobileProductFilters from '@/components/products/MobileProductFilters';
-import ProductsList from '@/components/products/ProductsList';
-import ProductsCallToAction from '@/components/products/ProductsCallToAction';
-import { fetchProducts, fetchProductCategories } from '@/api/productApi';
-import { toast } from '@/components/ui/use-toast';
-import { useIsMobile } from '@/hooks/use-mobile';
+import ProductsHeader from '@/components/products/ProductsHeader';
+import ProductCard from '@/components/products/ProductCard';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Search, Filter, Grid3X3 } from 'lucide-react';
+import { fetchProducts } from '@/api/productApi';
+import { toast } from '@/hooks/use-toast';
+
+interface Product {
+  id: string;
+  name: string;
+  category: string;
+  price: string;
+  price_unit?: string;
+  description: string | null;
+  image_url: string | null;
+}
 
 const Products = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedWoodType, setSelectedWoodType] = useState('All');
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000]);
-  const [selectedDimensions, setSelectedDimensions] = useState('All Sizes');
-  
-  const isMobile = useIsMobile();
-  
-  // Read category from URL parameters on component mount
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<string>('name');
+
+  // Get unique categories
+  const categories = ['all', ...Array.from(new Set(products.map(p => p.category)))];
+
   useEffect(() => {
-    const categoryFromUrl = searchParams.get('category');
-    if (categoryFromUrl) {
-      setSelectedCategory(categoryFromUrl);
+    const loadProducts = async () => {
+      try {
+        setLoading(true);
+        const productsData = await fetchProducts();
+        setProducts(productsData);
+        setFilteredProducts(productsData);
+      } catch (error) {
+        console.error('Error loading products:', error);
+        toast({
+          title: "Error loading products",
+          description: "There was a problem loading the products. Please try again later.",
+          variant: "destructive",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadProducts();
+  }, []);
+
+  useEffect(() => {
+    let filtered = [...products];
+
+    // Filter by search query
+    if (searchQuery) {
+      filtered = filtered.filter(product =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (product.description && product.description.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
     }
-  }, [searchParams]);
-  
-  // Fetch products using React Query
-  const { data: products = [], isLoading: productsLoading, error: productsError } = useQuery({
-    queryKey: ['products'],
-    queryFn: fetchProducts
-  });
-  
-  // Fetch categories using React Query
-  const { data: categoriesData = [], isLoading: categoriesLoading } = useQuery({
-    queryKey: ['productCategories'],
-    queryFn: fetchProductCategories
-  });
-  
-  // Format categories to match the expected format
-  const productCategories = ['All', ...categoriesData.map(cat => cat.name)];
-  
-  // Extract unique wood types from product names and descriptions
-  const woodTypes = useMemo(() => {
-    const types = new Set<string>();
-    products.forEach(product => {
-      // Extract wood types from product names (e.g., "Walnut Live Edge Slab" -> "Walnut")
-      const name = product.name.toLowerCase();
-      const commonWoodTypes = ['walnut', 'maple', 'oak', 'cherry', 'ash', 'hickory', 'elm', 'pine', 'cedar', 'birch'];
-      
-      commonWoodTypes.forEach(wood => {
-        if (name.includes(wood)) {
-          types.add(wood.charAt(0).toUpperCase() + wood.slice(1));
-        }
-      });
+
+    // Filter by category
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter(product => product.category === selectedCategory);
+    }
+
+    // Sort products
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'name':
+          return a.name.localeCompare(b.name);
+        case 'price':
+          // Extract numeric value from price string for comparison
+          const priceA = parseFloat(a.price.replace(/[^0-9.]/g, '')) || 0;
+          const priceB = parseFloat(b.price.replace(/[^0-9.]/g, '')) || 0;
+          return priceA - priceB;
+        default:
+          return 0;
+      }
     });
-    return Array.from(types).sort();
-  }, [products]);
-  
-  // Show error notification if products fetch fails
-  React.useEffect(() => {
-    if (productsError) {
-      toast({
-        title: "Error",
-        description: "Failed to load products. Please try again.",
-        variant: "destructive",
-      });
-    }
-  }, [productsError]);
-  
-  // Enhanced filtering logic
-  const filteredProducts = useMemo(() => {
-    return products.filter(product => {
-      // Search filter
-      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                            (product.description && product.description.toLowerCase().includes(searchQuery.toLowerCase()));
-      
-      // Category filter
-      const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory;
-      
-      // Wood type filter - check if product name contains the selected wood type
-      const matchesWoodType = selectedWoodType === 'All' || 
-                             product.name.toLowerCase().includes(selectedWoodType.toLowerCase());
-      
-      // Price filter - extract price from price string
-      const priceMatch = product.price.match(/\$?(\d+(?:\.\d{2})?)/);
-      const productPrice = priceMatch ? parseFloat(priceMatch[1]) : 0;
-      const matchesPrice = productPrice >= priceRange[0] && productPrice <= priceRange[1];
-      
-      // Dimensions filter (simplified logic for demonstration)
-      const matchesDimensions = selectedDimensions === 'All Sizes' || true; // TODO: Implement actual dimension filtering based on product data
-      
-      return matchesSearch && matchesCategory && matchesWoodType && matchesPrice && matchesDimensions;
-    });
-  }, [products, searchQuery, selectedCategory, selectedWoodType, priceRange, selectedDimensions]);
 
-  const handleResetFilters = () => {
-    setSearchQuery('');
-    setSelectedCategory('All');
-    setSelectedWoodType('All');
-    setPriceRange([0, 5000]);
-    setSelectedDimensions('All Sizes');
-    // Clear URL parameters
-    setSearchParams({});
-  };
-
-  // Update URL when category changes
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category);
-    if (category === 'All') {
-      // Remove category parameter if "All" is selected
-      const newParams = new URLSearchParams(searchParams);
-      newParams.delete('category');
-      setSearchParams(newParams);
-    } else {
-      // Set category parameter
-      setSearchParams({ category });
-    }
-  };
-
-  if (productsLoading || categoriesLoading) {
-    return (
-      <div className="min-h-screen flex flex-col">
-        <SEOHead 
-          title="Premium Lumber Products | MilledRight Sawmill"
-          description="Browse our selection of premium live edge slabs, dimensional lumber, and custom wood products."
-        />
-        <Header />
-        <div className="flex-1 flex justify-center items-center">
-          <Loader2 className="h-10 w-10 animate-spin text-sawmill-dark-brown" />
-        </div>
-        <Footer />
-      </div>
-    );
-  }
+    setFilteredProducts(filtered);
+  }, [products, searchQuery, selectedCategory, sortBy]);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <SEOHead 
-        title="Premium Lumber Products | MilledRight Sawmill"
-        description="Browse our selection of premium live edge slabs, dimensional lumber, and custom wood products."
-      />
-      
+    <div className="min-h-screen">
       <Header />
+      <ProductsHeader />
       
-      <main className="flex-1">
-        {/* Hero section */}
-        <div className="bg-gradient-to-r from-sawmill-dark-brown to-sawmill-medium-brown text-white">
-          <div className="container-wide py-12 md:py-16">
-            <div className="text-center">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-                Premium Wood Products
-              </h1>
-              <p className="text-lg md:text-xl text-sawmill-light-brown max-w-3xl mx-auto">
-                Discover our carefully selected collection of live edge slabs, dimensional lumber, and custom wood products.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="container-wide py-6 md:py-12">
-          {/* Mobile Filters */}
-          {isMobile && (
-            <div className="mb-6">
-              <MobileProductFilters
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-                selectedCategory={selectedCategory}
-                setSelectedCategory={handleCategoryChange}
-                selectedWoodType={selectedWoodType}
-                setSelectedWoodType={setSelectedWoodType}
-                priceRange={priceRange}
-                setPriceRange={setPriceRange}
-                selectedDimensions={selectedDimensions}
-                setSelectedDimensions={setSelectedDimensions}
-                productCategories={productCategories}
-                woodTypes={woodTypes}
-                onResetFilters={handleResetFilters}
-                filteredCount={filteredProducts.length}
-              />
-            </div>
-          )}
-
-          <div className="flex flex-col md:flex-row gap-6 md:gap-8">
-            {/* Desktop sidebar filters */}
-            {!isMobile && (
-              <ProductFilters
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-                selectedCategory={selectedCategory}
-                setSelectedCategory={handleCategoryChange}
-                selectedWoodType={selectedWoodType}
-                setSelectedWoodType={setSelectedWoodType}
-                priceRange={priceRange}
-                setPriceRange={setPriceRange}
-                selectedDimensions={selectedDimensions}
-                setSelectedDimensions={setSelectedDimensions}
-                productCategories={productCategories}
-                woodTypes={woodTypes}
-                onResetFilters={handleResetFilters}
-              />
-            )}
-
-            {/* Products grid */}
-            <ProductsList 
-              filteredProducts={filteredProducts}
-              selectedCategory={selectedCategory}
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              setSelectedCategory={handleCategoryChange}
+      <div className="container-wide py-12">
+        {/* Filters */}
+        <div className="mb-8 space-y-4 lg:space-y-0 lg:flex lg:items-center lg:gap-4">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Input
+              type="text"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
             />
           </div>
+          
+          <div className="flex gap-4">
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className="w-[180px]">
+                <Filter className="h-4 w-4 mr-2" />
+                <SelectValue placeholder="Category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map(category => (
+                  <SelectItem key={category} value={category}>
+                    {category === 'all' ? 'All Categories' : category}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            
+            <Select value={sortBy} onValueChange={setSortBy}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="name">Name A-Z</SelectItem>
+                <SelectItem value="price">Price Low-High</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
-        {/* Call to action */}
-        <ProductsCallToAction />
-      </main>
-      
-      <Footer />
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-sawmill-dark-brown"></div>
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="text-center py-20">
+            <Grid3X3 className="h-16 w-16 mx-auto text-gray-400 mb-4" />
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">
+              {searchQuery || selectedCategory !== 'all' ? 'No products found' : 'No products available'}
+            </h2>
+            <p className="text-gray-600 mb-8">
+              {searchQuery || selectedCategory !== 'all' 
+                ? 'Try adjusting your search or filter criteria.' 
+                : 'Check back soon for new products.'}
+            </p>
+            {(searchQuery || selectedCategory !== 'all') && (
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setSearchQuery('');
+                  setSelectedCategory('all');
+                }}
+              >
+                Clear Filters
+              </Button>
+            )}
+          </div>
+        ) : (
+          <>
+            <div className="mb-6">
+              <p className="text-gray-600">
+                Showing {filteredProducts.length} of {products.length} products
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              {filteredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };

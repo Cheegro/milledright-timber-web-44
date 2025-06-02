@@ -6,7 +6,7 @@ import { AspectRatio } from '@/components/ui/aspect-ratio';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
-import SharedBanner from '@/components/SharedBanner';
+import Header from '@/components/Header';
 import { fetchGalleryImages, fetchCategories } from '@/services/galleryService';
 import { toast } from '@/hooks/use-toast';
 
@@ -93,6 +93,8 @@ const Gallery = () => {
 
   return (
     <div className="min-h-screen">
+      <Header />
+      
       <div className="bg-sawmill-dark-brown py-12">
         <div className="container-wide">
           <h1 className="text-4xl font-bold text-white mb-4">Gallery</h1>
@@ -101,9 +103,6 @@ const Gallery = () => {
           </p>
         </div>
       </div>
-      
-      {/* Add compact banner */}
-      <SharedBanner variant="compact" />
       
       <div className="container-wide py-10">
         {loading ? (

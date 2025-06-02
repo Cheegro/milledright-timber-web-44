@@ -3,8 +3,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Heart, Eye, ArrowRight, Sparkles } from 'lucide-react';
-import { toast } from '@/components/ui/use-toast';
+import { Eye, ArrowRight, Sparkles } from 'lucide-react';
 
 // Interface updated to match Supabase product structure with price_unit
 interface Product {
@@ -23,7 +22,6 @@ interface ProductCardProps {
 
 const ProductCard = ({ product }: ProductCardProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
   
   // Use a placeholder image if the product doesn't have an image
   const imageUrl = product.image_url || '/placeholder.svg';
@@ -31,20 +29,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
   // Format price with board foot unit if applicable
   const priceDisplay = product.price_unit ? `${product.price} per ${product.price_unit}` : product.price;
 
-  const handleAddToDreamBoard = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toast({
-      title: "Added to Dream Board",
-      description: `${product.name} has been added to your dream board.`,
-    });
-  };
-
   return (
     <Card 
       className="overflow-hidden product-card group hover:shadow-2xl transition-all duration-500 border-0 shadow-lg bg-gradient-to-b from-white to-gray-50/50"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 relative overflow-hidden">
         {!imageLoaded && (
@@ -61,9 +48,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
           onLoad={() => setImageLoaded(true)}
         />
         
-        {/* Enhanced overlay with subtle gradient */}
+        {/* Enhanced overlay with view details button */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
-          <div className="opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-6 group-hover:translate-y-0 flex gap-3">
+          <div className="opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-6 group-hover:translate-y-0">
             <Button
               size="sm"
               className="bg-white/95 text-sawmill-dark-brown hover:bg-sawmill-orange hover:text-white shadow-xl backdrop-blur-sm border border-white/20"
@@ -73,14 +60,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 <Eye className="h-4 w-4 mr-2" />
                 View Details
               </Link>
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              className="bg-white/95 border-white/40 hover:bg-white hover:border-sawmill-orange shadow-xl backdrop-blur-sm"
-              onClick={handleAddToDreamBoard}
-            >
-              <Heart className="h-4 w-4" />
             </Button>
           </div>
         </div>
@@ -92,15 +71,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
             {product.category}
           </span>
         </div>
-
-        {/* Premium quality indicator for featured products */}
-        {isHovered && (
-          <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-x-4 group-hover:translate-x-0">
-            <div className="bg-sawmill-orange text-white text-xs px-2 py-1 rounded-full font-medium shadow-lg">
-              Premium
-            </div>
-          </div>
-        )}
       </div>
       
       <CardContent className="p-6 bg-white relative">
@@ -119,7 +89,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
           
           <p className="text-xl md:text-2xl font-bold text-sawmill-orange flex items-center gap-2">
             {priceDisplay}
-            {isHovered && <Sparkles className="h-4 w-4 animate-pulse" />}
           </p>
           
           {product.description && (
