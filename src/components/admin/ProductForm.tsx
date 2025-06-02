@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -24,8 +25,7 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
 import { Loader2, Upload } from 'lucide-react';
-import { createProduct, updateProduct } from '@/api/adminProductApi';
-import { uploadAndOptimizeImage, getOptimizedImageUrl } from '@/services/imageOptimizationService';
+import { createProduct, updateProduct, uploadProductImage } from '@/api/adminProductApi';
 
 // Form validation schema - removed price_unit as it doesn't exist in DB
 const productFormSchema = z.object({
@@ -48,7 +48,7 @@ const ProductForm = ({ categories, product, isEditing = false }: ProductFormProp
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(
-    product?.optimized_image_url || product?.image_url || null
+    product?.image_url || null
   );
 
   // Initialize form with existing product data or defaults
@@ -77,56 +77,57 @@ const ProductForm = ({ categories, product, isEditing = false }: ProductFormProp
     }
   };
 
+  const handleImageUpload = async () => {
+    if (!selectedFile) return null;
+    
+    try {
+      setIsUploading(true);
+      const imageUrl = await uploadProductImage(selectedFile);
+      return imageUrl;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to upload image. Please try again.',
+        variant: 'destructive',
+      });
+      return null;
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const onSubmit = async (data: z.infer<typeof productFormSchema>) => {
     try {
       setIsLoading(true);
       
-      let productData = {
+      // Upload image if a new one was selected
+      let imageUrl = data.image_url;
+      if (selectedFile) {
+        imageUrl = await handleImageUpload();
+        if (!imageUrl) return; // Stop if image upload failed
+      }
+      
+      const productData = {
         name: data.name,
         category_id: data.category_id || null,
         price: data.price,
         description: data.description || null,
-        image_url: data.image_url || null,
+        image_url: imageUrl || null,
       };
       
-      let productId: string;
-      
-      // Create or update the product first to get the ID
       if (isEditing && product) {
         await updateProduct(product.id, productData);
-        productId = product.id;
         toast({
           title: 'Success',
           description: 'Product updated successfully',
         });
       } else {
-        const newProduct = await createProduct(productData);
-        productId = newProduct.id;
+        await createProduct(productData);
         toast({
           title: 'Success',
           description: 'Product created successfully',
         });
-      }
-      
-      // If there's a new image, upload and optimize it
-      if (selectedFile) {
-        setIsUploading(true);
-        try {
-          await uploadAndOptimizeImage(selectedFile, 'products', productId);
-          toast({
-            title: 'Image Optimized',
-            description: 'Product image has been optimized and saved',
-          });
-        } catch (error: any) {
-          console.error('Image optimization error:', error);
-          toast({
-            title: 'Image Upload Warning',
-            description: 'Product saved but image optimization failed. You can try uploading again.',
-            variant: 'destructive',
-          });
-        } finally {
-          setIsUploading(false);
-        }
       }
       
       navigate('/admin/products');
@@ -258,9 +259,6 @@ const ProductForm = ({ categories, product, isEditing = false }: ProductFormProp
                           <p className="text-xs text-gray-400">
                             PNG, JPG, GIF up to 5MB
                           </p>
-                          <p className="text-xs text-green-600 mt-1">
-                            Images will be automatically optimized
-                          </p>
                         </label>
                       </div>
 
@@ -305,7 +303,7 @@ const ProductForm = ({ categories, product, isEditing = false }: ProductFormProp
             {(isLoading || isUploading) && (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             )}
-            {isUploading ? 'Optimizing Image...' : isEditing ? 'Update' : 'Create'} Product
+            {isEditing ? 'Update' : 'Create'} Product
           </Button>
         </div>
       </form>
