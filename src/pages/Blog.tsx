@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -16,9 +15,9 @@ interface BlogPost {
   slug: string;
   content: string;
   excerpt: string | null;
-  featured_image_url: string | null;
+  image_url: string | null;
   author: string | null;
-  status: string;
+  is_published: boolean;
   published_at: string | null;
   created_at: string;
   updated_at: string;
@@ -39,7 +38,7 @@ const Blog = () => {
         setLoading(true);
         const blogPosts = await fetchBlogPosts();
         // Only show published posts
-        const publishedPosts = blogPosts.filter(post => post.status === 'published');
+        const publishedPosts = blogPosts.filter(post => post.is_published);
         setPosts(publishedPosts);
         setFilteredPosts(publishedPosts);
       } catch (error) {
@@ -128,10 +127,10 @@ const Blog = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredPosts.map((post) => (
               <Card key={post.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                {post.featured_image_url && (
+                {post.image_url && (
                   <div className="aspect-video">
                     <img 
-                      src={post.featured_image_url} 
+                      src={post.image_url} 
                       alt={post.title}
                       className="object-cover w-full h-full"
                     />
