@@ -4,72 +4,58 @@ import { motion } from 'framer-motion';
 
 const ProductsHeader = () => {
   return (
-    <div className="relative bg-sawmill-dark-brown py-16">
-      {/* Background pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <svg width="100%" height="100%">
-          <pattern id="woodPattern" patternUnits="userSpaceOnUse" width="100" height="100">
-            <rect x="0" y="0" width="100" height="100" fill="none" />
-            <path d="M0 50 Q25 0 50 50 T100 50" stroke="currentColor" strokeWidth="2" fill="none" />
-            <path d="M0 70 Q25 20 50 70 T100 70" stroke="currentColor" strokeWidth="1.5" fill="none" />
-            <path d="M0 30 Q25 -20 50 30 T100 30" stroke="currentColor" strokeWidth="1.5" fill="none" />
-          </pattern>
-          <rect x="0" y="0" width="100%" height="100%" fill="url(#woodPattern)" />
-        </svg>
-      </div>
+    <section className="relative bg-sawmill-dark-brown text-white py-20">
+      <div className="absolute inset-0 bg-black opacity-50 z-0"></div>
+      <div 
+        className="absolute inset-0 z-0 bg-cover bg-center"
+        style={{ backgroundImage: `url('/lovable-uploads/f156b106-3ca8-4db3-97f9-b0f94a8eaba1.png')` }}
+      ></div>
       
       <div className="container-wide relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          className="text-center max-w-4xl mx-auto"
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.8 }}
         >
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">Live Edge Lumber</h1>
-          <p className="text-lg text-white/80 max-w-2xl">
-            Browse our selection of premium live edge slabs and custom-milled lumber for your woodworking projects.
-            Each piece tells a unique story through its natural grain, knots, and character.
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-shadow">
+            Premium Lumber Products
+          </h1>
+          <p className="text-xl md:text-2xl text-sawmill-light-brown mb-8 text-shadow">
+            From live edge slabs to dimensional lumber, discover our complete selection of quality wood products
           </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+            <motion.div 
+              className="text-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <h3 className="text-2xl font-bold mb-2">Live Edge Slabs</h3>
+              <p className="text-sawmill-light-brown">Natural beauty preserved</p>
+            </motion.div>
+            <motion.div 
+              className="text-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <h3 className="text-2xl font-bold mb-2">Dimensional Lumber</h3>
+              <p className="text-sawmill-light-brown">Precision cut to your specs</p>
+            </motion.div>
+            <motion.div 
+              className="text-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+            >
+              <h3 className="text-2xl font-bold mb-2">Custom Milling</h3>
+              <p className="text-sawmill-light-brown">Tailored to your project</p>
+            </motion.div>
+          </div>
         </motion.div>
-        
-        <div className="mt-8 flex flex-wrap gap-4">
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 flex items-center gap-3">
-            <div className="h-12 w-12 bg-sawmill-orange rounded-full flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check text-white">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-white font-medium">Kiln-Dried</h3>
-              <p className="text-white/70 text-sm">Stable moisture content</p>
-            </div>
-          </div>
-          
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 flex items-center gap-3">
-            <div className="h-12 w-12 bg-sawmill-orange rounded-full flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check text-white">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-white font-medium">Locally Sourced</h3>
-              <p className="text-white/70 text-sm">Sustainable forestry</p>
-            </div>
-          </div>
-          
-          <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4 flex items-center gap-3">
-            <div className="h-12 w-12 bg-sawmill-orange rounded-full flex items-center justify-center">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check text-white">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-white font-medium">Custom Dimensions</h3>
-              <p className="text-white/70 text-sm">Cut to your specifications</p>
-            </div>
-          </div>
-        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

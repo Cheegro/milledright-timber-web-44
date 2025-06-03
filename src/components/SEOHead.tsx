@@ -24,10 +24,10 @@ const SEOHead: React.FC<SEOHeadProps> = ({
   const { getSetting, isLoading } = useSettings();
   const location = useLocation();
 
-  // Default fallback values
-  const defaultTitle = 'MilledRight Sawmill - Quality Lumber & Custom Milling Services';
-  const defaultDescription = 'Premium lumber, live edge slabs, and custom milling services in Whitchurch-Stouffville, ON. Quality wood products direct from our sawmill.';
-  const defaultKeywords = 'sawmill, lumber, live edge slabs, custom milling, wood products, Whitchurch-Stouffville, Ontario';
+  // Default fallback values with sawmill focus
+  const defaultTitle = 'MilledRight Sawmill - Premium Lumber & Custom Milling Services';
+  const defaultDescription = 'Professional sawmill services in Whitchurch-Stouffville, ON. Custom lumber milling, live edge slabs, dimensional lumber, and quality wood products direct from our sawmill.';
+  const defaultKeywords = 'sawmill, lumber milling, custom lumber, live edge slabs, dimensional lumber, wood products, Whitchurch-Stouffville, Ontario, sawmill services';
 
   // Get settings values with fallbacks
   const siteTitle = getSetting('site_meta_title', defaultTitle);
@@ -46,18 +46,21 @@ const SEOHead: React.FC<SEOHeadProps> = ({
     if (pageType === 'products' && !title) {
       pageTitle = `Premium Lumber Products | ${companyName}`;
     } else if (pageType === 'contact' && !title) {
-      pageTitle = `Contact Us | ${companyName}`;
+      pageTitle = `Contact Our Sawmill | ${companyName}`;
     } else if (pageType === 'about' && !title) {
-      pageTitle = `About Our Sawmill | ${companyName}`;
+      pageTitle = `About Our Sawmill Operation | ${companyName}`;
     } else if (pageType === 'blog' && !title) {
-      pageTitle = `Workshop Journal & News | ${companyName}`;
+      pageTitle = `Sawmill News & Insights | ${companyName}`;
+    } else if (pageType === 'gallery' && !title) {
+      pageTitle = `Our Work & Equipment Gallery | ${companyName}`;
     }
   }
 
   const pageDescription = description || siteDescription;
   const pageKeywords = keywords || siteKeywords;
   const currentUrl = url || `${window.location.origin}${location.pathname}`;
-  const defaultImage = 'https://lh3.googleusercontent.com/pw/AP1GczPTRLiCj-uABM3l1danyqwliakkiNlE1J2GunUYMhSQox9oWd_6xgYZ50AcIO39LB_tiSChg-kOvEOeg1Wd7qhXvShvHpCxdQLvYCJt7SOrzNZ7=w2400';
+  // Use your authentic sawmill image as default
+  const defaultImage = '/lovable-uploads/a86a2200-0386-4fb1-adbf-bdf3d636bba2.png';
 
   // Don't render until settings are loaded to avoid flashing incorrect meta tags
   if (isLoading) {

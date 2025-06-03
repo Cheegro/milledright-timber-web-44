@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 import Header from '@/components/Header';
+import SEOHead from '@/components/SEOHead';
 import { fetchGalleryImages, fetchCategories } from '@/services/galleryService';
 import { toast } from '@/hooks/use-toast';
 
@@ -93,16 +94,32 @@ const Gallery = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOHead 
+        title="Our Work & Equipment Gallery"
+        description="View our sawmill equipment, lumber processing, and completed projects. See the quality and craftsmanship of MilledRight Sawmill."
+        image="/lovable-uploads/4775c114-fbd6-4ab0-8468-8fa4293e8e04.png"
+      />
+      
       <Header />
       
-      <div className="bg-sawmill-dark-brown py-12">
-        <div className="container-wide">
-          <h1 className="text-4xl font-bold text-white mb-4">Gallery</h1>
-          <p className="text-sawmill-light-brown text-lg">
-            Browse our collection of custom milling projects, furniture, and slabs
-          </p>
+      <section className="relative bg-sawmill-dark-brown text-white py-20">
+        <div className="absolute inset-0 bg-black opacity-50 z-0"></div>
+        <div 
+          className="absolute inset-0 z-0 bg-cover bg-center"
+          style={{ backgroundImage: `url('/lovable-uploads/4775c114-fbd6-4ab0-8468-8fa4293e8e04.png')` }}
+        ></div>
+        
+        <div className="container-wide relative z-10">
+          <div className="text-center max-w-4xl mx-auto">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-shadow">
+              Our Work & Equipment Gallery
+            </h1>
+            <p className="text-xl md:text-2xl text-sawmill-light-brown mb-8 text-shadow">
+              Browse our collection of custom milling projects, professional equipment, and quality lumber products
+            </p>
+          </div>
         </div>
-      </div>
+      </section>
       
       <div className="container-wide py-10">
         {loading ? (

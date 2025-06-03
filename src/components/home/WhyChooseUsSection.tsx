@@ -1,84 +1,101 @@
 
 import React from 'react';
-import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
-import { Hammer, Wrench, TreePine, Truck } from 'lucide-react';
+import { Award, Clock, TreePine, Users } from 'lucide-react';
 
 const WhyChooseUsSection = () => {
-  const services = [
+  const features = [
     {
-      icon: <TreePine className="h-8 w-8" />,
-      title: "Custom Log Milling",
-      description: "Bring your logs to us and we'll mill them to your exact specifications. From rough lumber to finished boards.",
-      projectType: "mill-logs",
-      ctaText: "Get Milling Quote"
+      icon: <Award className="h-8 w-8 text-sawmill-orange" />,
+      title: "Premium Quality",
+      description: "Every piece of lumber is carefully selected and processed to meet the highest standards of quality and grain excellence."
     },
     {
-      icon: <Hammer className="h-8 w-8" />,
-      title: "Custom Built Structures",
-      description: "Tables, countertops, furniture, and more. We create beautiful pieces from your vision.",
-      projectType: "custom-table",
-      ctaText: "Get Custom Quote"
+      icon: <Clock className="h-8 w-8 text-sawmill-orange" />,
+      title: "Fast Processing",
+      description: "Efficient sawmill operation means quick turnaround times without compromising on quality or attention to detail."
     },
     {
-      icon: <Wrench className="h-8 w-8" />,
-      title: "Expert Craftsmanship",
-      description: "With years of experience, we ensure every cut is precise and every piece meets our high standards.",
-      projectType: "furniture",
-      ctaText: "Get Furniture Quote"
+      icon: <TreePine className="h-8 w-8 text-sawmill-orange" />,
+      title: "Local Sourcing",
+      description: "We source our logs locally from sustainable sources, supporting the local economy and reducing environmental impact."
     },
     {
-      icon: <Truck className="h-8 w-8" />,
-      title: "Delivery Available",
-      description: "We can deliver your lumber and custom pieces directly to your location in the Greater Toronto Area.",
-      projectType: "other",
-      ctaText: "Get Delivery Quote"
+      icon: <Users className="h-8 w-8 text-sawmill-orange" />,
+      title: "Expert Service",
+      description: "Our experienced team provides personalized service and expert advice for all your lumber and milling needs."
     }
   ];
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-20 bg-white">
       <div className="container-wide">
-        <div className="text-center mb-12">
-          <h2 className="section-title">Why Choose MilledRight?</h2>
-          <p className="text-lg text-gray-600 mt-4 max-w-3xl mx-auto">
-            From raw logs to finished masterpieces, we provide quality milling services 
-            and custom woodworking that brings your vision to life.
-          </p>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {services.map((service, index) => (
-            <Card key={index} className="text-center hover:shadow-lg transition-shadow duration-300">
-              <CardContent className="p-6">
-                <div className="bg-sawmill-orange rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 text-white">
-                  {service.icon}
-                </div>
-                <h3 className="text-xl font-bold mb-3 text-sawmill-dark-brown">{service.title}</h3>
-                <p className="text-gray-600 mb-4">{service.description}</p>
-                <Button 
-                  className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown text-white"
-                  onClick={() => {
-                    // Scroll to quote section with pre-selected project type
-                    const quoteSection = document.getElementById('quote-section');
-                    if (quoteSection) {
-                      quoteSection.scrollIntoView({ behavior: 'smooth' });
-                      // Update URL with project type parameter
-                      const url = new URL(window.location.href);
-                      url.searchParams.set('project', service.projectType);
-                      window.history.replaceState({}, '', url.toString());
-                      // Small delay to allow scroll to complete, then trigger form update
-                      setTimeout(() => {
-                        window.location.reload();
-                      }, 500);
-                    }
-                  }}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-sawmill-dark-brown mb-6">
+              Why Choose MilledRight Sawmill?
+            </h2>
+            <p className="text-lg text-gray-600 mb-8">
+              With years of experience and state-of-the-art equipment, we deliver exceptional lumber products and services that exceed expectations.
+            </p>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {features.map((feature, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  viewport={{ once: true }}
                 >
-                  {service.ctaText}
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+                  <Card className="border-0 shadow-md hover:shadow-lg transition-shadow">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className="flex-shrink-0 p-3 bg-sawmill-orange/10 rounded-lg">
+                          {feature.icon}
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-lg text-sawmill-dark-brown mb-2">
+                            {feature.title}
+                          </h3>
+                          <p className="text-gray-600 text-sm leading-relaxed">
+                            {feature.description}
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="relative"
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <div className="relative overflow-hidden rounded-2xl shadow-2xl">
+              <img 
+                src="/lovable-uploads/25ede0d7-5f16-4f08-b2d2-7155a2a10f2f.png" 
+                alt="Quality lumber stacked and organized at MilledRight Sawmill"
+                className="object-cover w-full h-[500px]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+            </div>
+            
+            {/* Decorative element */}
+            <div className="absolute -top-6 -right-6 w-24 h-24 bg-sawmill-orange/20 rounded-full blur-2xl" />
+            <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-sawmill-dark-brown/10 rounded-full blur-2xl" />
+          </motion.div>
         </div>
       </div>
     </section>
