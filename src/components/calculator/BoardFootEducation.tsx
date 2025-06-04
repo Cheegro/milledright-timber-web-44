@@ -25,7 +25,7 @@ const BoardFootEducation = () => {
               <strong>Board Feet = (Length × Width × Thickness) ÷ 144</strong>
             </p>
             <p className="text-sm text-gray-600 mt-1">
-              All measurements in inches
+              All measurements converted to inches before calculation
             </p>
           </div>
         </CardContent>
@@ -87,6 +87,13 @@ const BoardFootEducation = () => {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
+              <h4 className="font-semibold mb-2">Unit Conversions</h4>
+              <p className="text-sm text-gray-600">
+                Our calculator automatically converts feet to inches for accurate calculations. 
+                Use feet for length when it's more convenient (8 ft vs 96 in).
+              </p>
+            </div>
+            <div>
               <h4 className="font-semibold mb-2">Nominal vs. Actual Size</h4>
               <p className="text-sm text-gray-600">
                 Remember that lumber is sold by nominal size (2×4) but actual dimensions are smaller 
@@ -98,6 +105,13 @@ const BoardFootEducation = () => {
               <p className="text-sm text-gray-600">
                 Common fractions: 1/4 = 0.25, 1/2 = 0.5, 3/4 = 0.75, 1/8 = 0.125, 3/8 = 0.375, 
                 5/8 = 0.625, 7/8 = 0.875
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-2">Multiple Pieces</h4>
+              <p className="text-sm text-gray-600">
+                Use the quantity field for multiple identical pieces, or add separate entries 
+                for different sizes to get accurate totals.
               </p>
             </div>
           </div>

@@ -4,34 +4,72 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calculator, Plus, Trash2 } from 'lucide-react';
 
 interface BoardCalculation {
   id: number;
   length: number;
+  lengthUnit: string;
   width: number;
+  widthUnit: string;
   thickness: number;
+  thicknessUnit: string;
   quantity: number;
   boardFeet: number;
 }
 
 const BoardFootCalculator = () => {
   const [calculations, setCalculations] = useState<BoardCalculation[]>([
-    { id: 1, length: 0, width: 0, thickness: 0, quantity: 1, boardFeet: 0 }
+    { 
+      id: 1, 
+      length: 0, 
+      lengthUnit: 'ft',
+      width: 0, 
+      widthUnit: 'in',
+      thickness: 0, 
+      thicknessUnit: 'in',
+      quantity: 1, 
+      boardFeet: 0 
+    }
   ]);
   const [pricePerBoardFoot, setPricePerBoardFoot] = useState<number>(0);
 
-  const calculateBoardFeet = (length: number, width: number, thickness: number, quantity: number): number => {
-    // Board Feet = (Length × Width × Thickness) ÷ 144 × Quantity
-    return (length * width * thickness * quantity) / 144;
+  const convertToInches = (value: number, unit: string): number => {
+    switch (unit) {
+      case 'ft':
+        return value * 12;
+      case 'in':
+        return value;
+      default:
+        return value;
+    }
   };
 
-  const updateCalculation = (id: number, field: keyof BoardCalculation, value: number) => {
+  const calculateBoardFeet = (length: number, lengthUnit: string, width: number, widthUnit: string, thickness: number, thicknessUnit: string, quantity: number): number => {
+    // Convert all measurements to inches
+    const lengthInInches = convertToInches(length, lengthUnit);
+    const widthInInches = convertToInches(width, widthUnit);
+    const thicknessInInches = convertToInches(thickness, thicknessUnit);
+    
+    // Board Feet = (Length × Width × Thickness) ÷ 144 × Quantity
+    return (lengthInInches * widthInInches * thicknessInInches * quantity) / 144;
+  };
+
+  const updateCalculation = (id: number, field: keyof BoardCalculation, value: number | string) => {
     setCalculations(prev => prev.map(calc => {
       if (calc.id === id) {
         const updated = { ...calc, [field]: value };
         if (field !== 'boardFeet') {
-          updated.boardFeet = calculateBoardFeet(updated.length, updated.width, updated.thickness, updated.quantity);
+          updated.boardFeet = calculateBoardFeet(
+            updated.length, 
+            updated.lengthUnit,
+            updated.width, 
+            updated.widthUnit,
+            updated.thickness, 
+            updated.thicknessUnit,
+            updated.quantity
+          );
         }
         return updated;
       }
@@ -44,8 +82,11 @@ const BoardFootCalculator = () => {
     setCalculations(prev => [...prev, { 
       id: newId, 
       length: 0, 
+      lengthUnit: 'ft',
       width: 0, 
+      widthUnit: 'in',
       thickness: 0, 
+      thicknessUnit: 'in',
       quantity: 1, 
       boardFeet: 0 
     }]);
@@ -86,47 +127,95 @@ const BoardFootCalculator = () => {
                 )}
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                <div>
-                  <Label htmlFor={`length-${calc.id}`}>Length (inches)</Label>
-                  <Input
-                    id={`length-${calc.id}`}
-                    type="number"
-                    min="0"
-                    step="0.25"
-                    value={calc.length || ''}
-                    onChange={(e) => updateCalculation(calc.id, 'length', parseFloat(e.target.value) || 0)}
-                    placeholder="96"
-                  />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {/* Length */}
+                <div className="space-y-2">
+                  <Label htmlFor={`length-${calc.id}`}>Length</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id={`length-${calc.id}`}
+                      type="number"
+                      min="0"
+                      step="0.25"
+                      value={calc.length || ''}
+                      onChange={(e) => updateCalculation(calc.id, 'length', parseFloat(e.target.value) || 0)}
+                      placeholder="8"
+                      className="flex-1"
+                    />
+                    <Select 
+                      value={calc.lengthUnit} 
+                      onValueChange={(value) => updateCalculation(calc.id, 'lengthUnit', value)}
+                    >
+                      <SelectTrigger className="w-16">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ft">ft</SelectItem>
+                        <SelectItem value="in">in</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 
-                <div>
-                  <Label htmlFor={`width-${calc.id}`}>Width (inches)</Label>
-                  <Input
-                    id={`width-${calc.id}`}
-                    type="number"
-                    min="0"
-                    step="0.25"
-                    value={calc.width || ''}
-                    onChange={(e) => updateCalculation(calc.id, 'width', parseFloat(e.target.value) || 0)}
-                    placeholder="6"
-                  />
+                {/* Width */}
+                <div className="space-y-2">
+                  <Label htmlFor={`width-${calc.id}`}>Width</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id={`width-${calc.id}`}
+                      type="number"
+                      min="0"
+                      step="0.25"
+                      value={calc.width || ''}
+                      onChange={(e) => updateCalculation(calc.id, 'width', parseFloat(e.target.value) || 0)}
+                      placeholder="6"
+                      className="flex-1"
+                    />
+                    <Select 
+                      value={calc.widthUnit} 
+                      onValueChange={(value) => updateCalculation(calc.id, 'widthUnit', value)}
+                    >
+                      <SelectTrigger className="w-16">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="ft">ft</SelectItem>
+                        <SelectItem value="in">in</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 
-                <div>
-                  <Label htmlFor={`thickness-${calc.id}`}>Thickness (inches)</Label>
-                  <Input
-                    id={`thickness-${calc.id}`}
-                    type="number"
-                    min="0"
-                    step="0.125"
-                    value={calc.thickness || ''}
-                    onChange={(e) => updateCalculation(calc.id, 'thickness', parseFloat(e.target.value) || 0)}
-                    placeholder="1"
-                  />
+                {/* Thickness */}
+                <div className="space-y-2">
+                  <Label htmlFor={`thickness-${calc.id}`}>Thickness</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id={`thickness-${calc.id}`}
+                      type="number"
+                      min="0"
+                      step="0.125"
+                      value={calc.thickness || ''}
+                      onChange={(e) => updateCalculation(calc.id, 'thickness', parseFloat(e.target.value) || 0)}
+                      placeholder="1"
+                      className="flex-1"
+                    />
+                    <Select 
+                      value={calc.thicknessUnit} 
+                      onValueChange={(value) => updateCalculation(calc.id, 'thicknessUnit', value)}
+                    >
+                      <SelectTrigger className="w-16">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="in">in</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 
-                <div>
+                {/* Quantity */}
+                <div className="space-y-2">
                   <Label htmlFor={`quantity-${calc.id}`}>Quantity</Label>
                   <Input
                     id={`quantity-${calc.id}`}
@@ -136,12 +225,13 @@ const BoardFootCalculator = () => {
                     onChange={(e) => updateCalculation(calc.id, 'quantity', parseInt(e.target.value) || 1)}
                   />
                 </div>
-                
-                <div>
-                  <Label>Board Feet</Label>
-                  <div className="h-10 flex items-center px-3 bg-sawmill-orange/10 border rounded-md font-semibold text-sawmill-dark-brown">
-                    {calc.boardFeet.toFixed(2)}
-                  </div>
+              </div>
+              
+              {/* Board Feet Result */}
+              <div className="mt-4">
+                <Label>Board Feet</Label>
+                <div className="h-10 flex items-center px-3 bg-sawmill-orange/10 border rounded-md font-semibold text-sawmill-dark-brown text-lg">
+                  {calc.boardFeet.toFixed(2)} BF
                 </div>
               </div>
             </div>
