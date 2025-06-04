@@ -17,6 +17,7 @@ import Contact from '@/pages/Contact';
 import Blog from '@/pages/Blog';
 import BlogPost from '@/pages/BlogPost';
 import Reviews from '@/pages/Reviews';
+import BoardFootCalculator from '@/pages/BoardFootCalculator';
 import NotFound from '@/pages/NotFound';
 
 // Admin pages
@@ -64,6 +65,7 @@ function App() {
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/reviews" element={<Reviews />} />
+            <Route path="/board-foot-calculator" element={<BoardFootCalculator />} />
 
             {/* Admin routes */}
             <Route path="/admin/login" element={<Login />} />

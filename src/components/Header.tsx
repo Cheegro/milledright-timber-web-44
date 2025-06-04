@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, ShieldCheck, Bell } from 'lucide-react';
@@ -17,6 +16,17 @@ const Header = () => {
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
+
+  const navigationItems = [
+    { name: 'Home', href: '/' },
+    { name: 'Products', href: '/products' },
+    { name: 'Projects', href: '/projects' },
+    { name: 'Gallery', href: '/gallery' },
+    { name: 'Blog', href: '/blog' },
+    { name: 'Board Foot Calculator', href: '/board-foot-calculator' },
+    { name: 'About', href: '/about' },
+    { name: 'Contact', href: '/contact' }
+  ];
 
   const handleAdminAccess = () => {
     toast({
@@ -61,12 +71,9 @@ const Header = () => {
           
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-6">
-            <Link to="/" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium transition-colors">Home</Link>
-            <Link to="/products" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium transition-colors">Products</Link>
-            <Link to="/gallery" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium transition-colors">Gallery</Link>
-            <Link to="/blog" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium transition-colors">Blog</Link>
-            <Link to="/about" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium transition-colors">About Us</Link>
-            <Link to="/contact" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium transition-colors">Contact</Link>
+            {navigationItems.map((item) => (
+              <Link key={item.name} to={item.href} className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium transition-colors">{item.name}</Link>
+            ))}
             
             <Button 
               variant="outline" 
@@ -107,12 +114,9 @@ const Header = () => {
                 </div>
               </div>
               <nav className="flex flex-col p-4">
-                <Link to="/" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium py-4 px-4 rounded hover:bg-gray-50 touch-manipulation" onClick={() => setIsOpen(false)}>Home</Link>
-                <Link to="/products" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium py-4 px-4 rounded hover:bg-gray-50 touch-manipulation" onClick={() => setIsOpen(false)}>Products</Link>
-                <Link to="/gallery" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium py-4 px-4 rounded hover:bg-gray-50 touch-manipulation" onClick={() => setIsOpen(false)}>Gallery</Link>
-                <Link to="/blog" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium py-4 px-4 rounded hover:bg-gray-50 touch-manipulation" onClick={() => setIsOpen(false)}>Blog</Link>
-                <Link to="/about" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium py-4 px-4 rounded hover:bg-gray-50 touch-manipulation" onClick={() => setIsOpen(false)}>About Us</Link>
-                <Link to="/contact" className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium py-4 px-4 rounded hover:bg-gray-50 touch-manipulation" onClick={() => setIsOpen(false)}>Contact</Link>
+                {navigationItems.map((item) => (
+                  <Link key={item.name} to={item.href} className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium py-4 px-4 rounded hover:bg-gray-50 touch-manipulation" onClick={() => setIsOpen(false)}>{item.name}</Link>
+                ))}
                 
                 <div className="mt-6 space-y-3">
                   <Button 
