@@ -25,7 +25,7 @@ const BoardFootCalculatorPage = () => {
           <div className="container-wide">
             <div className="text-center mb-8">
               <h1 className="text-3xl md:text-5xl font-bold text-sawmill-dark-brown mb-4">
-                Professional Board Foot Calculator
+                Board Foot Calculator
               </h1>
               <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
                 The most accurate and feature-rich lumber calculator available. Calculate board feet, 

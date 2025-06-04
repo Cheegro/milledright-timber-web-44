@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calculator, Plus, Trash2, Download, History, Eye, Save } from 'lucide-react';
+import { Calculator, Plus, Trash2, Download, History, Save } from 'lucide-react';
 
 interface BoardCalculation {
   id: number;
@@ -45,7 +45,6 @@ const BoardFootCalculator = () => {
   const [pricePerBoardFoot, setPricePerBoardFoot] = useState<number>(0);
   const [history, setHistory] = useState<CalculationHistory[]>([]);
   const [showHistory, setShowHistory] = useState(false);
-  const [showVisualization, setShowVisualization] = useState(true);
 
   const convertToInches = (value: number, unit: string): number => {
     switch (unit) {
@@ -145,47 +144,6 @@ const BoardFootCalculator = () => {
   const totalBoardFeet = calculations.reduce((sum, calc) => sum + calc.boardFeet, 0);
   const totalPrice = totalBoardFeet * pricePerBoardFoot;
 
-  // Visual representation of lumber
-  const LumberVisualization = ({ calc }: { calc: BoardCalculation }) => {
-    const scale = 0.1;
-    const maxWidth = 200;
-    const maxHeight = 150;
-    
-    const lengthInInches = convertToInches(calc.length, calc.lengthUnit);
-    const widthInInches = convertToInches(calc.width, calc.widthUnit);
-    const thicknessInInches = convertToInches(calc.thickness, calc.thicknessUnit);
-    
-    const visualWidth = Math.min(lengthInInches * scale, maxWidth);
-    const visualHeight = Math.min(widthInInches * scale, maxHeight);
-    const visualThickness = Math.max(thicknessInInches * 2, 4);
-    
-    if (lengthInInches === 0 || widthInInches === 0 || thicknessInInches === 0) {
-      return (
-        <div className="w-full h-32 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
-          <span className="text-sm">Enter dimensions to see visualization</span>
-        </div>
-      );
-    }
-    
-    return (
-      <div className="w-full h-32 bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg flex items-center justify-center relative overflow-hidden">
-        <div 
-          className="bg-gradient-to-br from-amber-700 to-amber-900 rounded shadow-lg border border-amber-800"
-          style={{
-            width: `${Math.max(visualWidth, 20)}px`,
-            height: `${Math.max(visualHeight, 20)}px`,
-            boxShadow: `${visualThickness}px ${visualThickness}px 0 rgba(146, 64, 14, 0.3)`
-          }}
-        >
-          <div className="w-full h-full bg-gradient-to-br from-amber-600 to-amber-800 rounded opacity-80"></div>
-        </div>
-        <div className="absolute bottom-2 right-2 text-xs text-amber-800 font-semibold bg-white/80 px-2 py-1 rounded">
-          {calc.boardFeet.toFixed(2)} BF
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="space-y-6">
       {/* Main Calculator Card */}
@@ -194,18 +152,9 @@ const BoardFootCalculator = () => {
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Calculator className="h-6 w-6 text-sawmill-orange" />
-              <span className="text-xl font-bold">Professional Board Foot Calculator</span>
+              <span className="text-xl font-bold">Board Foot Calculator</span>
             </div>
             <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowVisualization(!showVisualization)}
-                className="bg-white/10 border-white/20 text-white hover:bg-white/20"
-              >
-                <Eye className="h-4 w-4 mr-1" />
-                {showVisualization ? 'Hide' : 'Show'} Visual
-              </Button>
               <Button
                 variant="outline"
                 size="sm"
@@ -253,128 +202,117 @@ const BoardFootCalculator = () => {
                 )}
               </div>
               
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Input Fields */}
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Length */}
-                    <div className="space-y-2">
-                      <Label htmlFor={`length-${calc.id}`} className="text-sm font-semibold text-gray-700">Length</Label>
-                      <div className="flex gap-2">
-                        <Input
-                          id={`length-${calc.id}`}
-                          type="number"
-                          min="0"
-                          step="0.25"
-                          value={calc.length || ''}
-                          onChange={(e) => updateCalculation(calc.id, 'length', parseFloat(e.target.value) || 0)}
-                          placeholder="8"
-                          className="flex-1 border-gray-300 focus:border-sawmill-orange focus:ring-sawmill-orange"
-                        />
-                        <Select 
-                          value={calc.lengthUnit} 
-                          onValueChange={(value) => updateCalculation(calc.id, 'lengthUnit', value)}
-                        >
-                          <SelectTrigger className="w-16 border-gray-300">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="ft">ft</SelectItem>
-                            <SelectItem value="in">in</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                    
-                    {/* Width */}
-                    <div className="space-y-2">
-                      <Label htmlFor={`width-${calc.id}`} className="text-sm font-semibold text-gray-700">Width</Label>
-                      <div className="flex gap-2">
-                        <Input
-                          id={`width-${calc.id}`}
-                          type="number"
-                          min="0"
-                          step="0.25"
-                          value={calc.width || ''}
-                          onChange={(e) => updateCalculation(calc.id, 'width', parseFloat(e.target.value) || 0)}
-                          placeholder="6"
-                          className="flex-1 border-gray-300 focus:border-sawmill-orange focus:ring-sawmill-orange"
-                        />
-                        <Select 
-                          value={calc.widthUnit} 
-                          onValueChange={(value) => updateCalculation(calc.id, 'widthUnit', value)}
-                        >
-                          <SelectTrigger className="w-16 border-gray-300">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="ft">ft</SelectItem>
-                            <SelectItem value="in">in</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Thickness */}
-                    <div className="space-y-2">
-                      <Label htmlFor={`thickness-${calc.id}`} className="text-sm font-semibold text-gray-700">Thickness</Label>
-                      <div className="flex gap-2">
-                        <Input
-                          id={`thickness-${calc.id}`}
-                          type="number"
-                          min="0"
-                          step="0.125"
-                          value={calc.thickness || ''}
-                          onChange={(e) => updateCalculation(calc.id, 'thickness', parseFloat(e.target.value) || 0)}
-                          placeholder="1"
-                          className="flex-1 border-gray-300 focus:border-sawmill-orange focus:ring-sawmill-orange"
-                        />
-                        <Select 
-                          value={calc.thicknessUnit} 
-                          onValueChange={(value) => updateCalculation(calc.id, 'thicknessUnit', value)}
-                        >
-                          <SelectTrigger className="w-16 border-gray-300">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="in">in</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                    
-                    {/* Quantity */}
-                    <div className="space-y-2">
-                      <Label htmlFor={`quantity-${calc.id}`} className="text-sm font-semibold text-gray-700">Quantity</Label>
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Length */}
+                  <div className="space-y-2">
+                    <Label htmlFor={`length-${calc.id}`} className="text-sm font-semibold text-gray-700">Length</Label>
+                    <div className="flex gap-2">
                       <Input
-                        id={`quantity-${calc.id}`}
+                        id={`length-${calc.id}`}
                         type="number"
-                        min="1"
-                        value={calc.quantity || 1}
-                        onChange={(e) => updateCalculation(calc.id, 'quantity', parseInt(e.target.value) || 1)}
-                        className="border-gray-300 focus:border-sawmill-orange focus:ring-sawmill-orange"
+                        min="0"
+                        step="0.25"
+                        value={calc.length || ''}
+                        onChange={(e) => updateCalculation(calc.id, 'length', parseFloat(e.target.value) || 0)}
+                        placeholder="8"
+                        className="flex-1 border-gray-300 focus:border-sawmill-orange focus:ring-sawmill-orange"
                       />
+                      <Select 
+                        value={calc.lengthUnit} 
+                        onValueChange={(value) => updateCalculation(calc.id, 'lengthUnit', value)}
+                      >
+                        <SelectTrigger className="w-16 border-gray-300">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="ft">ft</SelectItem>
+                          <SelectItem value="in">in</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                   
-                  {/* Board Feet Result */}
-                  <div className="bg-gradient-to-r from-sawmill-orange/10 to-sawmill-auburn/10 p-4 rounded-lg border border-sawmill-orange/20">
-                    <Label className="text-sm font-semibold text-sawmill-dark-brown">Board Feet Result</Label>
-                    <div className="text-2xl font-bold text-sawmill-dark-brown mt-1">
-                      {calc.boardFeet.toFixed(2)} BF
+                  {/* Width */}
+                  <div className="space-y-2">
+                    <Label htmlFor={`width-${calc.id}`} className="text-sm font-semibold text-gray-700">Width</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        id={`width-${calc.id}`}
+                        type="number"
+                        min="0"
+                        step="0.25"
+                        value={calc.width || ''}
+                        onChange={(e) => updateCalculation(calc.id, 'width', parseFloat(e.target.value) || 0)}
+                        placeholder="6"
+                        className="flex-1 border-gray-300 focus:border-sawmill-orange focus:ring-sawmill-orange"
+                      />
+                      <Select 
+                        value={calc.widthUnit} 
+                        onValueChange={(value) => updateCalculation(calc.id, 'widthUnit', value)}
+                      >
+                        <SelectTrigger className="w-16 border-gray-300">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="ft">ft</SelectItem>
+                          <SelectItem value="in">in</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                 </div>
                 
-                {/* Visualization */}
-                {showVisualization && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Thickness */}
                   <div className="space-y-2">
-                    <Label className="text-sm font-semibold text-gray-700">Visual Representation</Label>
-                    <LumberVisualization calc={calc} />
+                    <Label htmlFor={`thickness-${calc.id}`} className="text-sm font-semibold text-gray-700">Thickness</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        id={`thickness-${calc.id}`}
+                        type="number"
+                        min="0"
+                        step="0.125"
+                        value={calc.thickness || ''}
+                        onChange={(e) => updateCalculation(calc.id, 'thickness', parseFloat(e.target.value) || 0)}
+                        placeholder="1"
+                        className="flex-1 border-gray-300 focus:border-sawmill-orange focus:ring-sawmill-orange"
+                      />
+                      <Select 
+                        value={calc.thicknessUnit} 
+                        onValueChange={(value) => updateCalculation(calc.id, 'thicknessUnit', value)}
+                      >
+                        <SelectTrigger className="w-16 border-gray-300">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="in">in</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
-                )}
+                  
+                  {/* Quantity */}
+                  <div className="space-y-2">
+                    <Label htmlFor={`quantity-${calc.id}`} className="text-sm font-semibold text-gray-700">Quantity</Label>
+                    <Input
+                      id={`quantity-${calc.id}`}
+                      type="number"
+                      min="1"
+                      value={calc.quantity || 1}
+                      onChange={(e) => updateCalculation(calc.id, 'quantity', parseInt(e.target.value) || 1)}
+                      className="border-gray-300 focus:border-sawmill-orange focus:ring-sawmill-orange"
+                    />
+                  </div>
+                </div>
+                
+                {/* Board Feet Result */}
+                <div className="bg-gradient-to-r from-sawmill-orange/10 to-sawmill-auburn/10 p-4 rounded-lg border border-sawmill-orange/20">
+                  <Label className="text-sm font-semibold text-sawmill-dark-brown">Board Feet Result</Label>
+                  <div className="text-2xl font-bold text-sawmill-dark-brown mt-1">
+                    {calc.boardFeet.toFixed(2)} BF
+                  </div>
+                </div>
               </div>
             </div>
           ))}
