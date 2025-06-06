@@ -1,133 +1,144 @@
 
-import { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import NewsletterSubscription from './NewsletterSubscription';
+import { Flame, Zap, Phone, Mail, MapPin, Facebook, Instagram } from 'lucide-react';
 import SocialMediaLinks from './SocialMediaLinks';
-import { fetchProductCategories } from '@/api/productApi';
-import { fetchRecentBlogPosts } from '@/api/blogApi';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  const [productCategories, setProductCategories] = useState<any[]>([]);
-  const [recentPosts, setRecentPosts] = useState<any[]>([]);
-  
-  useEffect(() => {
-    const loadCategories = async () => {
-      try {
-        const categories = await fetchProductCategories();
-        setProductCategories(categories);
-      } catch (error) {
-        console.error('Error loading product categories:', error);
-      }
-    };
-    
-    const loadRecentPosts = async () => {
-      try {
-        const posts = await fetchRecentBlogPosts(3);
-        setRecentPosts(posts);
-      } catch (error) {
-        console.error('Error loading recent blog posts:', error);
-      }
-    };
-    
-    loadCategories();
-    loadRecentPosts();
-  }, []);
-  
+
+  const renegadeLinks = [
+    { name: 'Rebel Lumber', path: '/products' },
+    { name: 'Our Rebellion', path: '/about' },
+    { name: 'Renegade Gallery', path: '/gallery' },
+    { name: 'Contact Outlaws', path: '/contact' },
+    { name: 'Lumber Calculator', path: '/board-foot-calculator' },
+  ];
+
   return (
-    <footer className="bg-sawmill-dark-brown text-white">
-      <div className="container-wide py-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-          {/* Company Info */}
+    <footer className="bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white relative overflow-hidden">
+      {/* Industrial background elements */}
+      <div className="absolute inset-0 industrial-grid opacity-20"></div>
+      <div className="absolute inset-0 renegade-texture"></div>
+      
+      {/* Animated top accent line */}
+      <div className="h-2 w-full bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 animate-industrial-pulse"></div>
+      
+      <div className="container-wide py-16 relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          
+          {/* Brand Section */}
           <div className="lg:col-span-2">
-            <h3 className="text-xl font-bold mb-4 border-b border-sawmill-medium-brown pb-2">MilledRight Sawmill</h3>
-            <p className="mb-4">Premium quality lumber and custom milling services for professional and hobbyist woodworkers.</p>
-            <p className="flex items-center">
-              <span className="font-bold mr-2">Call Us:</span> (437) 898-0642
-            </p>
-            <p className="flex items-center mt-2">
-              <span className="font-bold mr-2">Alternative:</span> (905) 717-3474
-            </p>
-            <p className="flex items-center mt-2">
-              <span className="font-bold mr-2">Email:</span> Lucas@Flamingfirewood.ca
-            </p>
-            <p className="flex items-center mt-2">
-              <span className="font-bold mr-2">Address:</span> 16720 Hwy 48, Whitchurch-Stouffville, ON
+            <div className="flex items-center space-x-3 mb-6">
+              <div className="p-3 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg animate-renegade-glow">
+                <Flame className="h-8 w-8 text-white" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-black tracking-wider">
+                  <span className="bg-gradient-to-r from-red-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent">
+                    MILLEDRIGHT SAWMILL
+                  </span>
+                </h3>
+                <p className="text-sm text-gray-400 font-bold tracking-widest">RENEGADE LUMBER REBELLION</p>
+              </div>
+            </div>
+            
+            <p className="text-gray-300 mb-6 leading-relaxed max-w-md">
+              <span className="text-red-400 font-bold">Defying mediocrity</span> since day one. 
+              We're the renegades who betrayed ordinary lumber to forge a path of 
+              <span className="text-orange-400 font-bold"> uncompromising quality</span> 
+              in Whitchurch-Stouffville.
             </p>
             
-            {/* Social Media Links */}
-            <div className="mt-4">
-              <SocialMediaLinks showLabels />
+            <div className="space-y-3">
+              <div className="flex items-center gap-3 text-gray-300">
+                <MapPin className="h-5 w-5 text-red-500 flex-shrink-0" />
+                <span>16720 Hwy 48, Whitchurch-Stouffville, ON</span>
+              </div>
+              <div className="flex items-center gap-3 text-gray-300">
+                <Phone className="h-5 w-5 text-orange-500 flex-shrink-0" />
+                <span>(905) 555-MILL</span>
+              </div>
+              <div className="flex items-center gap-3 text-gray-300">
+                <Mail className="h-5 w-5 text-yellow-500 flex-shrink-0" />
+                <span>rebels@milledright.ca</span>
+              </div>
             </div>
           </div>
-          
-          {/* Quick Links */}
+
+          {/* Renegade Navigation */}
           <div>
-            <h3 className="text-xl font-bold mb-4 border-b border-sawmill-medium-brown pb-2">Quick Links</h3>
-            <ul className="space-y-2">
-              <li><Link to="/" className="hover:text-sawmill-light-brown transition-colors">Home</Link></li>
-              <li><Link to="/products" className="hover:text-sawmill-light-brown transition-colors">Products</Link></li>
-              <li><Link to="/gallery" className="hover:text-sawmill-light-brown transition-colors">Gallery</Link></li>
-              <li><Link to="/blog" className="hover:text-sawmill-light-brown transition-colors">Blog</Link></li>
-              <li><Link to="/about" className="hover:text-sawmill-light-brown transition-colors">About Us</Link></li>
-            </ul>
-          </div>
-          
-          {/* Product Categories */}
-          <div>
-            <h3 className="text-xl font-bold mb-4 border-b border-sawmill-medium-brown pb-2">Product Categories</h3>
-            <ul className="space-y-2">
-              {productCategories.map((category) => (
-                <li key={category.id}>
-                  <Link 
-                    to={`/products?category=${encodeURIComponent(category.name)}`} 
-                    className="hover:text-sawmill-light-brown transition-colors"
-                  >
-                    {category.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          
-          {/* Recent Blog Posts */}
-          <div>
-            <h3 className="text-xl font-bold mb-4 border-b border-sawmill-medium-brown pb-2">Latest Blog Posts</h3>
+            <h4 className="text-xl font-black mb-6 tracking-wide">
+              <span className="bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
+                REBEL NAVIGATION
+              </span>
+            </h4>
             <ul className="space-y-3">
-              {recentPosts.map((post) => (
-                <li key={post.id}>
+              {renegadeLinks.map((link) => (
+                <li key={link.path}>
                   <Link 
-                    to={`/blog/${post.id}`} 
-                    className="hover:text-sawmill-light-brown transition-colors block"
+                    to={link.path}
+                    className="text-gray-300 hover:text-red-400 transition-colors duration-300 font-medium flex items-center gap-2 group"
                   >
-                    <h4 className="text-sm font-medium line-clamp-2">{post.title}</h4>
-                    <p className="text-xs text-sawmill-light-brown mt-1">
-                      {new Date(post.published_at).toLocaleDateString()}
-                    </p>
+                    <Zap className="h-4 w-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    {link.name}
                   </Link>
                 </li>
               ))}
-              {recentPosts.length === 0 && (
-                <li className="text-sm text-sawmill-light-brown">No recent posts</li>
-              )}
             </ul>
-            <Link to="/blog" className="inline-block mt-3 text-sm text-sawmill-orange hover:text-sawmill-light-brown transition-colors">
-              View All Posts →
-            </Link>
+          </div>
+
+          {/* Renegade Social */}
+          <div>
+            <h4 className="text-xl font-black mb-6 tracking-wide">
+              <span className="bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">
+                JOIN THE REBELLION
+              </span>
+            </h4>
+            
+            <p className="text-gray-300 mb-6 text-sm">
+              Follow our renegade journey and see the lumber revolution in action.
+            </p>
+            
+            <div className="flex gap-4 mb-6">
+              <a 
+                href="#" 
+                className="p-3 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg hover:scale-110 transition-all duration-300 group"
+              >
+                <Facebook className="h-5 w-5 text-white" />
+              </a>
+              <a 
+                href="#" 
+                className="p-3 bg-gradient-to-r from-orange-600 to-yellow-600 rounded-lg hover:scale-110 transition-all duration-300 group"
+              >
+                <Instagram className="h-5 w-5 text-white" />
+              </a>
+            </div>
+            
+            <div className="renegade-card p-4">
+              <p className="text-sm font-bold text-red-400 mb-2">REBEL HOURS:</p>
+              <p className="text-xs text-gray-300">Mon-Fri: 7AM-5PM</p>
+              <p className="text-xs text-gray-300">Sat: 8AM-3PM</p>
+              <p className="text-xs text-gray-300">Sun: By appointment only</p>
+            </div>
           </div>
         </div>
         
-        {/* Newsletter Subscription */}
-        <div className="mt-8 pt-6 border-t border-sawmill-medium-brown">
-          <NewsletterSubscription variant="footer" />
-        </div>
-        
-        {/* Bottom Bar */}
-        <div className="mt-8 pt-6 border-t border-sawmill-medium-brown text-center md:flex md:justify-between">
-          <p>© {currentYear} MilledRight Sawmill. All rights reserved.</p>
-          <div className="mt-4 md:mt-0">
-            <Link to="/terms" className="hover:text-sawmill-light-brown mr-4">Terms of Service</Link>
-            <Link to="/privacy" className="hover:text-sawmill-light-brown">Privacy Policy</Link>
+        {/* Bottom Section */}
+        <div className="border-t border-gray-700 mt-12 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-gray-400 text-sm">
+              © {currentYear} <span className="font-bold text-red-400">MilledRight Sawmill</span> 
+              - All rights reserved to the lumber rebellion
+            </p>
+            <div className="flex gap-6 text-sm">
+              <Link to="/privacy" className="text-gray-400 hover:text-red-400 transition-colors">
+                Privacy Policy
+              </Link>
+              <Link to="/terms" className="text-gray-400 hover:text-orange-400 transition-colors">
+                Terms of Service
+              </Link>
+            </div>
           </div>
         </div>
       </div>

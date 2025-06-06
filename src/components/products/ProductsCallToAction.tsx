@@ -2,107 +2,85 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { motion } from 'framer-motion';
+import { Flame, Zap, Phone } from 'lucide-react';
 
 const ProductsCallToAction = () => {
   return (
-    <div className="relative bg-gradient-to-br from-sawmill-light-brown/30 to-sawmill-light-brown/10 py-16">
-      {/* Add wood grain pattern to background */}
-      <div className="absolute inset-0 opacity-5">
-        <svg width="100%" height="100%">
-          <pattern id="woodGrainPattern" patternUnits="userSpaceOnUse" width="200" height="200">
-            <path d="M0 0 Q50 25 100 0 T200 0" stroke="#6B4423" strokeWidth="0.5" fill="none" />
-            <path d="M0 10 Q50 35 100 10 T200 10" stroke="#6B4423" strokeWidth="0.5" fill="none" />
-            <path d="M0 20 Q50 45 100 20 T200 20" stroke="#6B4423" strokeWidth="0.5" fill="none" />
-            <path d="M0 30 Q50 55 100 30 T200 30" stroke="#6B4423" strokeWidth="0.5" fill="none" />
-            <path d="M0 40 Q50 65 100 40 T200 40" stroke="#6B4423" strokeWidth="0.5" fill="none" />
-            <path d="M0 50 Q50 75 100 50 T200 50" stroke="#6B4423" strokeWidth="0.5" fill="none" />
-            <path d="M0 60 Q50 85 100 60 T200 60" stroke="#6B4423" strokeWidth="0.5" fill="none" />
-            <path d="M0 70 Q50 95 100 70 T200 70" stroke="#6B4423" strokeWidth="0.5" fill="none" />
-            <path d="M0 80 Q50 105 100 80 T200 80" stroke="#6B4423" strokeWidth="0.5" fill="none" />
-            <path d="M0 90 Q50 115 100 90 T200 90" stroke="#6B4423" strokeWidth="0.5" fill="none" />
-            <path d="M0 100 Q50 125 100 100 T200 100" stroke="#6B4423" strokeWidth="0.5" fill="none" />
-          </pattern>
-          <rect x="0" y="0" width="100%" height="100%" fill="url(#woodGrainPattern)" />
-        </svg>
-      </div>
-
-      <div className="container-wide relative z-10">
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-          <div className="grid grid-cols-1 md:grid-cols-2">
-            <motion.div 
-              className="p-8 lg:p-12"
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
+    <section className="py-20 bg-gradient-to-r from-gray-900 via-black to-gray-800 text-white relative overflow-hidden">
+      {/* Industrial background elements */}
+      <div className="absolute inset-0 industrial-grid opacity-40"></div>
+      <div className="absolute inset-0 renegade-texture"></div>
+      
+      {/* Animated accent lines */}
+      <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 animate-industrial-pulse"></div>
+      <div className="absolute bottom-0 right-0 w-full h-2 bg-gradient-to-l from-red-600 via-orange-500 to-yellow-500 animate-industrial-pulse"></div>
+      
+      <div className="container-wide text-center relative z-10">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex justify-center mb-8">
+            <div className="p-6 bg-gradient-to-r from-red-600 to-orange-600 rounded-full animate-renegade-glow">
+              <Flame className="h-16 w-16 text-white" />
+            </div>
+          </div>
+          
+          <h2 className="text-4xl md:text-5xl font-black mb-8 tracking-wide">
+            <span className="bg-gradient-to-r from-red-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent renegade-text-shadow">
+              CAN'T FIND WHAT YOU NEED?
+            </span>
+          </h2>
+          
+          <div className="h-2 w-32 bg-gradient-to-r from-red-600 to-orange-600 mx-auto mb-8 rounded-full animate-renegade-glow"></div>
+          
+          <p className="text-xl md:text-2xl mb-12 max-w-3xl mx-auto leading-relaxed text-gray-300">
+            <span className="text-red-400 font-bold">Rebel against limitations!</span> 
+            Our inventory is constantly evolving. If you don't see the perfect piece, 
+            <span className="text-orange-400 font-bold"> contact our renegade team</span> - 
+            we'll help you find or create exactly what you need to 
+            <span className="text-yellow-400 font-bold">defy the ordinary</span>.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div className="renegade-card p-6 renegade-hover">
+              <Zap className="h-8 w-8 text-red-500 mx-auto mb-3" />
+              <h3 className="text-xl font-bold text-white mb-2">CUSTOM REQUESTS</h3>
+              <p className="text-gray-300">Break the mold with bespoke lumber solutions</p>
+            </div>
+            <div className="renegade-card p-6 renegade-hover">
+              <Phone className="h-8 w-8 text-orange-500 mx-auto mb-3" />
+              <h3 className="text-xl font-bold text-white mb-2">DIRECT CONNECTION</h3>
+              <p className="text-gray-300">Bypass corporate gatekeepers, talk to craftsmen</p>
+            </div>
+            <div className="renegade-card p-6 renegade-hover">
+              <Flame className="h-8 w-8 text-yellow-500 mx-auto mb-3" />
+              <h3 className="text-xl font-bold text-white mb-2">RAPID RESPONSE</h3>
+              <p className="text-gray-300">Fast answers from rebels who understand urgency</p>
+            </div>
+          </div>
+          
+          <div className="flex flex-wrap justify-center gap-6">
+            <Button 
+              size="lg" 
+              className="renegade-button text-lg px-10 py-4 hover-grow animate-renegade-glow"
             >
-              <h2 className="text-2xl md:text-3xl font-bold text-sawmill-dark-brown mb-4">Looking for Custom Lumber?</h2>
-              <p className="mb-6 text-gray-700">
-                We offer custom milling services for unique projects. Our experienced team can create the perfect piece for your needs, from precise dimensions to specialized finishes.
-              </p>
-              
-              <div className="space-y-4 mb-8">
-                <div className="flex items-start gap-3">
-                  <div className="h-6 w-6 rounded-full bg-sawmill-dark-brown text-white flex items-center justify-center mt-0.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check">
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Custom Dimensions</h3>
-                    <p className="text-sm text-gray-600">Precise cutting to your exact specifications</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <div className="h-6 w-6 rounded-full bg-sawmill-dark-brown text-white flex items-center justify-center mt-0.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check">
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Expert Selection</h3>
-                    <p className="text-sm text-gray-600">Help choosing the perfect wood for your project</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <div className="h-6 w-6 rounded-full bg-sawmill-dark-brown text-white flex items-center justify-center mt-0.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-check">
-                      <polyline points="20 6 9 17 4 12"></polyline>
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="font-medium">Mill Your Own Logs</h3>
-                    <p className="text-sm text-gray-600">Turn your trees into usable lumber</p>
-                  </div>
-                </div>
-              </div>
-              
-              <Button size="lg" className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown">
-                <Link to="/contact" className="flex items-center">
-                  Contact For Custom Milling
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-arrow-right ml-2">
-                    <path d="M5 12h14"></path>
-                    <path d="m12 5 7 7-7 7"></path>
-                  </svg>
-                </Link>
-              </Button>
-            </motion.div>
-            
-            <motion.div 
-              className="bg-cover bg-center h-full min-h-[300px]"
-              style={{ backgroundImage: `url('https://lh3.googleusercontent.com/pw/AP1GczMF-UwqDS0mzQhvKlZMMUqQjKwTeLsMs_9Y8SwdIC6a9h2vDZKec37odDn28R83IKXkMt7gvRsUIDIF0q6QJIrum2GSCsSeGQQjbUZVMcRypTv_=w2400')` }}
-              initial={{ opacity: 0, scale: 1.05 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.7 }}
-            ></motion.div>
+              <Link to="/contact" className="flex items-center gap-3">
+                <Flame className="h-5 w-5" />
+                CONTACT THE RENEGADES
+              </Link>
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="bg-transparent border-2 border-orange-500 text-orange-400 hover:bg-orange-500 hover:text-white font-bold px-10 py-4 text-lg transition-all duration-300 transform hover:scale-105 renegade-hover"
+            >
+              <Link to="/board-foot-calculator" className="flex items-center gap-3">
+                <Zap className="h-5 w-5" />
+                CALCULATE YOUR REBELLION
+              </Link>
+            </Button>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
