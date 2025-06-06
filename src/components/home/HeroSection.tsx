@@ -29,7 +29,7 @@ const HeroSection = () => {
         <div className="absolute inset-0 bg-black opacity-60 z-0"></div>
         <div 
           className="absolute inset-0 z-0 bg-cover bg-center"
-          style={{ backgroundImage: `url('/lovable-uploads/a86a2200-0386-4fb1-adbf-bdf3d636bba2.png')` }}
+          style={{ backgroundImage: `url('/lovable-uploads/f156b106-3ca8-4db3-97f9-b0f94a8eaba1.png')` }}
         ></div>
         <div className="container-wide py-24 md:py-32 lg:py-40 relative z-10">
           <div className="max-w-3xl">
@@ -49,10 +49,10 @@ const HeroSection = () => {
 
   return (
     <section className="relative bg-gray-900 text-white">
-      <div className="absolute inset-0 bg-black opacity-60 z-0"></div>
+      <div className="absolute inset-0 bg-black opacity-70 z-0"></div>
       <div 
         className="absolute inset-0 z-0 bg-cover bg-center"
-        style={{ backgroundImage: `url('/lovable-uploads/a86a2200-0386-4fb1-adbf-bdf3d636bba2.png')` }}
+        style={{ backgroundImage: `url('/lovable-uploads/f156b106-3ca8-4db3-97f9-b0f94a8eaba1.png')` }}
       ></div>
       
       <div className="container-wide py-24 md:py-32 lg:py-40 relative z-10">
@@ -62,11 +62,15 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-shadow">
-            {headline}
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white">
+            <span className="drop-shadow-2xl" style={{ textShadow: '3px 3px 6px rgba(0, 0, 0, 0.8)' }}>
+              {headline}
+            </span>
           </h1>
-          <p className="text-xl mb-8 max-w-2xl text-shadow">
-            {subtitle}
+          <p className="text-xl mb-8 max-w-2xl text-gray-100">
+            <span className="drop-shadow-lg" style={{ textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)' }}>
+              {subtitle}
+            </span>
           </p>
           <div className="flex flex-wrap gap-4">
             <Button 
