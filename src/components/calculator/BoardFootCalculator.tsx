@@ -1,11 +1,12 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calculator, Plus, Trash2, Download, History, Save } from 'lucide-react';
+import { Calculator, Plus, Trash2, FileText } from 'lucide-react';
+import jsPDF from 'jspdf';
 
 interface BoardCalculation {
   id: number;
@@ -17,15 +18,6 @@ interface BoardCalculation {
   thicknessUnit: string;
   quantity: number;
   boardFeet: number;
-}
-
-interface CalculationHistory {
-  id: string;
-  timestamp: Date;
-  calculations: BoardCalculation[];
-  totalBoardFeet: number;
-  totalPrice: number;
-  pricePerBoardFoot: number;
 }
 
 const BoardFootCalculator = () => {
@@ -43,8 +35,6 @@ const BoardFootCalculator = () => {
     }
   ]);
   const [pricePerBoardFoot, setPricePerBoardFoot] = useState<number>(0);
-  const [history, setHistory] = useState<CalculationHistory[]>([]);
-  const [showHistory, setShowHistory] = useState(false);
 
   const convertToInches = (value: number, unit: string): number => {
     switch (unit) {
@@ -107,38 +97,162 @@ const BoardFootCalculator = () => {
     }
   };
 
-  const saveToHistory = () => {
-    if (totalBoardFeet > 0) {
-      const newEntry: CalculationHistory = {
-        id: Date.now().toString(),
-        timestamp: new Date(),
-        calculations: [...calculations],
-        totalBoardFeet,
-        totalPrice,
-        pricePerBoardFoot
-      };
-      setHistory(prev => [newEntry, ...prev.slice(0, 9)]); // Keep last 10 entries
-    }
+  const formatDimensions = (calc: BoardCalculation): string => {
+    const length = calc.lengthUnit === 'ft' ? `${calc.length}'` : `${calc.length}"`;
+    const width = calc.widthUnit === 'ft' ? `${calc.width}'` : `${calc.width}"`;
+    const thickness = `${calc.thickness}"`;
+    return `${length} × ${width} × ${thickness}`;
   };
 
-  const exportCalculation = () => {
-    const data = {
-      calculations,
-      totalBoardFeet,
-      totalPrice: pricePerBoardFoot > 0 ? totalPrice : null,
-      pricePerBoardFoot: pricePerBoardFoot > 0 ? pricePerBoardFoot : null,
-      timestamp: new Date().toISOString()
-    };
+  const generateProfessionalPDF = () => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.width;
+    const margin = 20;
+    let currentY = 30;
+
+    // Header with company branding
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(24);
+    doc.setTextColor(101, 67, 33); // Sawmill brown color
+    doc.text('MILLEDRIGHT SAWMILL', pageWidth / 2, currentY, { align: 'center' });
     
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `board-feet-calculation-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    currentY += 10;
+    doc.setFontSize(12);
+    doc.setTextColor(0, 0, 0);
+    doc.text('16720 Hwy 48, Whitchurch-Stouffville, ON', pageWidth / 2, currentY, { align: 'center' });
+    
+    currentY += 8;
+    doc.text('Phone: (905) 555-0123 | Email: info@milledright.com', pageWidth / 2, currentY, { align: 'center' });
+
+    // Horizontal line
+    currentY += 15;
+    doc.setDrawColor(101, 67, 33);
+    doc.setLineWidth(0.8);
+    doc.line(margin, currentY, pageWidth - margin, currentY);
+    
+    currentY += 20;
+
+    // Receipt header
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.text('LUMBER CALCULATION RECEIPT', pageWidth / 2, currentY, { align: 'center' });
+    
+    currentY += 20;
+
+    // Date and receipt info
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10);
+    const currentDate = new Date();
+    const dateString = currentDate.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+    doc.text(`Date: ${dateString}`, margin, currentY);
+    doc.text(`Receipt #: BF-${Date.now().toString().slice(-6)}`, pageWidth - margin, currentY, { align: 'right' });
+    
+    currentY += 25;
+
+    // Table header
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setFillColor(240, 240, 240);
+    doc.rect(margin, currentY - 8, pageWidth - 2 * margin, 12, 'F');
+    
+    const colWidths = [15, 45, 25, 20, 25, 30];
+    const colX = [margin + 5];
+    for (let i = 1; i < colWidths.length; i++) {
+      colX.push(colX[i-1] + colWidths[i-1]);
+    }
+
+    doc.text('#', colX[0], currentY);
+    doc.text('DIMENSIONS', colX[1], currentY);
+    doc.text('QTY', colX[2], currentY);
+    doc.text('UNIT BF', colX[3], currentY);
+    doc.text('TOTAL BF', colX[4], currentY);
+    if (pricePerBoardFoot > 0) {
+      doc.text('SUBTOTAL', colX[5], currentY);
+    }
+
+    currentY += 15;
+
+    // Table rows
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    
+    let itemNumber = 1;
+    calculations.forEach((calc) => {
+      if (calc.boardFeet > 0) {
+        // Draw alternating row background
+        if (itemNumber % 2 === 0) {
+          doc.setFillColor(248, 248, 248);
+          doc.rect(margin, currentY - 6, pageWidth - 2 * margin, 10, 'F');
+        }
+
+        doc.setTextColor(0, 0, 0);
+        doc.text(itemNumber.toString(), colX[0], currentY);
+        doc.text(formatDimensions(calc), colX[1], currentY);
+        doc.text(calc.quantity.toString(), colX[2], currentY);
+        doc.text((calc.boardFeet / calc.quantity).toFixed(2), colX[3], currentY);
+        doc.text(calc.boardFeet.toFixed(2), colX[4], currentY);
+        
+        if (pricePerBoardFoot > 0) {
+          const itemTotal = calc.boardFeet * pricePerBoardFoot;
+          doc.text(`$${itemTotal.toFixed(2)}`, colX[5], currentY);
+        }
+        
+        currentY += 12;
+        itemNumber++;
+      }
+    });
+
+    // Summary section
+    currentY += 10;
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.3);
+    doc.line(margin, currentY, pageWidth - margin, currentY);
+    currentY += 15;
+
+    // Totals
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    
+    const summaryX = pageWidth - 80;
+    doc.text('TOTAL BOARD FEET:', summaryX - 50, currentY);
+    doc.text(`${totalBoardFeet.toFixed(2)} BF`, summaryX + 20, currentY, { align: 'right' });
+    
+    if (pricePerBoardFoot > 0) {
+      currentY += 12;
+      doc.text('PRICE PER BOARD FOOT:', summaryX - 50, currentY);
+      doc.text(`$${pricePerBoardFoot.toFixed(2)}`, summaryX + 20, currentY, { align: 'right' });
+      
+      currentY += 12;
+      doc.setFontSize(14);
+      doc.setTextColor(101, 67, 33);
+      doc.text('TOTAL AMOUNT:', summaryX - 50, currentY);
+      doc.text(`$${totalPrice.toFixed(2)}`, summaryX + 20, currentY, { align: 'right' });
+    }
+
+    // Footer
+    currentY += 30;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(100, 100, 100);
+    doc.text('This is an estimate only. Final pricing may vary based on actual measurements and wood selection.', pageWidth / 2, currentY, { align: 'center' });
+    
+    currentY += 10;
+    doc.text('Thank you for choosing MilledRight Sawmill for your lumber needs!', pageWidth / 2, currentY, { align: 'center' });
+
+    // Add a subtle border around the entire receipt
+    doc.setDrawColor(101, 67, 33);
+    doc.setLineWidth(1.5);
+    doc.rect(15, 15, pageWidth - 30, currentY + 15);
+
+    // Save the PDF
+    const fileName = `MilledRight-Lumber-Receipt-${new Date().toISOString().split('T')[0]}.pdf`;
+    doc.save(fileName);
   };
 
   const totalBoardFeet = calculations.reduce((sum, calc) => sum + calc.boardFeet, 0);
@@ -154,35 +268,16 @@ const BoardFootCalculator = () => {
               <Calculator className="h-6 w-6 text-sawmill-orange" />
               <span className="text-xl font-bold">Board Foot Calculator</span>
             </div>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowHistory(!showHistory)}
-                className="bg-white/10 border-white/20 text-white hover:bg-white/20"
-              >
-                <History className="h-4 w-4 mr-1" />
-                History
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={saveToHistory}
-                className="bg-white/10 border-white/20 text-white hover:bg-white/20"
-              >
-                <Save className="h-4 w-4 mr-1" />
-                Save
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={exportCalculation}
-                className="bg-white/10 border-white/20 text-white hover:bg-white/20"
-              >
-                <Download className="h-4 w-4 mr-1" />
-                Export
-              </Button>
-            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={generateProfessionalPDF}
+              disabled={totalBoardFeet === 0}
+              className="bg-white/10 border-white/20 text-white hover:bg-white/20 disabled:opacity-50"
+            >
+              <FileText className="h-4 w-4 mr-1" />
+              Print Receipt
+            </Button>
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6 p-8">
@@ -361,38 +456,6 @@ const BoardFootCalculator = () => {
           </div>
         </CardContent>
       </Card>
-
-      {/* History Panel */}
-      {showHistory && history.length > 0 && (
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <History className="h-5 w-5 text-sawmill-orange" />
-              Calculation History
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3 max-h-64 overflow-y-auto">
-              {history.map((entry) => (
-                <div key={entry.id} className="p-3 bg-gray-50 rounded-lg border">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-600">
-                      {entry.timestamp.toLocaleDateString()} {entry.timestamp.toLocaleTimeString()}
-                    </span>
-                    <span className="font-semibold text-sawmill-dark-brown">
-                      {entry.totalBoardFeet.toFixed(2)} BF
-                      {entry.totalPrice > 0 && ` - $${entry.totalPrice.toFixed(2)}`}
-                    </span>
-                  </div>
-                  <div className="text-xs text-gray-500 mt-1">
-                    {entry.calculations.length} piece{entry.calculations.length !== 1 ? 's' : ''}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
     </div>
   );
 };
