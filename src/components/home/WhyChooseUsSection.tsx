@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Shield, Zap, Target, Flame, Wrench, Award } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -61,10 +60,8 @@ const WhyChooseUsSection = () => {
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          <h2 className="text-4xl md:text-5xl font-black text-gray-100 mb-6 tracking-wide">
-            <span className="bg-gradient-to-r from-red-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent renegade-text-shadow">
-              WHY REBELS CHOOSE MILLEDRIGHT
-            </span>
+          <h2 className="text-4xl md:text-5xl font-black text-sawmill-light-brown mb-6 tracking-wide renegade-text-shadow">
+            WHY REBELS CHOOSE MILLEDRIGHT
           </h2>
           <div className="h-2 w-32 bg-gradient-to-r from-red-600 to-orange-600 mx-auto mb-6 rounded-full animate-renegade-glow"></div>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">

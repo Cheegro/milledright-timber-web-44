@@ -21,7 +21,7 @@ const FeaturedProductsSection = () => {
     return (
       <section className="py-16">
         <div className="container-wide">
-          <h2 className="section-title text-center mx-auto">Featured Live Edge Slabs</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-sawmill-dark-brown text-center mb-6">Featured Live Edge Slabs</h2>
           <div className="flex justify-center items-center py-12">
             <Loader2 className="h-10 w-10 animate-spin text-sawmill-dark-brown" />
           </div>
@@ -33,7 +33,7 @@ const FeaturedProductsSection = () => {
   return (
     <section className="py-16">
       <div className="container-wide">
-        <h2 className="section-title text-center mx-auto">Featured Live Edge Slabs</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-sawmill-dark-brown text-center mb-6">Featured Live Edge Slabs</h2>
         
         {featuredProducts.length === 0 ? (
           <div className="text-center py-8">

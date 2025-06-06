@@ -30,10 +30,8 @@ const BottomCTASection = () => {
             </div>
           </div>
           
-          <h2 className="text-4xl md:text-5xl font-black mb-8 tracking-wide">
-            <span className="bg-gradient-to-r from-red-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent renegade-text-shadow">
-              READY TO START YOUR LUMBER REBELLION?
-            </span>
+          <h2 className="text-4xl md:text-5xl font-black mb-8 tracking-wide text-sawmill-light-brown renegade-text-shadow">
+            READY TO START YOUR LUMBER REBELLION?
           </h2>
           
           <div className="h-2 w-48 bg-gradient-to-r from-red-600 to-orange-600 mx-auto mb-8 rounded-full animate-renegade-glow"></div>
