@@ -1,57 +1,57 @@
 
 import React from 'react';
-import { Shield, TreePine, Target, Hammer, Wrench, Award } from 'lucide-react';
+import { Shield, Zap, Target, Flame, Wrench, Award } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const WhyChooseUsSection = () => {
-  const sawmillFeatures = [
+  const rebelliousFeatures = [
     {
-      icon: <Shield className="h-12 w-12 text-sawmill-orange" />,
-      title: "PREMIUM QUALITY",
-      description: "We reject mediocrity. Every slab is handpicked from the finest local timber. Premium wood that meets the highest sawmill standards.",
+      icon: <Shield className="h-12 w-12 text-red-500" />,
+      title: "DEFIANT QUALITY",
+      description: "We reject mediocrity. Every slab is a rebellion against mass-produced lumber. Premium wood that refuses to conform.",
       delay: 0.1
     },
     {
-      icon: <TreePine className="h-12 w-12 text-sawmill-amber" />,
-      title: "PRECISION MILLING",
-      description: "State-of-the-art Wood-Mizer equipment delivers cuts that exceed expectations. Professional-grade sawmill precision for every project.",
+      icon: <Zap className="h-12 w-12 text-orange-500" />,
+      title: "LIGHTNING PRECISION",
+      description: "Betraying the slow, sloppy standards of corporate mills. Our Wood-Mizer equipment delivers cuts that defy expectations.",
       delay: 0.2
     },
     {
-      icon: <Target className="h-12 w-12 text-sawmill-sage" />,
-      title: "CUSTOM SOLUTIONS",
-      description: "Your vision, our expertise. Bring your logs, your specifications, your dreams. We mill YOUR way, not the corporate way.",
+      icon: <Target className="h-12 w-12 text-yellow-500" />,
+      title: "CUSTOM REBELLION",
+      description: "Desert the one-size-fits-all approach. Bring your logs, your vision, your specifications. We mill YOUR way.",
       delay: 0.3
     },
     {
-      icon: <Hammer className="h-12 w-12 text-sawmill-orange" />,
-      title: "CRAFTSMAN PASSION",
-      description: "True artisans who understand wood. We're craftsmen who chose quality over quantity, precision over profit margins.",
+      icon: <Flame className="h-12 w-12 text-red-500" />,
+      title: "PASSION IGNITED",
+      description: "Turncoats from corporate lumber yards find their home here. We're craftsmen who betrayed the ordinary for excellence.",
       delay: 0.4
     },
     {
-      icon: <Wrench className="h-12 w-12 text-sawmill-amber" />,
-      title: "MODERN EQUIPMENT",
-      description: "Professional-grade sawmill equipment ensures maximum yield from every log. Advanced technology meets traditional craftsmanship.",
+      icon: <Wrench className="h-12 w-12 text-orange-500" />,
+      title: "EQUIPMENT SUPERIORITY",
+      description: "Renegade from rusty, outdated mills. Our professional-grade sawmill equipment ensures maximum yield from every log.",
       delay: 0.5
     },
     {
-      icon: <Award className="h-12 w-12 text-sawmill-sage" />,
-      title: "PROVEN EXCELLENCE",
-      description: "Local reputation built on consistent quality. Our commitment to excellence has earned the trust of craftsmen across the region.",
+      icon: <Award className="h-12 w-12 text-yellow-500" />,
+      title: "PROVEN DEFIANCE",
+      description: "Deserters from big box stores become loyal revolutionaries. Our reputation is built on consistent rebellion against the norm.",
       delay: 0.6
     }
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-br from-sawmill-dark-gray via-sawmill-dark-brown to-black relative overflow-hidden">
+    <section className="py-20 bg-gradient-to-br from-gray-800 via-gray-900 to-black relative overflow-hidden">
       {/* Industrial background elements */}
       <div className="absolute inset-0 industrial-grid opacity-30"></div>
-      <div className="absolute inset-0 sawmill-texture"></div>
+      <div className="absolute inset-0 renegade-texture"></div>
       
       {/* Animated accent lines */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sawmill-bark via-sawmill-orange to-sawmill-amber animate-industrial-pulse"></div>
-      <div className="absolute bottom-0 right-0 w-full h-1 bg-gradient-to-l from-sawmill-bark via-sawmill-orange to-sawmill-amber animate-industrial-pulse"></div>
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 animate-industrial-pulse"></div>
+      <div className="absolute bottom-0 right-0 w-full h-1 bg-gradient-to-l from-red-600 via-orange-500 to-yellow-500 animate-industrial-pulse"></div>
       
       <div className="container-wide relative z-10">
         <motion.div 
@@ -62,30 +62,30 @@ const WhyChooseUsSection = () => {
           viewport={{ once: true }}
         >
           <h2 className="text-4xl md:text-5xl font-black text-gray-100 mb-6 tracking-wide">
-            <span className="bg-gradient-to-r from-sawmill-light-brown via-sawmill-orange to-sawmill-amber bg-clip-text text-transparent sawmill-text-shadow">
-              WHY CHOOSE MILLEDRIGHT
+            <span className="bg-gradient-to-r from-red-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent renegade-text-shadow">
+              WHY REBELS CHOOSE MILLEDRIGHT
             </span>
           </h2>
-          <div className="h-2 w-32 bg-gradient-to-r from-sawmill-bark to-sawmill-orange mx-auto mb-6 rounded-full animate-sawmill-glow"></div>
+          <div className="h-2 w-32 bg-gradient-to-r from-red-600 to-orange-600 mx-auto mb-6 rounded-full animate-renegade-glow"></div>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            <span className="text-sawmill-orange font-bold">Elevating craftsmanship</span> since day one. 
-            We're the sawmill that <span className="text-sawmill-amber font-bold">chose quality over quantity</span> 
-            to forge a path of uncompromising excellence.
+            <span className="text-red-400 font-bold">Betraying mediocrity</span> since day one. 
+            We're the renegades who <span className="text-orange-400 font-bold">deserted conventional lumber</span> 
+            to forge a path of uncompromising quality.
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {sawmillFeatures.map((feature, index) => (
+          {rebelliousFeatures.map((feature, index) => (
             <motion.div
               key={index}
-              className="sawmill-card p-8 text-center sawmill-hover"
+              className="renegade-card p-8 text-center renegade-hover"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: feature.delay }}
               viewport={{ once: true }}
             >
               <div className="flex justify-center mb-6">
-                <div className="p-4 bg-gradient-to-r from-sawmill-dark-gray to-sawmill-steel rounded-full border-2 border-sawmill-mid-gray">
+                <div className="p-4 bg-gradient-to-r from-gray-800 to-gray-700 rounded-full border-2 border-gray-600">
                   {feature.icon}
                 </div>
               </div>
