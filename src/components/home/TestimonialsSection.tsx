@@ -39,7 +39,7 @@ const TestimonialsSection = () => {
     return (
       <section className="py-16 bg-gray-100">
         <div className="container-wide">
-          <h2 className="text-3xl md:text-4xl font-bold text-sawmill-dark-brown text-center mb-6">What Our Customers Say</h2>
+          <h2 className="section-title text-center mx-auto">What Our Customers Say</h2>
           <div className="flex justify-center py-8">
             <Loader2 className="h-8 w-8 animate-spin text-sawmill-dark-brown" />
           </div>
@@ -51,7 +51,7 @@ const TestimonialsSection = () => {
   return (
     <section className="py-16 bg-gray-100">
       <div className="container-wide">
-        <h2 className="text-3xl md:text-4xl font-bold text-sawmill-dark-brown text-center mb-6">What Our Customers Say</h2>
+        <h2 className="section-title text-center mx-auto">What Our Customers Say</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
           {displayTestimonials.map(testimonial => (

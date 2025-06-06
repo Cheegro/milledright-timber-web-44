@@ -1,100 +1,101 @@
 
 import React from 'react';
-import { Shield, Zap, Target, Flame, Wrench, Award } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { Card, CardContent } from '@/components/ui/card';
+import { Award, Clock, TreePine, Users } from 'lucide-react';
 
 const WhyChooseUsSection = () => {
-  const qualityFeatures = [
+  const features = [
     {
-      icon: <Shield className="h-12 w-12 text-sawmill-orange" />,
-      title: "PREMIUM QUALITY",
-      description: "We reject mediocrity. Every slab is crafted with uncompromising standards. Premium wood that exceeds expectations.",
-      delay: 0.1
+      icon: <Award className="h-8 w-8 text-sawmill-orange" />,
+      title: "Premium Quality",
+      description: "Every piece of lumber is carefully selected and processed to meet the highest standards of quality and grain excellence."
     },
     {
-      icon: <Zap className="h-12 w-12 text-sawmill-auburn" />,
-      title: "PRECISION MILLING",
-      description: "Advanced Wood-Mizer equipment delivers cuts with exceptional accuracy. Professional-grade sawmill technology for superior results.",
-      delay: 0.2
+      icon: <Clock className="h-8 w-8 text-sawmill-orange" />,
+      title: "Fast Processing",
+      description: "Efficient sawmill operation means quick turnaround times without compromising on quality or attention to detail."
     },
     {
-      icon: <Target className="h-12 w-12 text-sawmill-orange" />,
-      title: "CUSTOM SOLUTIONS",
-      description: "Personalized approach to every project. Bring your logs, your vision, your specifications. We mill exactly to your requirements.",
-      delay: 0.3
+      icon: <TreePine className="h-8 w-8 text-sawmill-orange" />,
+      title: "Local Sourcing",
+      description: "We source our logs locally from sustainable sources, supporting the local economy and reducing environmental impact."
     },
     {
-      icon: <Flame className="h-12 w-12 text-sawmill-auburn" />,
-      title: "PASSIONATE CRAFTSMANSHIP",
-      description: "Dedicated artisans who take pride in their work. We're craftsmen committed to excellence and superior quality lumber.",
-      delay: 0.4
-    },
-    {
-      icon: <Wrench className="h-12 w-12 text-sawmill-orange" />,
-      title: "PROFESSIONAL EQUIPMENT",
-      description: "State-of-the-art sawmill equipment ensures maximum yield from every log. Efficient, precise, and reliable milling services.",
-      delay: 0.5
-    },
-    {
-      icon: <Award className="h-12 w-12 text-sawmill-auburn" />,
-      title: "PROVEN EXCELLENCE",
-      description: "Our reputation is built on consistent quality and customer satisfaction. Trusted by professionals and craftsmen throughout the region.",
-      delay: 0.6
+      icon: <Users className="h-8 w-8 text-sawmill-orange" />,
+      title: "Expert Service",
+      description: "Our experienced team provides personalized service and expert advice for all your lumber and milling needs."
     }
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-br from-gray-800 via-gray-900 to-black relative overflow-hidden">
-      {/* Industrial background elements */}
-      <div className="absolute inset-0 industrial-grid opacity-30"></div>
-      <div className="absolute inset-0 sawmill-texture"></div>
-      
-      {/* Animated accent lines */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sawmill-dark-brown via-sawmill-orange to-sawmill-auburn animate-industrial-pulse"></div>
-      <div className="absolute bottom-0 right-0 w-full h-1 bg-gradient-to-l from-sawmill-dark-brown via-sawmill-orange to-sawmill-auburn animate-industrial-pulse"></div>
-      
-      <div className="container-wide relative z-10">
-        <motion.div 
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
-          <h2 className="text-4xl md:text-5xl font-black text-sawmill-light-brown mb-6 tracking-wide text-shadow">
-            WHY CHOOSE MILLEDRIGHT
-          </h2>
-          <div className="h-2 w-32 bg-gradient-to-r from-sawmill-orange to-sawmill-auburn mx-auto mb-6 rounded-full animate-sawmill-glow"></div>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-            <span className="text-sawmill-orange font-bold">Committed to excellence</span> since day one. 
-            We're the craftsmen who <span className="text-sawmill-auburn font-bold">deliver superior lumber</span> 
-            and forge lasting relationships through uncompromising quality.
-          </p>
-        </motion.div>
+    <section className="py-20 bg-white">
+      <div className="container-wide">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-sawmill-dark-brown mb-6">
+              Why Choose MilledRight Sawmill?
+            </h2>
+            <p className="text-lg text-gray-600 mb-8">
+              With years of experience and state-of-the-art equipment, we deliver exceptional lumber products and services that exceed expectations.
+            </p>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {features.map((feature, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                >
+                  <Card className="border-0 shadow-md hover:shadow-lg transition-shadow">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className="flex-shrink-0 p-3 bg-sawmill-orange/10 rounded-lg">
+                          {feature.icon}
+                        </div>
+                        <div>
+                          <h3 className="font-bold text-lg text-sawmill-dark-brown mb-2">
+                            {feature.title}
+                          </h3>
+                          <p className="text-gray-600 text-sm leading-relaxed">
+                            {feature.description}
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {qualityFeatures.map((feature, index) => (
-            <motion.div
-              key={index}
-              className="sawmill-card p-8 text-center sawmill-hover"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: feature.delay }}
-              viewport={{ once: true }}
-            >
-              <div className="flex justify-center mb-6">
-                <div className="p-4 bg-gradient-to-r from-gray-800 to-gray-700 rounded-full border-2 border-gray-600">
-                  {feature.icon}
-                </div>
-              </div>
-              <h3 className="text-xl font-black text-white mb-4 tracking-wide">
-                {feature.title}
-              </h3>
-              <p className="text-gray-300 leading-relaxed">
-                {feature.description}
-              </p>
-            </motion.div>
-          ))}
+          <motion.div
+            className="relative"
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <div className="relative overflow-hidden rounded-2xl shadow-2xl">
+              <img 
+                src="/lovable-uploads/25ede0d7-5f16-4f08-b2d2-7155a2a10f2f.png" 
+                alt="Quality lumber stacked and organized at MilledRight Sawmill"
+                className="object-cover w-full h-[500px]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+            </div>
+            
+            {/* Decorative element */}
+            <div className="absolute -top-6 -right-6 w-24 h-24 bg-sawmill-orange/20 rounded-full blur-2xl" />
+            <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-sawmill-dark-brown/10 rounded-full blur-2xl" />
+          </motion.div>
         </div>
       </div>
     </section>

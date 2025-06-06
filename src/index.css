@@ -44,12 +44,12 @@
     --sidebar-border: 30 30% 25%;
     --sidebar-ring: 25 65% 50%;
 
-    /* Improved sawmill color palette for better contrast */
-    --sawmill-primary: 220 13% 18%;
-    --sawmill-secondary: 0 72% 51%;
-    --sawmill-accent: 39 85% 60%;
-    --sawmill-surface: 220 13% 13%;
-    --sawmill-text: 0 0% 95%;
+    /* Renegade color palette */
+    --renegade-primary: 220 13% 18%;
+    --renegade-secondary: 0 72% 51%;
+    --renegade-accent: 39 85% 60%;
+    --renegade-surface: 220 13% 13%;
+    --renegade-text: 0 0% 95%;
   }
 
   .dark {
@@ -105,7 +105,7 @@
     -moz-osx-font-smoothing: grayscale;
     /* Prevent zoom on input focus on iOS */
     font-size: 16px;
-    /* Dark sawmill background */
+    /* Renegade body styling */
     background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
     background-attachment: fixed;
   }
@@ -128,19 +128,24 @@
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Improved typography with better contrast */
+  /* Renegade typography */
   h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
     letter-spacing: 0.025em;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   }
 
-  /* Better text shadows */
-  .text-shadow {
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  /* Industrial elements */
+  .renegade-border {
+    border: 2px solid transparent;
+    background: linear-gradient(45deg, #dc2626, #ea580c, #f59e0b) border-box;
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
   }
 }
 
-/* Improved animation keyframes */
+/* Renegade Animation keyframes */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -156,34 +161,44 @@
   to { transform: translateX(0); opacity: 1; }
 }
 
-@keyframes sawmillGlow {
-  0%, 100% { box-shadow: 0 0 20px rgba(210, 105, 30, 0.3); }
-  50% { box-shadow: 0 0 30px rgba(210, 105, 30, 0.5), 0 0 40px rgba(160, 82, 45, 0.3); }
+@keyframes renegadeGlow {
+  0%, 100% { box-shadow: 0 0 20px rgba(220, 38, 38, 0.3); }
+  50% { box-shadow: 0 0 30px rgba(234, 88, 12, 0.5), 0 0 40px rgba(245, 158, 11, 0.3); }
 }
 
 @keyframes industrialPulse {
-  0%, 100% { opacity: 0.2; }
-  50% { opacity: 0.4; }
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 0.3; }
 }
 
-/* Custom styles for the sawmill website */
+/* Custom styles for the renegade sawmill website */
 .wood-texture {
   background-image: url('/wood-texture.jpg');
   background-size: cover;
   background-position: center;
 }
 
-.sawmill-texture {
+.renegade-texture {
   background-image: 
-    radial-gradient(circle at 20% 80%, rgba(210, 105, 30, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(160, 82, 45, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 20% 80%, rgba(220, 38, 38, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(234, 88, 12, 0.1) 0%, transparent 50%),
     linear-gradient(135deg, transparent 0%, rgba(0, 0, 0, 0.1) 100%);
 }
 
 .industrial-grid {
   background-image: 
-    repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(107, 68, 35, 0.1) 20px, rgba(107, 68, 35, 0.1) 21px),
-    repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(139, 90, 43, 0.1) 20px, rgba(139, 90, 43, 0.1) 21px);
+    repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(220, 38, 38, 0.1) 20px, rgba(220, 38, 38, 0.1) 21px),
+    repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(234, 88, 12, 0.1) 20px, rgba(234, 88, 12, 0.1) 21px);
+}
+
+.text-shadow {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.renegade-text-shadow {
+  text-shadow: 
+    0 0 10px rgba(220, 38, 38, 0.5),
+    2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .animate-fade-in {
@@ -198,8 +213,8 @@
   animation: slideInRight 0.5s ease-out forwards;
 }
 
-.animate-sawmill-glow {
-  animation: sawmillGlow 3s ease-in-out infinite;
+.animate-renegade-glow {
+  animation: renegadeGlow 3s ease-in-out infinite;
 }
 
 .animate-industrial-pulse {
@@ -212,33 +227,33 @@
 
 .hover-grow:hover {
   transform: scale(1.05) rotateZ(1deg);
-  box-shadow: 0 10px 30px rgba(210, 105, 30, 0.3);
+  box-shadow: 0 10px 30px rgba(220, 38, 38, 0.3);
 }
 
-.sawmill-hover {
+.renegade-hover {
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
 }
 
-.sawmill-hover::before {
+.renegade-hover::before {
   content: '';
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(210, 105, 30, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(220, 38, 38, 0.2), transparent);
   transition: left 0.5s ease;
 }
 
-.sawmill-hover:hover::before {
+.renegade-hover:hover::before {
   left: 100%;
 }
 
-.sawmill-hover:hover {
+.renegade-hover:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(210, 105, 30, 0.2);
+  box-shadow: 0 10px 25px rgba(220, 38, 38, 0.2);
 }
 
 /* Mobile-specific improvements */
@@ -283,7 +298,7 @@
 
 @layer components {
   .btn-sawmill {
-    @apply bg-gradient-to-r from-sawmill-orange to-sawmill-auburn hover:from-sawmill-auburn hover:to-sawmill-dark-brown text-white px-6 py-3 rounded-lg transition-all duration-300 touch-manipulation font-bold tracking-wide shadow-lg transform hover:scale-105;
+    @apply bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white px-6 py-3 rounded-lg transition-all duration-300 touch-manipulation font-bold tracking-wide shadow-lg transform hover:scale-105;
     min-height: 44px;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
   }
@@ -293,43 +308,47 @@
   }
   
   .section-title {
-    @apply text-2xl md:text-3xl lg:text-4xl font-bold text-sawmill-light-brown mb-4 md:mb-6 text-shadow;
+    @apply text-2xl md:text-3xl lg:text-4xl font-bold text-gray-100 mb-4 md:mb-6 border-b-4 border-gradient-to-r from-red-600 to-orange-600 pb-2 inline-block renegade-text-shadow;
+    background: linear-gradient(135deg, #dc2626, #ea580c, #f59e0b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
   
   .product-card {
-    @apply bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-700 sawmill-hover;
+    @apply bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-700 renegade-hover;
     box-shadow: 
       0 4px 15px rgba(0, 0, 0, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
-  .sawmill-card {
+  .renegade-card {
     @apply bg-gradient-to-br from-gray-900 via-gray-800 to-black border-2 border-gray-700 rounded-xl shadow-2xl relative overflow-hidden;
     box-shadow: 
-      0 0 30px rgba(210, 105, 30, 0.1),
+      0 0 30px rgba(220, 38, 38, 0.1),
       inset 0 1px 0 rgba(255, 255, 255, 0.1);
   }
 
-  .sawmill-card::before {
+  .renegade-card::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, #6B4423, #8B5A2B, #D2691E);
+    background: linear-gradient(90deg, #dc2626, #ea580c, #f59e0b);
   }
 
-  .sawmill-input {
-    @apply bg-gray-800 border-2 border-gray-600 text-gray-100 rounded-lg px-4 py-3 focus:border-sawmill-orange focus:ring-2 focus:ring-sawmill-orange/20 transition-all duration-200;
+  .renegade-input {
+    @apply bg-gray-800 border-2 border-gray-600 text-gray-100 rounded-lg px-4 py-3 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all duration-200;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
   }
 
-  .sawmill-button {
-    @apply bg-gradient-to-r from-sawmill-orange via-sawmill-auburn to-sawmill-orange hover:from-sawmill-auburn hover:via-sawmill-dark-brown hover:to-sawmill-auburn text-white font-bold px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg;
+  .renegade-button {
+    @apply bg-gradient-to-r from-red-600 via-orange-600 to-red-600 hover:from-red-700 hover:via-orange-700 hover:to-red-700 text-white font-bold px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
     box-shadow: 
-      0 4px 15px rgba(210, 105, 30, 0.3),
+      0 4px 15px rgba(220, 38, 38, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 

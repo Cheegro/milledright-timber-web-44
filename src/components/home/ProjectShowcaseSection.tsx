@@ -30,11 +30,11 @@ const ProjectShowcaseSection = () => {
 
   if (isLoading) {
     return (
-      <section className="py-16 bg-gradient-to-br from-gray-800 via-gray-900 to-black">
+      <section className="py-16">
         <div className="container-wide">
-          <h2 className="text-3xl md:text-4xl font-bold text-sawmill-light-brown text-center mb-6 text-shadow">Customer Project Showcase</h2>
+          <h2 className="section-title text-center mx-auto">Customer Project Showcase</h2>
           <div className="flex justify-center py-20">
-            <Loader2 className="h-8 w-8 animate-spin text-sawmill-orange" />
+            <Loader2 className="h-8 w-8 animate-spin text-sawmill-dark-brown" />
           </div>
         </div>
       </section>
@@ -44,16 +44,16 @@ const ProjectShowcaseSection = () => {
   // Fallback to static data if no projects are loaded
   if (projects.length === 0) {
     return (
-      <section className="py-16 bg-gradient-to-br from-gray-800 via-gray-900 to-black">
+      <section className="py-16">
         <div className="container-wide">
-          <h2 className="text-3xl md:text-4xl font-bold text-sawmill-light-brown text-center mb-6 text-shadow">Customer Project Showcase</h2>
-          <p className="text-center max-w-2xl mx-auto mb-12 text-gray-300">
+          <h2 className="section-title text-center mx-auto">Customer Project Showcase</h2>
+          <p className="text-center max-w-2xl mx-auto mb-12">
             See what our customers have created with our premium lumber. From dining tables to custom cabinetry, our wood brings dreams to life.
           </p>
           <div className="text-center py-10">
-            <p className="text-gray-400">Check back soon to see our latest customer projects!</p>
+            <p className="text-muted-foreground">Check back soon to see our latest customer projects!</p>
             <Link to="/contact">
-              <Button className="mt-4 bg-sawmill-orange hover:bg-sawmill-auburn text-white">
+              <Button className="mt-4 bg-sawmill-dark-brown hover:bg-sawmill-medium-brown">
                 Contact Us For Custom Work
               </Button>
             </Link>
@@ -64,13 +64,13 @@ const ProjectShowcaseSection = () => {
   }
 
   return (
-    <section className="py-16 bg-gradient-to-br from-gray-800 via-gray-900 to-black">
+    <section className="py-16">
       <div className="container-wide">
-        <h2 className="text-3xl md:text-4xl font-bold text-sawmill-light-brown text-center mb-6 text-shadow">Customer Project Showcase</h2>
-        <p className="text-center max-w-2xl mx-auto mb-12 text-gray-300">See what our customers have created with our premium lumber. From dining tables to custom cabinetry, our wood brings dreams to life.</p>
+        <h2 className="section-title text-center mx-auto">Customer Project Showcase</h2>
+        <p className="text-center max-w-2xl mx-auto mb-12">See what our customers have created with our premium lumber. From dining tables to custom cabinetry, our wood brings dreams to life.</p>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-gray-800/80 rounded-lg overflow-hidden shadow-lg border border-gray-700">
+          <div className="bg-white rounded-lg overflow-hidden shadow-lg">
             {activeProject && (
               <>
                 <div className="aspect-[4/3] relative">
@@ -81,16 +81,16 @@ const ProjectShowcaseSection = () => {
                   />
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
                     <div className="flex gap-2 mb-2">
-                      <Badge className="bg-sawmill-orange text-white">{activeProject.wood_type}</Badge>
+                      <Badge className="bg-sawmill-medium-brown">{activeProject.wood_type}</Badge>
                       <Badge variant="outline" className="border-white text-white">{activeProject.category}</Badge>
                     </div>
                     <h3 className="text-white text-xl font-bold">{activeProject.title}</h3>
                   </div>
                 </div>
                 <div className="p-6">
-                  <p className="text-gray-300">{activeProject.description}</p>
+                  <p className="text-gray-700">{activeProject.description}</p>
                   <Link to="/contact">
-                    <Button className="mt-4 bg-sawmill-orange hover:bg-sawmill-auburn text-white">
+                    <Button className="mt-4 bg-sawmill-dark-brown hover:bg-sawmill-medium-brown">
                       Request Similar Project
                     </Button>
                   </Link>
@@ -100,7 +100,7 @@ const ProjectShowcaseSection = () => {
           </div>
           
           <div className="flex flex-col justify-center">
-            <h3 className="text-2xl font-bold text-sawmill-light-brown mb-6 text-shadow">Browse Projects</h3>
+            <h3 className="text-2xl font-bold text-sawmill-dark-brown mb-6">Browse Projects</h3>
             
             <Carousel className="w-full">
               <CarouselContent>
@@ -120,13 +120,13 @@ const ProjectShowcaseSection = () => {
                           className="object-cover w-full h-full"
                         />
                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                          <span className="text-white font-medium px-3 py-1 bg-sawmill-orange/80 rounded-full">View Project</span>
+                          <span className="text-white font-medium px-3 py-1 bg-sawmill-dark-brown/70 rounded-full">View Project</span>
                         </div>
                         {activeProject?.id === project.id && (
                           <div className="absolute inset-0 border-2 border-sawmill-orange"></div>
                         )}
                       </div>
-                      <h4 className="mt-2 text-sm font-medium text-center truncate text-gray-300">
+                      <h4 className="mt-2 text-sm font-medium text-center truncate">
                         {project.title}
                       </h4>
                     </div>
@@ -134,17 +134,17 @@ const ProjectShowcaseSection = () => {
                 ))}
               </CarouselContent>
               <div className="flex justify-center gap-2 mt-4">
-                <CarouselPrevious className="static transform-none mx-0 border-gray-600 text-gray-300 hover:bg-gray-700" />
-                <CarouselNext className="static transform-none mx-0 border-gray-600 text-gray-300 hover:bg-gray-700" />
+                <CarouselPrevious className="static transform-none mx-0" />
+                <CarouselNext className="static transform-none mx-0" />
               </div>
             </Carousel>
             
-            <p className="mt-8 text-gray-300">
+            <p className="mt-8 text-sawmill-dark-brown">
               Our lumber is used in countless beautiful projects across the region. Browse our showcase to see the quality and versatility of our products.
             </p>
             
             <Link to="/gallery">
-              <Button variant="outline" className="mt-4 border-sawmill-orange text-sawmill-orange hover:bg-sawmill-orange hover:text-white">
+              <Button variant="outline" className="mt-4 border-sawmill-dark-brown text-sawmill-dark-brown hover:bg-sawmill-dark-brown hover:text-white">
                 View More Projects
               </Button>
             </Link>

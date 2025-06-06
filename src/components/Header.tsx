@@ -1,150 +1,157 @@
-
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { Menu, X, Flame, Zap } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Menu, X, ShieldCheck, Bell } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
+import NewsletterModal from './NewsletterModal';
+import { useNewsletterModal } from '@/hooks/useNewsletterModal';
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
   const location = useLocation();
+  const { isOpen: isNewsletterOpen, openModal: openNewsletter, setIsOpen: setNewsletterOpen } = useNewsletterModal();
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
 
-  const renegadeNavItems = [
-    { name: 'HOME BASE', path: '/', icon: '🏠' },
-    { name: 'REBEL LUMBER', path: '/products', icon: '⚡' },
-    { name: 'RENEGADE GALLERY', path: '/gallery', icon: '🔥' },
-    { name: 'OUR REBELLION', path: '/about', icon: '⚔️' },
-    { name: 'CONTACT OUTLAWS', path: '/contact', icon: '📞' },
-    { name: 'LUMBER CALCULATOR', path: '/board-foot-calculator', icon: '🧮' },
+  const navigationItems = [
+    { name: 'Home', href: '/' },
+    { name: 'Products', href: '/products' },
+    { name: 'Projects', href: '/projects' },
+    { name: 'Gallery', href: '/gallery' },
+    { name: 'Blog', href: '/blog' },
+    { name: 'Board Foot Calculator', href: '/board-foot-calculator' },
+    { name: 'About', href: '/about' },
+    { name: 'Contact', href: '/contact' }
   ];
 
-  const isActivePath = (path: string) => {
-    if (path === '/' && location.pathname === '/') return true;
-    if (path !== '/' && location.pathname.startsWith(path)) return true;
-    return false;
+  const handleAdminAccess = () => {
+    toast({
+      title: "Admin Dashboard",
+      description: "Redirecting to admin dashboard..."
+    });
+  };
+
+  const handleGetQuote = () => {
+    const isHomePage = location.pathname === '/';
+    if (isHomePage) {
+      // If already on home page, just scroll to the section
+      const quoteSection = document.getElementById('quote-section');
+      if (quoteSection) {
+        quoteSection.scrollIntoView({
+          behavior: 'smooth'
+        });
+      }
+    } else {
+      // If on another page, navigate to home with hash
+      navigate('/#quote-section');
+    }
+    setIsOpen(false); // Close mobile menu
   };
 
   return (
-    <header className="bg-gradient-to-r from-gray-900 via-black to-gray-800 text-white sticky top-0 z-50 border-b-2 border-red-600 shadow-2xl">
-      {/* Animated top accent line */}
-      <div className="h-1 w-full bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 animate-industrial-pulse"></div>
-      
-      <div className="container-wide">
-        <div className="flex items-center justify-between py-4">
-          {/* Logo/Brand */}
-          <Link to="/" className="flex items-center space-x-3 group">
-            <div className="relative">
-              <div className="p-3 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg transform group-hover:scale-110 transition-all duration-300 animate-renegade-glow">
-                <Flame className="h-8 w-8 text-white" />
+    <>
+      <header className="bg-white shadow-md sticky top-0 z-50">
+        <div className="container-wide py-3 md:py-4 flex items-center justify-between">
+          <Link to="/" className="flex items-center gap-2 touch-manipulation">
+            {/* Text Logo for all screen sizes */}
+            <div className="flex items-center gap-2">
+              <div className="bg-sawmill-dark-brown text-white p-2 rounded">
+                <span className="font-bold text-lg">MR</span>
               </div>
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-500 rounded-full animate-pulse"></div>
-            </div>
-            <div>
-              <h1 className="text-2xl font-black tracking-wider">
-                <span className="bg-gradient-to-r from-red-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent">
-                  MILLEDRIGHT
-                </span>
-              </h1>
-              <p className="text-xs text-gray-400 font-bold tracking-widest">RENEGADE SAWMILL</p>
+              <div>
+                <h1 className="text-lg md:text-xl font-bold text-sawmill-dark-brown">MilledRight</h1>
+                <p className="text-xs md:text-sm text-sawmill-medium-brown">Sawmill Solutions</p>
+              </div>
             </div>
           </Link>
-
+          
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-1">
-            {renegadeNavItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`px-4 py-2 rounded-lg font-bold text-sm tracking-wide transition-all duration-300 relative group ${
-                  isActivePath(item.path)
-                    ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
-                    : 'text-gray-300 hover:text-white hover:bg-gray-800'
-                }`}
-              >
-                <span className="mr-2">{item.icon}</span>
-                {item.name}
-                {isActivePath(item.path) && (
-                  <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-yellow-400 to-red-400"></div>
-                )}
-              </Link>
+          <nav className="hidden lg:flex items-center space-x-6">
+            {navigationItems.map((item) => (
+              <Link key={item.name} to={item.href} className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium transition-colors">{item.name}</Link>
             ))}
+            
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={openNewsletter}
+              className="border-sawmill-orange text-sawmill-orange hover:bg-sawmill-orange hover:text-white"
+            >
+              <Bell className="mr-2 h-4 w-4" />
+              Subscribe
+            </Button>
+            
+            <Button className="bg-sawmill-orange hover:bg-sawmill-auburn text-white" onClick={handleGetQuote}>Get Quote</Button>
+            <Link to="/admin" onClick={handleAdminAccess}>
+              <Button variant="outline" className="border-sawmill-dark-brown text-sawmill-dark-brown hover:bg-sawmill-dark-brown hover:text-white">
+                <ShieldCheck className="mr-2 h-4 w-4" />
+                Admin
+              </Button>
+            </Link>
           </nav>
-
-          {/* Mobile Menu Button */}
-          <button
-            onClick={toggleMenu}
-            className="lg:hidden p-3 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg hover:scale-110 transition-all duration-300"
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? (
-              <X className="h-6 w-6 text-white" />
-            ) : (
-              <Menu className="h-6 w-6 text-white" />
-            )}
+          
+          {/* Mobile menu button */}
+          <button className="lg:hidden text-sawmill-dark-brown p-2 touch-manipulation" onClick={() => setIsOpen(!isOpen)} aria-label="Toggle menu">
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
-      </div>
-
-      {/* Mobile Navigation */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="lg:hidden bg-gradient-to-br from-gray-900 to-black border-t border-gray-700 overflow-hidden"
-          >
-            <div className="container-wide py-6">
-              <nav className="space-y-3">
-                {renegadeNavItems.map((item, index) => (
-                  <motion.div
-                    key={item.path}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.1 }}
-                  >
-                    <Link
-                      to={item.path}
-                      onClick={() => setIsMenuOpen(false)}
-                      className={`flex items-center px-6 py-4 rounded-lg font-bold text-lg transition-all duration-300 ${
-                        isActivePath(item.path)
-                          ? 'bg-gradient-to-r from-red-600 to-orange-600 text-white shadow-lg'
-                          : 'text-gray-300 hover:text-white hover:bg-gray-800'
-                      }`}
-                    >
-                      <span className="mr-3 text-xl">{item.icon}</span>
-                      {item.name}
-                    </Link>
-                  </motion.div>
+        
+        {/* Mobile Navigation Overlay */}
+        {isOpen && (
+          <>
+            <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setIsOpen(false)} />
+            <div className="fixed top-0 right-0 h-full w-80 max-w-[90vw] bg-white shadow-xl z-50 lg:hidden transform transition-transform duration-300">
+              <div className="p-4 border-b">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-sawmill-dark-brown">Menu</span>
+                  <button onClick={() => setIsOpen(false)} className="p-2 text-sawmill-dark-brown touch-manipulation" aria-label="Close menu">
+                    <X size={20} />
+                  </button>
+                </div>
+              </div>
+              <nav className="flex flex-col p-4">
+                {navigationItems.map((item) => (
+                  <Link key={item.name} to={item.href} className="text-sawmill-dark-brown hover:text-sawmill-orange font-medium py-4 px-4 rounded hover:bg-gray-50 touch-manipulation" onClick={() => setIsOpen(false)}>{item.name}</Link>
                 ))}
                 
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: 0.6 }}
-                  className="pt-6 border-t border-gray-700"
-                >
+                <div className="mt-6 space-y-3">
                   <Button 
-                    className="w-full renegade-button text-lg py-4"
-                    onClick={() => setIsMenuOpen(false)}
+                    variant="outline" 
+                    className="border-sawmill-orange text-sawmill-orange hover:bg-sawmill-orange hover:text-white w-full h-12 text-base"
+                    onClick={() => {
+                      openNewsletter();
+                      setIsOpen(false);
+                    }}
                   >
-                    <Link to="/contact" className="flex items-center justify-center gap-2">
-                      <Zap className="h-5 w-5" />
-                      START YOUR REBELLION
-                    </Link>
+                    <Bell className="mr-2 h-4 w-4" />
+                    Subscribe to Updates
                   </Button>
-                </motion.div>
+                  <Button className="bg-sawmill-orange hover:bg-sawmill-auburn text-white w-full h-12 text-base" onClick={handleGetQuote}>Get Quote</Button>
+                  <Link to="/admin" onClick={() => {
+                    handleAdminAccess();
+                    setIsOpen(false);
+                  }}>
+                    <Button variant="outline" className="border-sawmill-dark-brown text-sawmill-dark-brown hover:bg-sawmill-dark-brown hover:text-white w-full h-12 text-base">
+                      <ShieldCheck className="mr-2 h-4 w-4" />
+                      Admin
+                    </Button>
+                  </Link>
+                </div>
               </nav>
             </div>
-          </motion.div>
+          </>
         )}
-      </AnimatePresence>
-    </header>
+      </header>
+
+      <NewsletterModal 
+        open={isNewsletterOpen} 
+        onOpenChange={setNewsletterOpen}
+      />
+    </>
   );
 };
 
