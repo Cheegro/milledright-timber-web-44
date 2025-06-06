@@ -64,14 +64,21 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				sawmill: {
-					'dark-brown': '#6B4423',
-					'medium-brown': '#8B5A2B',
-					'light-brown': '#D2B48C',
-					'auburn': '#A0522D',
-					'forest': '#2E8B57',
-					'dark-gray': '#4F4F4F',
-					'mid-gray': '#696969',
+					'dark-brown': '#4A3728',
+					'medium-brown': '#6B4E37',
+					'light-brown': '#8B6F47',
+					'warm-brown': '#A0522D',
+					'forest': '#2E5933',
+					'dark-forest': '#1B3B1F',
+					'sage': '#87A96B',
+					'dark-gray': '#3C3C3C',
+					'mid-gray': '#5A5A5A',
+					'steel': '#6C757D',
 					'orange': '#D2691E',
+					'amber': '#FFBF00',
+					'cream': '#F5F5DC',
+					'bark': '#8B4513',
+					'pine': '#01796F'
 				}
 			},
 			borderRadius: {
@@ -95,11 +102,31 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'sawmill-glow': {
+					'0%, 100%': { 
+						boxShadow: '0 0 20px rgba(139, 69, 19, 0.3)' 
+					},
+					'50%': { 
+						boxShadow: '0 0 30px rgba(210, 105, 30, 0.5), 0 0 40px rgba(160, 82, 45, 0.3)' 
+					}
+				},
+				'industrial-pulse': {
+					'0%, 100%': { opacity: '0.1' },
+					'50%': { opacity: '0.3' }
+				},
+				'wood-grain': {
+					'0%': { backgroundPosition: '0% 50%' },
+					'50%': { backgroundPosition: '100% 50%' },
+					'100%': { backgroundPosition: '0% 50%' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'sawmill-glow': 'sawmill-glow 3s ease-in-out infinite',
+				'industrial-pulse': 'industrial-pulse 2s ease-in-out infinite',
+				'wood-grain': 'wood-grain 8s ease-in-out infinite'
 			}
 		}
 	},
