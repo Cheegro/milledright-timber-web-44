@@ -25,7 +25,7 @@ const Home = () => {
       
       <Header />
       
-      <main className="flex-1">
+      <main className="flex-1 pt-0">
         <HeroSection />
         <WhyChooseUsSection />
         <EquipmentShowcaseSection />
