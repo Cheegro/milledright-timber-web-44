@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -29,10 +30,15 @@ const ProjectShowcaseSection = () => {
     return firstOccurrence === index;
   });
 
+  // Filter out the active project from the carousel projects
+  const carouselProjects = projects.filter(project => project.id !== activeProject?.id);
+
   // Debug logging
   console.log('All projects loaded:', allProjects.length);
   console.log('Projects after duplicate filtering:', projects.length);
   console.log('Project titles:', projects.map(p => p.title));
+  console.log('Active project:', activeProject?.title);
+  console.log('Carousel projects:', carouselProjects.map(p => p.title));
 
   useEffect(() => {
     if (projects.length > 0 && !activeProject) {
@@ -113,42 +119,43 @@ const ProjectShowcaseSection = () => {
           <div className="flex flex-col justify-center">
             <h3 className="text-2xl font-bold text-sawmill-dark-brown mb-6">Browse Projects</h3>
             
-            <Carousel className="w-full">
-              <CarouselContent>
-                {projects.map((project) => (
-                  <CarouselItem key={project.id} className="basis-full md:basis-1/2 lg:basis-1/2">
-                    <div 
-                      className={`
-                        p-2 h-full cursor-pointer transition-all
-                        ${activeProject?.id === project.id ? 'scale-105 shadow-md' : 'opacity-80 hover:opacity-100'}
-                      `}
-                      onClick={() => setActiveProject(project)}
-                    >
-                      <div className="aspect-square rounded-md overflow-hidden relative">
-                        <img 
-                          src={project.image_url}
-                          alt={project.title}
-                          className="object-cover w-full h-full"
-                        />
-                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                          <span className="text-white font-medium px-3 py-1 bg-sawmill-dark-brown/70 rounded-full">View Project</span>
+            {carouselProjects.length > 0 ? (
+              <Carousel className="w-full">
+                <CarouselContent>
+                  {carouselProjects.map((project) => (
+                    <CarouselItem key={project.id} className="basis-full md:basis-1/2 lg:basis-1/2">
+                      <div 
+                        className={`
+                          p-2 h-full cursor-pointer transition-all
+                          opacity-80 hover:opacity-100 hover:scale-105
+                        `}
+                        onClick={() => setActiveProject(project)}
+                      >
+                        <div className="aspect-square rounded-md overflow-hidden relative">
+                          <img 
+                            src={project.image_url}
+                            alt={project.title}
+                            className="object-cover w-full h-full"
+                          />
+                          <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                            <span className="text-white font-medium px-3 py-1 bg-sawmill-dark-brown/70 rounded-full">View Project</span>
+                          </div>
                         </div>
-                        {activeProject?.id === project.id && (
-                          <div className="absolute inset-0 border-2 border-sawmill-orange"></div>
-                        )}
+                        <h4 className="mt-2 text-sm font-medium text-center truncate">
+                          {project.title}
+                        </h4>
                       </div>
-                      <h4 className="mt-2 text-sm font-medium text-center truncate">
-                        {project.title}
-                      </h4>
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <div className="flex justify-center gap-2 mt-4">
-                <CarouselPrevious className="static transform-none mx-0" />
-                <CarouselNext className="static transform-none mx-0" />
-              </div>
-            </Carousel>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <div className="flex justify-center gap-2 mt-4">
+                  <CarouselPrevious className="static transform-none mx-0" />
+                  <CarouselNext className="static transform-none mx-0" />
+                </div>
+              </Carousel>
+            ) : (
+              <p className="text-center text-muted-foreground">No other projects to display.</p>
+            )}
             
             <p className="mt-8 text-sawmill-dark-brown">
               Our lumber is used in countless beautiful projects across the region. Browse our showcase to see the quality and versatility of our products.
