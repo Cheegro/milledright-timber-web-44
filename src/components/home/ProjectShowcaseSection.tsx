@@ -161,7 +161,7 @@ const ProjectShowcaseSection = () => {
               Our lumber is used in countless beautiful projects across the region. Browse our showcase to see the quality and versatility of our products.
             </p>
             
-            <Link to="/gallery">
+            <Link to="/projects">
               <Button variant="outline" className="mt-4 border-sawmill-dark-brown text-sawmill-dark-brown hover:bg-sawmill-dark-brown hover:text-white">
                 View More Projects
               </Button>
