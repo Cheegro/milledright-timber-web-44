@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -44,12 +43,14 @@ import {
   deleteProject,
   Project
 } from '@/api/adminProjectApi';
+import { addAntoniasPergola } from '@/utils/addAntoniasPergola';
 
 const ProjectsAdmin = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
+  const [isAddingAntonia, setIsAddingAntonia] = useState(false);
 
   // Fetch projects
   const { 
@@ -80,6 +81,33 @@ const ProjectsAdmin = () => {
     },
   });
 
+  // Handle adding Antonia's pergola
+  const handleAddAntoniaPergola = async () => {
+    try {
+      setIsAddingAntonia(true);
+      await addAntoniasPergola();
+      toast({
+        title: 'Project Added Successfully',
+        description: "Antonia's Pergola has been added to the customer projects.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+    } catch (error: any) {
+      toast({
+        title: 'Error Adding Project',
+        description: error.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setIsAddingAntonia(false);
+    }
+  };
+
+  // Check if Antonia's pergola already exists
+  const antoniasPergolaExists = projects.some(project => 
+    project.title.toLowerCase().includes("antonia") && 
+    project.title.toLowerCase().includes("pergola")
+  );
+
   // Filter projects based on search query
   const filteredProjects = projects.filter(project => 
     project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -99,9 +127,21 @@ const ProjectsAdmin = () => {
     <div className="space-y-6 p-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Customer Projects</h1>
-        <Button onClick={() => navigate('/admin/projects/new')}>
-          <Plus className="mr-2 h-4 w-4" /> Add Project
-        </Button>
+        <div className="flex gap-2">
+          {!antoniasPergolaExists && (
+            <Button 
+              onClick={handleAddAntoniaPergola}
+              disabled={isAddingAntonia}
+              variant="outline"
+            >
+              {isAddingAntonia && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Add Antonia's Pergola
+            </Button>
+          )}
+          <Button onClick={() => navigate('/admin/projects/new')}>
+            <Plus className="mr-2 h-4 w-4" /> Add Project
+          </Button>
+        </div>
       </div>
       
       <div className="flex justify-between items-center">
