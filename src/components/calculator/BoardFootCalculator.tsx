@@ -280,7 +280,7 @@ const BoardFootCalculator = () => {
   const totalPrice = totalBoardFeet * pricePerBoardFoot;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-4 lg:px-0">
       {/* Main Calculator Card */}
       <Card className="shadow-2xl border-0 bg-gradient-to-br from-white via-gray-50 to-gray-100 relative overflow-hidden">
         {/* Renegade accent lines */}
@@ -308,14 +308,14 @@ const BoardFootCalculator = () => {
             }}></div>
           </div>
           
-          <CardTitle className="flex items-center justify-between relative z-10">
+          <CardTitle className="flex flex-col lg:flex-row items-start lg:items-center justify-between relative z-10 gap-4">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-gradient-to-br from-red-500 to-orange-600 rounded-lg">
-                <Calculator className="h-6 w-6 text-white" />
+                <Calculator className="h-5 w-5 lg:h-6 lg:w-6 text-white" />
               </div>
               <div>
-                <span className="text-xl font-bold tracking-wide">BOARD FOOT CALCULATOR</span>
-                <div className="text-sm text-red-300 font-mono tracking-wider">PRECISION LUMBER CALCULATIONS</div>
+                <span className="text-lg lg:text-xl font-bold tracking-wide">BOARD FOOT CALCULATOR</span>
+                <div className="text-xs lg:text-sm text-red-300 font-mono tracking-wider">PRECISION LUMBER CALCULATIONS</div>
               </div>
             </div>
             <Button
@@ -323,22 +323,23 @@ const BoardFootCalculator = () => {
               size="sm"
               onClick={generateProfessionalPDF}
               disabled={totalBoardFeet === 0}
-              className="bg-gradient-to-r from-red-600 to-orange-600 border-red-400 text-white hover:from-red-700 hover:to-orange-700 disabled:opacity-50 font-bold shadow-lg transform hover:scale-105 transition-all duration-200"
+              className="bg-gradient-to-r from-red-600 to-orange-600 border-red-400 text-white hover:from-red-700 hover:to-orange-700 disabled:opacity-50 font-bold shadow-lg transform hover:scale-105 transition-all duration-200 w-full lg:w-auto"
             >
               <FileText className="h-4 w-4 mr-1" />
-              EXPORT RECEIPT
+              <span className="hidden sm:inline">EXPORT RECEIPT</span>
+              <span className="sm:hidden">EXPORT</span>
             </Button>
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6 p-8 relative">
+        <CardContent className="space-y-6 p-4 lg:p-8 relative">
           {calculations.map((calc, index) => (
-            <div key={calc.id} className="p-6 border-2 border-gray-300 rounded-xl bg-gradient-to-br from-white via-gray-50 to-gray-100 hover:border-red-400 transition-all duration-300 shadow-lg relative overflow-hidden">
+            <div key={calc.id} className="p-4 lg:p-6 border-2 border-gray-300 rounded-xl bg-gradient-to-br from-white via-gray-50 to-gray-100 hover:border-red-400 transition-all duration-300 shadow-lg relative overflow-hidden">
               {/* Industrial corner accents */}
-              <div className="absolute top-0 left-0 w-8 h-8 border-l-4 border-t-4 border-red-500"></div>
-              <div className="absolute bottom-0 right-0 w-8 h-8 border-r-4 border-b-4 border-orange-500"></div>
+              <div className="absolute top-0 left-0 w-6 h-6 lg:w-8 lg:h-8 border-l-4 border-t-4 border-red-500"></div>
+              <div className="absolute bottom-0 right-0 w-6 h-6 lg:w-8 lg:h-8 border-r-4 border-b-4 border-orange-500"></div>
               
-              <div className="flex justify-between items-center mb-6">
-                <h4 className="text-lg font-bold text-gray-900 tracking-wide">LUMBER PIECE #{index + 1}</h4>
+              <div className="flex justify-between items-center mb-4 lg:mb-6">
+                <h4 className="text-base lg:text-lg font-bold text-gray-900 tracking-wide">LUMBER PIECE #{index + 1}</h4>
                 {calculations.length > 1 && (
                   <Button
                     variant="outline"
@@ -352,7 +353,7 @@ const BoardFootCalculator = () => {
               </div>
               
               <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Length */}
                   <div className="space-y-2">
                     <Label htmlFor={`length-${calc.id}`} className="text-sm font-bold text-gray-700 tracking-wide">LENGTH</Label>
@@ -365,7 +366,7 @@ const BoardFootCalculator = () => {
                         value={calc.length || ''}
                         onChange={(e) => updateCalculation(calc.id, 'length', parseFloat(e.target.value) || 0)}
                         placeholder="8"
-                        className="flex-1 border-2 border-gray-400 focus:border-red-500 focus:ring-red-500 font-mono"
+                        className="flex-1 border-2 border-gray-400 focus:border-red-500 focus:ring-red-500 font-mono text-base"
                       />
                       <Select 
                         value={calc.lengthUnit} 
@@ -394,7 +395,7 @@ const BoardFootCalculator = () => {
                         value={calc.width || ''}
                         onChange={(e) => updateCalculation(calc.id, 'width', parseFloat(e.target.value) || 0)}
                         placeholder="6"
-                        className="flex-1 border-2 border-gray-400 focus:border-red-500 focus:ring-red-500 font-mono"
+                        className="flex-1 border-2 border-gray-400 focus:border-red-500 focus:ring-red-500 font-mono text-base"
                       />
                       <Select 
                         value={calc.widthUnit} 
@@ -412,7 +413,7 @@ const BoardFootCalculator = () => {
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Thickness */}
                   <div className="space-y-2">
                     <Label htmlFor={`thickness-${calc.id}`} className="text-sm font-bold text-gray-700 tracking-wide">THICKNESS</Label>
@@ -425,7 +426,7 @@ const BoardFootCalculator = () => {
                         value={calc.thickness || ''}
                         onChange={(e) => updateCalculation(calc.id, 'thickness', parseFloat(e.target.value) || 0)}
                         placeholder="1"
-                        className="flex-1 border-2 border-gray-400 focus:border-red-500 focus:ring-red-500 font-mono"
+                        className="flex-1 border-2 border-gray-400 focus:border-red-500 focus:ring-red-500 font-mono text-base"
                       />
                       <Select 
                         value={calc.thicknessUnit} 
@@ -450,7 +451,7 @@ const BoardFootCalculator = () => {
                       min="1"
                       value={calc.quantity || 1}
                       onChange={(e) => updateCalculation(calc.id, 'quantity', parseInt(e.target.value) || 1)}
-                      className="border-2 border-gray-400 focus:border-red-500 focus:ring-red-500 font-mono"
+                      className="border-2 border-gray-400 focus:border-red-500 focus:ring-red-500 font-mono text-base"
                     />
                   </div>
                 </div>
@@ -459,8 +460,8 @@ const BoardFootCalculator = () => {
                 <div className="bg-gradient-to-r from-red-500/20 via-orange-500/20 to-yellow-500/20 p-4 rounded-lg border-2 border-red-300 relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 to-orange-500/5"></div>
                   <Label className="text-sm font-bold text-gray-900 tracking-wide relative z-10">CALCULATED BOARD FEET</Label>
-                  <div className="text-3xl font-black text-gray-900 mt-1 font-mono tracking-wider relative z-10">
-                    {calc.boardFeet.toFixed(2)} <span className="text-xl text-red-600">BF</span>
+                  <div className="text-2xl lg:text-3xl font-black text-gray-900 mt-1 font-mono tracking-wider relative z-10">
+                    {calc.boardFeet.toFixed(2)} <span className="text-lg lg:text-xl text-red-600">BF</span>
                   </div>
                 </div>
               </div>
@@ -470,17 +471,17 @@ const BoardFootCalculator = () => {
           <Button
             onClick={addCalculation}
             variant="outline"
-            className="w-full border-2 border-dashed border-red-400 hover:border-red-600 hover:bg-red-50 text-gray-900 font-bold py-4 text-lg tracking-wide transform hover:scale-[1.02] transition-all duration-200"
+            className="w-full border-2 border-dashed border-red-400 hover:border-red-600 hover:bg-red-50 text-gray-900 font-bold py-4 text-base lg:text-lg tracking-wide transform hover:scale-[1.02] transition-all duration-200"
           >
             <Plus className="h-5 w-5 mr-2 text-red-600" />
             ADD ANOTHER PIECE
           </Button>
           
           {/* Summary Section */}
-          <div className="border-t-4 border-gray-900 pt-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="border-t-4 border-gray-900 pt-6 lg:pt-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
               <div className="space-y-4">
-                <Label htmlFor="price-per-bf" className="text-lg font-bold text-gray-700 tracking-wide">PRICE PER BOARD FOOT (OPTIONAL)</Label>
+                <Label htmlFor="price-per-bf" className="text-base lg:text-lg font-bold text-gray-700 tracking-wide">PRICE PER BOARD FOOT (OPTIONAL)</Label>
                 <Input
                   id="price-per-bf"
                   type="number"
@@ -489,12 +490,12 @@ const BoardFootCalculator = () => {
                   value={pricePerBoardFoot || ''}
                   onChange={(e) => setPricePerBoardFoot(parseFloat(e.target.value) || 0)}
                   placeholder="5.50"
-                  className="text-lg p-4 border-2 border-gray-400 focus:border-red-500 focus:ring-red-500 font-mono"
+                  className="text-base lg:text-lg p-3 lg:p-4 border-2 border-gray-400 focus:border-red-500 focus:ring-red-500 font-mono"
                 />
               </div>
               
               <div className="space-y-4">
-                <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-black text-white p-6 rounded-xl relative overflow-hidden shadow-2xl">
+                <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-black text-white p-4 lg:p-6 rounded-xl relative overflow-hidden shadow-2xl">
                   {/* Industrial pattern overlay */}
                   <div className="absolute inset-0 opacity-10">
                     <div className="absolute inset-0" style={{
@@ -502,14 +503,14 @@ const BoardFootCalculator = () => {
                     }}></div>
                   </div>
                   
-                  <div className="flex justify-between items-center text-xl font-bold mb-2 relative z-10">
+                  <div className="flex justify-between items-center text-lg lg:text-xl font-bold mb-2 relative z-10">
                     <span className="tracking-wide">TOTAL BOARD FEET:</span>
-                    <span className="text-red-400 font-mono text-2xl">{totalBoardFeet.toFixed(2)} BF</span>
+                    <span className="text-red-400 font-mono text-xl lg:text-2xl">{totalBoardFeet.toFixed(2)} BF</span>
                   </div>
                   {pricePerBoardFoot > 0 && (
-                    <div className="flex justify-between items-center text-xl font-bold relative z-10">
+                    <div className="flex justify-between items-center text-lg lg:text-xl font-bold relative z-10">
                       <span className="tracking-wide">ESTIMATED COST:</span>
-                      <span className="text-orange-400 font-mono text-2xl">${totalPrice.toFixed(2)}</span>
+                      <span className="text-orange-400 font-mono text-xl lg:text-2xl">${totalPrice.toFixed(2)}</span>
                     </div>
                   )}
                 </div>

@@ -18,7 +18,6 @@ interface Product {
   image_url: string;
   description: string;
   category: string;
-  wood_type?: string;
   board_feet?: number;
 }
 
@@ -35,7 +34,6 @@ const Products = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 10000]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [loading, setLoading] = useState(true);
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -44,7 +42,6 @@ const Products = () => {
         const productsData = await fetchProducts();
         setProducts(productsData.map(p => ({
           ...p,
-          wood_type: p.wood_type || 'Mixed',
           category: p.category || 'General'
         })));
       } catch (error) {
@@ -92,10 +89,6 @@ const Products = () => {
     setFilteredProducts(filtered);
   }, [products, selectedCategory, searchQuery]);
 
-  const handlePriceRangeChange = (newRange: [number, number]) => {
-    setPriceRange(newRange);
-  };
-
   return (
     <div className="min-h-screen flex flex-col">
       <SEOHead 
@@ -112,16 +105,62 @@ const Products = () => {
         />
         
         <div className="container-wide">
-          <div className="flex gap-8 py-8">
-            <ProductsSidebar
-              productCategories={categories.map(c => c.name)}
-              selectedCategory={selectedCategory}
-              setSelectedCategory={setSelectedCategory}
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-            />
+          <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 py-6 lg:py-8">
+            {/* Desktop Sidebar - Hidden on Mobile */}
+            <div className="hidden lg:block">
+              <ProductsSidebar
+                productCategories={categories.map(c => c.name)}
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setSelectedCategory}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+              />
+            </div>
             
-            <div className="flex-1">
+            {/* Mobile Search and Filters */}
+            <div className="lg:hidden space-y-4 px-4">
+              <div className="bg-white rounded-xl shadow-md p-4 border border-gray-100">
+                <input
+                  type="text"
+                  placeholder="Search lumber..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-sawmill-orange focus:border-transparent text-base"
+                />
+              </div>
+              
+              <div className="bg-white rounded-xl shadow-md p-4 border border-gray-100">
+                <h3 className="font-semibold text-gray-800 mb-3">Categories</h3>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => setSelectedCategory('')}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                      selectedCategory === '' 
+                        ? 'bg-sawmill-orange text-white shadow-md' 
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    All
+                  </button>
+                  {categories?.map((category) => (
+                    <button
+                      key={category.name}
+                      onClick={() => setSelectedCategory(category.name)}
+                      className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                        selectedCategory === category.name 
+                          ? 'bg-sawmill-orange text-white shadow-md' 
+                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      }`}
+                    >
+                      {category.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+            
+            {/* Products List */}
+            <div className="flex-1 px-4 lg:px-0">
               <ProductsList 
                 filteredProducts={filteredProducts}
                 selectedCategory={selectedCategory || 'All'}
@@ -133,15 +172,10 @@ const Products = () => {
           </div>
         </div>
         
-        <ProductsCallToAction />
-        
-        <MobileProductFilters 
-          productCategories={categories.map(c => c.name)}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-        />
+        {/* Mobile-Optimized CTA */}
+        <div className="px-4 lg:px-0">
+          <ProductsCallToAction />
+        </div>
       </main>
       
       <Footer />
