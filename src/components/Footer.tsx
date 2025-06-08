@@ -1,10 +1,13 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { ShieldCheck } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 import NewsletterSubscription from './NewsletterSubscription';
 import SocialMediaLinks from './SocialMediaLinks';
 import { fetchProductCategories } from '@/api/productApi';
 import { fetchRecentBlogPosts } from '@/api/blogApi';
+import { toast } from "@/hooks/use-toast";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -33,6 +36,13 @@ const Footer = () => {
     loadCategories();
     loadRecentPosts();
   }, []);
+
+  const handleAdminAccess = () => {
+    toast({
+      title: "Admin Dashboard",
+      description: "Redirecting to admin dashboard..."
+    });
+  };
   
   return (
     <footer className="bg-sawmill-dark-brown text-white relative z-10">
@@ -41,7 +51,14 @@ const Footer = () => {
           {/* Company Info */}
           <div className="lg:col-span-2">
             <h3 className="text-xl font-bold mb-4 border-b border-sawmill-medium-brown pb-2">MilledRight Sawmill</h3>
-            <p className="mb-4">Premium quality lumber and custom milling services for professional and hobbyist woodworkers.</p>
+            <p className="mb-4">Premium quality lumber and custom milling services for professional and hobbyist woodworkers. We specialize in custom wooden structures, live edge slabs, dimensional lumber, and firewood sales.</p>
+            
+            <div className="bg-sawmill-medium-brown/20 p-4 rounded-lg mb-4">
+              <h4 className="font-bold text-sawmill-orange mb-2">Free Lumber & Log Services</h4>
+              <p className="text-sm mb-2">We accept free lumber if you're trying to get rid of it!</p>
+              <p className="text-sm">Have logs? We can work out a deal to mill some for you - no money transaction required.</p>
+            </div>
+            
             <div className="space-y-2">
               <p className="flex items-center">
                 <span className="font-bold mr-2">Call Us:</span> 
@@ -121,8 +138,48 @@ const Footer = () => {
           
           {/* Product Categories */}
           <div>
-            <h3 className="text-xl font-bold mb-4 border-b border-sawmill-medium-brown pb-2">Product Categories</h3>
+            <h3 className="text-xl font-bold mb-4 border-b border-sawmill-medium-brown pb-2">Our Services</h3>
             <ul className="space-y-2">
+              <li>
+                <Link 
+                  to="/products?category=Live%20Edge%20Slabs" 
+                  className="hover:text-sawmill-light-brown transition-colors cursor-pointer block py-1"
+                >
+                  Live Edge Slabs
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/products?category=Dimensional%20Lumber" 
+                  className="hover:text-sawmill-light-brown transition-colors cursor-pointer block py-1"
+                >
+                  Dimensional Lumber
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/products" 
+                  className="hover:text-sawmill-light-brown transition-colors cursor-pointer block py-1"
+                >
+                  Custom Milling
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/projects" 
+                  className="hover:text-sawmill-light-brown transition-colors cursor-pointer block py-1"
+                >
+                  Custom Structures
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/contact" 
+                  className="hover:text-sawmill-light-brown transition-colors cursor-pointer block py-1"
+                >
+                  Firewood Sales
+                </Link>
+              </li>
               {productCategories.map((category) => (
                 <li key={category.id}>
                   <Link 
@@ -138,7 +195,7 @@ const Footer = () => {
           
           {/* Recent Blog Posts */}
           <div>
-            <h3 className="text-xl font-bold mb-4 border-b border-sawmill-medium-brown pb-2">Latest Blog Posts</h3>
+            <h3 className="text-xl font-bold mb-4 border-b border-sawmill-medium-brown pb-2">Latest Updates</h3>
             <ul className="space-y-3">
               {recentPosts.map((post) => (
                 <li key={post.id}>
@@ -172,20 +229,36 @@ const Footer = () => {
         </div>
         
         {/* Bottom Bar */}
-        <div className="mt-8 pt-6 border-t border-sawmill-medium-brown text-center md:flex md:justify-between">
-          <p>© {currentYear} MilledRight Sawmill. All rights reserved.</p>
-          <div className="mt-4 md:mt-0 space-x-4">
-            <Link 
-              to="/terms" 
-              className="hover:text-sawmill-light-brown transition-colors cursor-pointer"
-            >
-              Terms of Service
-            </Link>
-            <Link 
-              to="/privacy" 
-              className="hover:text-sawmill-light-brown transition-colors cursor-pointer"
-            >
-              Privacy Policy
+        <div className="mt-8 pt-6 border-t border-sawmill-medium-brown flex flex-col md:flex-row justify-between items-center">
+          <div className="flex flex-col md:flex-row items-center gap-4">
+            <p>© {currentYear} MilledRight Sawmill. All rights reserved.</p>
+            <div className="flex space-x-4">
+              <Link 
+                to="/terms" 
+                className="hover:text-sawmill-light-brown transition-colors cursor-pointer"
+              >
+                Terms of Service
+              </Link>
+              <Link 
+                to="/privacy" 
+                className="hover:text-sawmill-light-brown transition-colors cursor-pointer"
+              >
+                Privacy Policy
+              </Link>
+            </div>
+          </div>
+          
+          {/* Admin Access */}
+          <div className="mt-4 md:mt-0">
+            <Link to="/admin" onClick={handleAdminAccess}>
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="border border-sawmill-light-brown/30 text-sawmill-light-brown hover:bg-sawmill-light-brown hover:text-sawmill-dark-brown transition-all duration-300 rounded-lg font-medium bg-transparent"
+              >
+                <ShieldCheck className="mr-2 h-4 w-4" />
+                Admin Access
+              </Button>
             </Link>
           </div>
         </div>
