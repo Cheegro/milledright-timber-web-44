@@ -43,13 +43,6 @@
     --sidebar-accent-foreground: 30 10% 95%;
     --sidebar-border: 30 30% 25%;
     --sidebar-ring: 25 65% 50%;
-
-    /* Renegade color palette */
-    --renegade-primary: 220 13% 18%;
-    --renegade-secondary: 0 72% 51%;
-    --renegade-accent: 39 85% 60%;
-    --renegade-surface: 220 13% 13%;
-    --renegade-text: 0 0% 95%;
   }
 
   .dark {
@@ -100,22 +93,15 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', sans-serif;
-    /* Improve text rendering on mobile */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* Prevent zoom on input focus on iOS */
     font-size: 16px;
-    /* Renegade body styling */
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
-    background-attachment: fixed;
   }
 
-  /* Improve touch targets on mobile */
   .touch-manipulation {
     touch-action: manipulation;
   }
 
-  /* Prevent text selection on interactive elements */
   button, 
   .touch-manipulation {
     -webkit-user-select: none;
@@ -123,29 +109,16 @@
     user-select: none;
   }
 
-  /* Improve scrolling on mobile */
   .overflow-y-auto {
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Renegade typography */
   h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
     letter-spacing: 0.025em;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  }
-
-  /* Industrial elements */
-  .renegade-border {
-    border: 2px solid transparent;
-    background: linear-gradient(45deg, #dc2626, #ea580c, #f59e0b) border-box;
-    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: destination-out;
-    mask-composite: exclude;
   }
 }
 
-/* Renegade Animation keyframes */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -161,44 +134,8 @@
   to { transform: translateX(0); opacity: 1; }
 }
 
-@keyframes renegadeGlow {
-  0%, 100% { box-shadow: 0 0 20px rgba(220, 38, 38, 0.3); }
-  50% { box-shadow: 0 0 30px rgba(234, 88, 12, 0.5), 0 0 40px rgba(245, 158, 11, 0.3); }
-}
-
-@keyframes industrialPulse {
-  0%, 100% { opacity: 0.1; }
-  50% { opacity: 0.3; }
-}
-
-/* Custom styles for the renegade sawmill website */
-.wood-texture {
-  background-image: url('/wood-texture.jpg');
-  background-size: cover;
-  background-position: center;
-}
-
-.renegade-texture {
-  background-image: 
-    radial-gradient(circle at 20% 80%, rgba(220, 38, 38, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(234, 88, 12, 0.1) 0%, transparent 50%),
-    linear-gradient(135deg, transparent 0%, rgba(0, 0, 0, 0.1) 100%);
-}
-
-.industrial-grid {
-  background-image: 
-    repeating-linear-gradient(0deg, transparent, transparent 20px, rgba(220, 38, 38, 0.1) 20px, rgba(220, 38, 38, 0.1) 21px),
-    repeating-linear-gradient(90deg, transparent, transparent 20px, rgba(234, 88, 12, 0.1) 20px, rgba(234, 88, 12, 0.1) 21px);
-}
-
 .text-shadow {
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-.renegade-text-shadow {
-  text-shadow: 
-    0 0 10px rgba(220, 38, 38, 0.5),
-    2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .animate-fade-in {
@@ -213,83 +150,37 @@
   animation: slideInRight 0.5s ease-out forwards;
 }
 
-.animate-renegade-glow {
-  animation: renegadeGlow 3s ease-in-out infinite;
-}
-
-.animate-industrial-pulse {
-  animation: industrialPulse 2s ease-in-out infinite;
-}
-
 .hover-grow {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .hover-grow:hover {
-  transform: scale(1.05) rotateZ(1deg);
-  box-shadow: 0 10px 30px rgba(220, 38, 38, 0.3);
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-.renegade-hover {
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.renegade-hover::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(220, 38, 38, 0.2), transparent);
-  transition: left 0.5s ease;
-}
-
-.renegade-hover:hover::before {
-  left: 100%;
-}
-
-.renegade-hover:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(220, 38, 38, 0.2);
-}
-
-/* Mobile-specific improvements */
 @media (max-width: 768px) {
-  /* Improve tap targets */
-  .btn-sawmill {
-    min-height: 44px;
-    padding: 0.75rem 1rem;
-  }
-
-  /* Better spacing on mobile */
   .container-wide {
     padding-left: 1rem;
     padding-right: 1rem;
   }
 
-  /* Improve form inputs on mobile */
   input, 
   textarea, 
   select {
-    font-size: 16px; /* Prevent zoom on iOS */
+    font-size: 16px;
     min-height: 44px;
   }
 
-  /* Better text sizes */
   .section-title {
-    font-size: 1.875rem; /* 30px */
-    line-height: 2.25rem; /* 36px */
+    font-size: 1.875rem;
+    line-height: 2.25rem;
   }
 
-  /* Improve card spacing */
   .product-card {
     margin-bottom: 1rem;
   }
 
-  /* Better mobile typography */
   h1 { font-size: 2rem; line-height: 1.2; }
   h2 { font-size: 1.75rem; line-height: 1.3; }
   h3 { font-size: 1.5rem; line-height: 1.4; }
@@ -297,62 +188,18 @@
 }
 
 @layer components {
-  .btn-sawmill {
-    @apply bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700 text-white px-6 py-3 rounded-lg transition-all duration-300 touch-manipulation font-bold tracking-wide shadow-lg transform hover:scale-105;
-    min-height: 44px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-  }
-  
   .container-wide {
     @apply container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl;
   }
   
   .section-title {
-    @apply text-2xl md:text-3xl lg:text-4xl font-bold text-gray-100 mb-4 md:mb-6 border-b-4 border-gradient-to-r from-red-600 to-orange-600 pb-2 inline-block renegade-text-shadow;
-    background: linear-gradient(135deg, #dc2626, #ea580c, #f59e0b);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    @apply text-2xl md:text-3xl lg:text-4xl font-bold text-sawmill-dark-brown mb-4 md:mb-6;
   }
   
   .product-card {
-    @apply bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-700 renegade-hover;
-    box-shadow: 
-      0 4px 15px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    @apply bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200;
   }
 
-  .renegade-card {
-    @apply bg-gradient-to-br from-gray-900 via-gray-800 to-black border-2 border-gray-700 rounded-xl shadow-2xl relative overflow-hidden;
-    box-shadow: 
-      0 0 30px rgba(220, 38, 38, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  }
-
-  .renegade-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #dc2626, #ea580c, #f59e0b);
-  }
-
-  .renegade-input {
-    @apply bg-gray-800 border-2 border-gray-600 text-gray-100 rounded-lg px-4 py-3 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-all duration-200;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
-  }
-
-  .renegade-button {
-    @apply bg-gradient-to-r from-red-600 via-orange-600 to-red-600 hover:from-red-700 hover:via-orange-700 hover:to-red-700 text-white font-bold px-6 py-3 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
-    box-shadow: 
-      0 4px 15px rgba(220, 38, 38, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  }
-
-  /* Mobile-optimized text truncation */
   .line-clamp-2 {
     display: -webkit-box;
     -webkit-line-clamp: 2;

@@ -22,16 +22,10 @@ const HeroSection = () => {
     trackButtonClick(secondaryCTA, 'hero_secondary');
   };
 
-  // Show loading state while settings are being fetched
   if (isLoading) {
     return (
-      <section className="relative bg-gray-900 text-white">
-        <div className="absolute inset-0 bg-black opacity-60 z-0"></div>
-        <div 
-          className="absolute inset-0 z-0 bg-cover bg-center"
-          style={{ backgroundImage: `url('/lovable-uploads/a86a2200-0386-4fb1-adbf-bdf3d636bba2.png')` }}
-        ></div>
-        <div className="container-wide py-24 md:py-32 lg:py-40 relative z-10">
+      <section className="relative bg-sawmill-dark-brown text-white">
+        <div className="container-wide py-24 md:py-32 lg:py-40">
           <div className="max-w-3xl">
             <div className="animate-pulse">
               <div className="h-12 bg-gray-700 rounded mb-6"></div>
@@ -48,24 +42,18 @@ const HeroSection = () => {
   }
 
   return (
-    <section className="relative bg-gray-900 text-white">
-      <div className="absolute inset-0 bg-black opacity-60 z-0"></div>
-      <div 
-        className="absolute inset-0 z-0 bg-cover bg-center"
-        style={{ backgroundImage: `url('/lovable-uploads/a86a2200-0386-4fb1-adbf-bdf3d636bba2.png')` }}
-      ></div>
-      
-      <div className="container-wide py-24 md:py-32 lg:py-40 relative z-10">
+    <section className="relative bg-sawmill-dark-brown text-white">
+      <div className="container-wide py-24 md:py-32 lg:py-40">
         <motion.div 
           className="max-w-3xl"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-shadow">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white">
             {headline}
           </h1>
-          <p className="text-xl mb-8 max-w-2xl text-shadow">
+          <p className="text-xl mb-8 max-w-2xl text-gray-200">
             {subtitle}
           </p>
           <div className="flex flex-wrap gap-4">
