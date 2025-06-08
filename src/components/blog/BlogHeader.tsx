@@ -1,6 +1,8 @@
+
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
+
 interface BlogHeaderProps {
   title?: string;
   description?: string;
@@ -9,34 +11,49 @@ interface BlogHeaderProps {
   searchQuery?: string;
   onSearch?: (query: string) => void;
 }
+
 const BlogHeader: React.FC<BlogHeaderProps> = ({
-  title = 'Blog',
-  description = 'Insights, tips, and stories from the world of sawmills and woodworking',
+  title = 'Workshop Journal',
+  description = 'Insights, tips, and stories from our sawmill and woodworking projects',
   headingLevel = 'h1',
   showSearch = false,
   searchQuery = '',
   onSearch
 }) => {
   const HeadingTag = headingLevel as keyof JSX.IntrinsicElements;
-  return <div className="bg-gradient-to-r from-sawmill-dark-brown to-sawmill-medium-brown text-white bg-gray-950">
-      <div className="container-wide py-12 md:py-16">
-        <div className="text-center space-y-4">
-          <HeadingTag className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
+  
+  return (
+    <div className="bg-gradient-to-r from-sawmill-dark-brown to-sawmill-medium-brown text-white bg-gray-950">
+      <div className="container-wide py-16 md:py-20 lg:py-24">
+        <div className="text-center space-y-6">
+          <HeadingTag className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight px-4">
             {title}
           </HeadingTag>
           
-          {description && <p className="text-lg md:text-xl text-sawmill-light-brown max-w-3xl mx-auto leading-relaxed">
+          {description && (
+            <p className="text-base sm:text-lg md:text-xl text-sawmill-light-brown max-w-3xl mx-auto leading-relaxed px-4">
               {description}
-            </p>}
+            </p>
+          )}
           
-          {showSearch && onSearch && <div className="mt-8 max-w-md mx-auto">
+          {showSearch && onSearch && (
+            <div className="mt-8 max-w-md mx-auto px-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input type="search" placeholder="Search blog posts..." value={searchQuery} onChange={e => onSearch(e.target.value)} className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/70 focus:bg-white/20" />
+                <Input 
+                  type="search" 
+                  placeholder="Search blog posts..." 
+                  value={searchQuery} 
+                  onChange={(e) => onSearch(e.target.value)} 
+                  className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/70 focus:bg-white/20" 
+                />
               </div>
-            </div>}
+            </div>
+          )}
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default BlogHeader;

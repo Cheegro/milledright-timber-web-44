@@ -29,7 +29,8 @@ const Header = () => {
     { name: 'Gallery', href: '/gallery' },
     { name: 'Blog', href: '/blog' },
     { name: 'Calculator', href: '/board-foot-calculator' },
-    { name: 'Projects', href: '/projects' }
+    { name: 'Projects', href: '/projects' },
+    { name: 'About Us', href: '/about' }
   ];
 
   const handleGetQuote = () => {
@@ -117,11 +118,11 @@ const Header = () => {
         </div>
       </div>
       
-      {/* Mobile Navigation Overlay - Optimized for mobile screens */}
+      {/* Mobile Navigation Overlay - Full Height & Optimized */}
       {isOpen && (
         <>
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 xl:hidden" onClick={() => setIsOpen(false)} />
-          <div className="fixed top-0 right-0 h-full w-full max-w-sm bg-white shadow-2xl z-50 xl:hidden transform transition-transform duration-300 overflow-y-auto">
+          <div className="fixed top-0 right-0 h-full w-full max-w-sm bg-white shadow-2xl z-50 xl:hidden transform transition-transform duration-300">
             <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-sawmill-orange/10 to-sawmill-auburn/10">
               <div className="flex items-center justify-between">
                 <span className="font-bold text-lg text-sawmill-dark-brown">Navigation</span>
@@ -134,31 +135,35 @@ const Header = () => {
                 </button>
               </div>
             </div>
-            <nav className="flex flex-col p-4 space-y-1 overflow-y-auto">
-              {navigationItems.map((item) => (
-                <Link 
-                  key={item.name} 
-                  to={item.href} 
-                  className={`text-sawmill-dark-brown font-medium py-4 px-4 rounded-xl transition-all duration-300 touch-manipulation text-base ${
-                    isActiveRoute(item.href)
-                      ? 'bg-sawmill-orange text-white shadow-lg' 
-                      : 'hover:bg-sawmill-orange/10 hover:text-sawmill-orange'
-                  }`}
-                  onClick={() => setIsOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              ))}
-              
-              <div className="pt-4 space-y-3 border-t border-gray-100 mt-4">
-                <Button 
-                  className="bg-gradient-to-r from-sawmill-orange to-sawmill-auburn text-white w-full h-12 text-base font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300" 
-                  onClick={handleGetQuote}
-                >
-                  Get Quote
-                </Button>
-              </div>
-            </nav>
+            
+            {/* Navigation Items with Full Height Scroll */}
+            <div className="h-full overflow-y-auto pb-32">
+              <nav className="flex flex-col p-4 space-y-2">
+                {navigationItems.map((item) => (
+                  <Link 
+                    key={item.name} 
+                    to={item.href} 
+                    className={`text-sawmill-dark-brown font-medium py-4 px-4 rounded-xl transition-all duration-300 touch-manipulation text-base min-h-[56px] flex items-center ${
+                      isActiveRoute(item.href)
+                        ? 'bg-sawmill-orange text-white shadow-lg' 
+                        : 'hover:bg-sawmill-orange/10 hover:text-sawmill-orange'
+                    }`}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+                
+                <div className="pt-6 space-y-3 border-t border-gray-100 mt-6">
+                  <Button 
+                    className="bg-gradient-to-r from-sawmill-orange to-sawmill-auburn text-white w-full h-14 text-base font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300" 
+                    onClick={handleGetQuote}
+                  >
+                    Get Quote
+                  </Button>
+                </div>
+              </nav>
+            </div>
           </div>
         </>
       )}

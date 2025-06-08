@@ -8,56 +8,67 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { 
   Clock, 
-  Award, 
+  Heart, 
   Users, 
-  BarChart3,
+  Leaf,
   GalleryHorizontal,
+  Lightbulb,
+  DollarSign,
+  TreePine
 } from 'lucide-react';
 
 const About = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <SEOHead 
-        title="About Us"
-        description="Learn about MilledRight Sawmill's story, mission, and team. Family-owned since 2008, providing premium lumber and custom milling services."
-        keywords="about sawmill, family business, lumber company history, Whitchurch-Stouffville"
+        title="About Us - Sustainable Renegades"
+        description="Meet the renegades at MilledRight Sawmill. We help customers make their dreams come true using naturally sustainable practices and old-forgotten methods."
+        keywords="about sawmill, sustainable lumber, natural wood treatment, custom milling, renegade woodworkers"
       />
       
       <Header />
       
       <main className="flex-1">
-        <div className="bg-sawmill-dark-brown py-12">
+        <div className="bg-gradient-to-br from-sawmill-dark-brown via-sawmill-medium-brown to-sawmill-auburn py-20 md:py-28">
           <div className="container-wide">
-            <h1 className="text-4xl font-bold text-white mb-4">About Us</h1>
-            <p className="text-sawmill-light-brown text-lg">
-              Discover the story of MilledRight Sawmill and our commitment to quality lumber
-            </p>
+            <div className="max-w-4xl mx-auto text-center text-white">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">About Us</h1>
+              <p className="text-xl md:text-2xl text-sawmill-light-brown leading-relaxed">
+                We're the <span className="text-sawmill-orange font-bold">renegades</span> who believe in making your dreams come true 
+                through sustainable craftsmanship and time-tested wisdom
+              </p>
+            </div>
           </div>
         </div>
         
-        {/* Our Story */}
-        <section className="container-wide py-16">
+        {/* Our Philosophy */}
+        <section className="container-wide py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold mb-6 text-sawmill-dark-brown">Our Story</h2>
-              <p className="mb-4 text-lg">
-                Founded in 2008, MilledRight Sawmill began as a small family operation with a single portable sawmill. Today, we've grown into a premier provider of custom lumber solutions while maintaining our commitment to quality and sustainability.
-              </p>
-              <p className="mb-4">
-                Our journey started when founder Mike Richards, a third-generation woodworker, recognized the need for high-quality custom milling services in the region. What began as a weekend hobby quickly turned into a thriving business as word spread about our attention to detail and exceptional customer service.
-              </p>
-              <p>
-                Over the years, we've expanded our operations to include a full range of sawmill services, from custom lumber milling to specialized cuts for furniture makers and builders. Despite our growth, we've stayed true to our roots: producing premium lumber products with personal attention to each customer's needs.
-              </p>
+              <h2 className="text-3xl md:text-4xl font-bold mb-8 text-sawmill-dark-brown">
+                Making Dreams Come True, <span className="text-sawmill-orange">Naturally</span>
+              </h2>
+              <div className="space-y-6 text-lg leading-relaxed">
+                <p>
+                  At MilledRight Sawmill, we're more than just lumber suppliers – <strong>we're dream makers</strong>. Every piece of wood that leaves our mill carries the potential to become something extraordinary in your hands.
+                </p>
+                <p>
+                  We believe in helping our customers achieve their visions using <span className="text-sawmill-orange font-semibold">naturally sustainable practices</span>. That's why we say no to pressure-treated wood and yes to the old, forgotten methods that have stood the test of time.
+                </p>
+                <p className="italic text-sawmill-medium-brown">
+                  "Not every customer interaction is about money. If we can help without charging you, we prefer that. We're renegades who put relationships before revenue."
+                </p>
+              </div>
             </div>
             <div className="relative">
               <img 
                 src="/placeholder.svg" 
-                alt="MilledRight Sawmill building" 
-                className="rounded-lg shadow-lg w-full h-auto"
+                alt="Natural wood processing at MilledRight" 
+                className="rounded-xl shadow-2xl w-full h-auto"
               />
-              <div className="absolute -bottom-6 -left-6 bg-sawmill-orange p-4 rounded-lg shadow-lg">
-                <p className="text-white font-bold text-xl">EST. 2008</p>
+              <div className="absolute -bottom-6 -left-6 bg-gradient-to-r from-sawmill-orange to-sawmill-auburn p-6 rounded-xl shadow-xl text-white">
+                <p className="font-bold text-2xl">RENEGADES</p>
+                <p className="text-sm">Since 2008</p>
               </div>
             </div>
           </div>
@@ -65,127 +76,149 @@ const About = () => {
         
         <Separator className="container-wide" />
         
-        {/* Our Mission */}
-        <section className="bg-sawmill-light-brown py-16">
+        {/* Our Values */}
+        <section className="bg-gradient-to-br from-sawmill-light-brown/10 to-sawmill-orange/5 py-20">
           <div className="container-wide">
-            <div className="text-center max-w-3xl mx-auto mb-16">
-              <h2 className="text-3xl font-bold mb-6 text-sawmill-dark-brown">Our Mission</h2>
-              <p className="text-xl">
-                At MilledRight Sawmill, we strive to transform raw timber into premium lumber products while maintaining sustainable forestry practices and delivering exceptional value to our customers.
+            <div className="text-center max-w-4xl mx-auto mb-16">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6 text-sawmill-dark-brown">
+                The Renegade Way
+              </h2>
+              <p className="text-xl text-gray-700 leading-relaxed">
+                We empower our customers with resources, knowledge, and expertise. 
+                Our mission is to revive the sustainable methods that modern industry forgot.
               </p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              <Card className="bg-white">
-                <CardContent className="flex flex-col items-center text-center p-6">
-                  <div className="h-16 w-16 rounded-full bg-sawmill-orange text-white flex items-center justify-center mb-4">
-                    <Award size={32} />
+              <Card className="bg-white border-2 border-sawmill-orange/20 hover:border-sawmill-orange/40 transition-all duration-300 hover:shadow-xl">
+                <CardContent className="flex flex-col items-center text-center p-8">
+                  <div className="h-16 w-16 rounded-full bg-gradient-to-br from-sawmill-orange to-sawmill-auburn text-white flex items-center justify-center mb-6">
+                    <Heart size={32} />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">Quality</h3>
-                  <p>We're committed to producing the highest quality lumber for every project, large or small.</p>
+                  <h3 className="text-xl font-bold mb-3 text-sawmill-dark-brown">Dreams First</h3>
+                  <p className="text-gray-700">We help make your vision reality, focusing on what matters most to you and your project.</p>
                 </CardContent>
               </Card>
               
-              <Card className="bg-white">
-                <CardContent className="flex flex-col items-center text-center p-6">
-                  <div className="h-16 w-16 rounded-full bg-sawmill-orange text-white flex items-center justify-center mb-4">
-                    <GalleryHorizontal size={32} />
+              <Card className="bg-white border-2 border-sawmill-orange/20 hover:border-sawmill-orange/40 transition-all duration-300 hover:shadow-xl">
+                <CardContent className="flex flex-col items-center text-center p-8">
+                  <div className="h-16 w-16 rounded-full bg-gradient-to-br from-sawmill-forest to-sawmill-dark-brown text-white flex items-center justify-center mb-6">
+                    <Leaf size={32} />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">Sustainability</h3>
-                  <p>We practice responsible forestry and minimize waste in all our operations.</p>
+                  <h3 className="text-xl font-bold mb-3 text-sawmill-dark-brown">Natural Methods</h3>
+                  <p className="text-gray-700">We embrace sustainable practices and avoid chemical treatments, returning to time-tested techniques.</p>
                 </CardContent>
               </Card>
               
-              <Card className="bg-white">
-                <CardContent className="flex flex-col items-center text-center p-6">
-                  <div className="h-16 w-16 rounded-full bg-sawmill-orange text-white flex items-center justify-center mb-4">
-                    <Users size={32} />
+              <Card className="bg-white border-2 border-sawmill-orange/20 hover:border-sawmill-orange/40 transition-all duration-300 hover:shadow-xl">
+                <CardContent className="flex flex-col items-center text-center p-8">
+                  <div className="h-16 w-16 rounded-full bg-gradient-to-br from-sawmill-medium-brown to-sawmill-auburn text-white flex items-center justify-center mb-6">
+                    <Lightbulb size={32} />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">Community</h3>
-                  <p>We support local craftsmen and builders with materials and expertise.</p>
+                  <h3 className="text-xl font-bold mb-3 text-sawmill-dark-brown">Knowledge Sharing</h3>
+                  <p className="text-gray-700">We empower customers with resources, expertise, and forgotten wisdom of traditional woodworking.</p>
                 </CardContent>
               </Card>
               
-              <Card className="bg-white">
-                <CardContent className="flex flex-col items-center text-center p-6">
-                  <div className="h-16 w-16 rounded-full bg-sawmill-orange text-white flex items-center justify-center mb-4">
-                    <BarChart3 size={32} />
+              <Card className="bg-white border-2 border-sawmill-orange/20 hover:border-sawmill-orange/40 transition-all duration-300 hover:shadow-xl">
+                <CardContent className="flex flex-col items-center text-center p-8">
+                  <div className="h-16 w-16 rounded-full bg-gradient-to-br from-sawmill-orange to-yellow-500 text-white flex items-center justify-center mb-6">
+                    <DollarSign size={32} />
                   </div>
-                  <h3 className="text-xl font-bold mb-2">Innovation</h3>
-                  <p>We continually improve our processes and techniques to better serve our customers.</p>
+                  <h3 className="text-xl font-bold mb-3 text-sawmill-dark-brown">Help First</h3>
+                  <p className="text-gray-700">If we can help without charging, we prefer that. Relationships matter more than transactions.</p>
                 </CardContent>
               </Card>
+            </div>
+          </div>
+        </section>
+        
+        {/* Our Approach */}
+        <section className="container-wide py-20">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-sawmill-dark-brown">
+              Why We Avoid Pressure-Treated Wood
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+              <div className="space-y-6">
+                <div className="bg-red-50 border border-red-200 rounded-xl p-6">
+                  <h3 className="text-xl font-bold text-red-800 mb-3 flex items-center gap-2">
+                    <TreePine className="w-6 h-6" />
+                    The Problem with Chemicals
+                  </h3>
+                  <p className="text-red-700">
+                    Pressure-treated wood is infused with harsh chemicals that can be harmful to health and the environment. 
+                    These chemicals never fully leave the wood and can leach into soil and groundwater.
+                  </p>
+                </div>
+                
+                <div className="bg-green-50 border border-green-200 rounded-xl p-6">
+                  <h3 className="text-xl font-bold text-green-800 mb-3 flex items-center gap-2">
+                    <Leaf className="w-6 h-6" />
+                    The Natural Alternative
+                  </h3>
+                  <p className="text-green-700">
+                    We champion natural preservation methods: proper drying, natural oils, traditional joinery, and selecting the right wood species for each application. 
+                    These methods have protected wood for centuries.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="bg-gradient-to-br from-sawmill-dark-brown to-sawmill-medium-brown text-white p-8 rounded-2xl">
+                <h3 className="text-2xl font-bold mb-4">Our Promise</h3>
+                <ul className="space-y-3 text-sawmill-light-brown">
+                  <li>✓ No harmful chemical treatments</li>
+                  <li>✓ Traditional preservation methods</li>
+                  <li>✓ Sustainable sourcing practices</li>
+                  <li>✓ Education on natural alternatives</li>
+                  <li>✓ Long-term durability without compromise</li>
+                </ul>
+              </div>
             </div>
           </div>
         </section>
         
         {/* Our Team */}
-        <section className="container-wide py-16">
-          <h2 className="text-3xl font-bold mb-10 text-center text-sawmill-dark-brown">Meet Our Team</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { name: "Lucas Nauta", role: "Owner & Head Miller", img: "/placeholder.svg", initials: "LN" },
-              { name: "Amber Watters", role: "Operations Manager", img: "/placeholder.svg", initials: "AW" },
-              { name: "Martin Nauta", role: "Lead Sawyer", img: "/placeholder.svg", initials: "MN" },
-              { name: "Lisa Green", role: "Customer Relations", img: "/placeholder.svg", initials: "LG" }
-            ].map((member) => (
-              <Card key={member.name} className="overflow-hidden">
-                <CardContent className="p-6 flex flex-col items-center text-center">
-                  <Avatar className="h-24 w-24 mb-4">
-                    <AvatarImage src={member.img} alt={member.name} />
-                    <AvatarFallback className="bg-sawmill-medium-brown text-white text-lg">
-                      {member.initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <h3 className="text-xl font-bold mb-1">{member.name}</h3>
-                  <p className="text-muted-foreground">{member.role}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-        
-        {/* Equipment & Facilities */}
-        <section className="bg-gray-100 py-16">
+        <section className="bg-gray-50 py-20">
           <div className="container-wide">
-            <h2 className="text-3xl font-bold mb-10 text-center text-sawmill-dark-brown">Our Equipment & Facilities</h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              <div>
-                <img 
-                  src="/placeholder.svg" 
-                  alt="Sawmill equipment" 
-                  className="rounded-lg shadow-lg w-full h-auto mb-6" 
-                />
-                <h3 className="text-2xl font-bold mb-3 text-sawmill-dark-brown">State-of-the-Art Equipment</h3>
-                <p>
-                  Our sawmill operation features top-of-the-line equipment, including portable bandsaw mills, industrial resaws, planers, and specialized drying kilns. We regularly update our machinery to ensure precision cuts and efficient processing.
-                </p>
-              </div>
-              <div>
-                <img 
-                  src="/placeholder.svg" 
-                  alt="Sawmill facility" 
-                  className="rounded-lg shadow-lg w-full h-auto mb-6" 
-                />
-                <h3 className="text-2xl font-bold mb-3 text-sawmill-dark-brown">4-Acre Facility</h3>
-                <p>
-                  Located on 4 acres of land, our facility includes a covered milling area, climate-controlled wood storage, a retail showroom, and ample space for lumber processing. We've designed our space to optimize workflow while maintaining a safe and efficient operation.
-                </p>
-              </div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-16 text-center text-sawmill-dark-brown">
+              Meet the Renegades
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              {[
+                { name: "Lucas Nauta", role: "Owner & Head Renegade", img: "/placeholder.svg", initials: "LN" },
+                { name: "Amber Watters", role: "Sustainability Advocate", img: "/placeholder.svg", initials: "AW" },
+                { name: "Martin Nauta", role: "Traditional Methods Expert", img: "/placeholder.svg", initials: "MN" },
+                { name: "Lisa Green", role: "Customer Dream Facilitator", img: "/placeholder.svg", initials: "LG" }
+              ].map((member) => (
+                <Card key={member.name} className="overflow-hidden hover:shadow-xl transition-all duration-300">
+                  <CardContent className="p-6 flex flex-col items-center text-center">
+                    <Avatar className="h-24 w-24 mb-4">
+                      <AvatarImage src={member.img} alt={member.name} />
+                      <AvatarFallback className="bg-sawmill-medium-brown text-white text-lg">
+                        {member.initials}
+                      </AvatarFallback>
+                    </Avatar>
+                    <h3 className="text-xl font-bold mb-1">{member.name}</h3>
+                    <p className="text-sawmill-orange font-medium">{member.role}</p>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           </div>
         </section>
         
-        {/* Hours of Operation */}
-        <section className="container-wide py-16">
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-sawmill-dark-brown text-white p-8 rounded-lg shadow-lg">
-              <div className="flex items-center justify-center mb-6">
+        {/* Hours & Contact */}
+        <section className="container-wide py-20">
+          <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="bg-gradient-to-br from-sawmill-dark-brown to-sawmill-medium-brown text-white p-10 rounded-2xl shadow-2xl">
+              <div className="flex items-center justify-center mb-8">
                 <Clock className="h-8 w-8 mr-3" />
                 <h2 className="text-3xl font-bold">Hours of Operation</h2>
               </div>
               
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <div className="flex justify-between py-2 border-b border-sawmill-medium-brown">
                   <span className="font-bold">Monday - Friday</span>
                   <span>8:00 AM - 5:00 PM</span>
@@ -201,8 +234,30 @@ const About = () => {
               </div>
               
               <div className="mt-8 text-center">
-                <p className="italic">
-                  Custom milling services by appointment only.
+                <p className="italic text-sawmill-light-brown">
+                  Custom consultations available anytime – just call!
+                </p>
+              </div>
+            </div>
+            
+            <div className="bg-gradient-to-br from-sawmill-orange to-sawmill-auburn text-white p-10 rounded-2xl shadow-2xl">
+              <h2 className="text-3xl font-bold mb-8 text-center">Ready to Start Your Dream?</h2>
+              
+              <div className="space-y-6 text-center">
+                <p className="text-lg">
+                  Whether you need lumber, advice, or just want to chat about your project, 
+                  we're here to help make it happen – the natural way.
+                </p>
+                
+                <div className="space-y-3">
+                  <p><strong>Phone:</strong> (437) 898-0642</p>
+                  <p><strong>Location:</strong> 16720 Hwy 48, Whitchurch-Stouffville</p>
+                  <p><strong>Email:</strong> info@milledright.com</p>
+                </div>
+                
+                <p className="italic text-sm">
+                  Remember: We're renegades who believe in helping first, 
+                  selling second. Your success is our mission.
                 </p>
               </div>
             </div>

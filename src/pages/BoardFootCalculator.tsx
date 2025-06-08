@@ -24,17 +24,17 @@ const BoardFootCalculatorPage = () => {
       <Header />
       
       <main className="flex-1 relative z-10">
-        {/* Main Calculator Section */}
-        <section className="py-8 md:py-12">
+        {/* Main Calculator Section - Fixed Header */}
+        <section className="py-8 md:py-12 pt-24 md:pt-28">
           <div className="container-wide">
             <div className="text-center mb-8">
-              <h1 className="text-3xl md:text-5xl font-black text-gray-100 mb-4 tracking-wide">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-gray-100 mb-4 tracking-wide px-4">
                 <span className="bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 bg-clip-text text-transparent">
                   BOARD FOOT CALCULATOR
                 </span>
               </h1>
               <div className="h-1 w-32 bg-gradient-to-r from-red-600 to-orange-600 mx-auto mb-6 rounded-full"></div>
-              <p className="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+              <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed px-4">
                 The most <span className="text-red-400 font-bold">advanced</span> and feature-rich lumber calculator available. 
                 Calculate board feet, estimate costs, and manage multiple pieces with <span className="text-orange-400 font-bold">precision</span>.
               </p>
@@ -48,13 +48,13 @@ const BoardFootCalculatorPage = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-red-900/10 via-transparent to-orange-900/10"></div>
           <div className="container-wide relative z-10">
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-black text-gray-100 mb-4 tracking-wide">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-gray-100 mb-4 tracking-wide px-4">
                 <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
                   MASTER BOARD FOOT CALCULATIONS
                 </span>
               </h2>
               <div className="h-1 w-24 bg-gradient-to-r from-orange-600 to-red-600 mx-auto mb-6 rounded-full"></div>
-              <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+              <p className="text-base sm:text-lg text-gray-300 max-w-2xl mx-auto px-4">
                 Understanding board feet is <span className="text-orange-400 font-bold">essential</span> for accurate lumber purchasing and project planning
               </p>
             </div>
@@ -71,33 +71,33 @@ const BoardFootCalculatorPage = () => {
           </div>
           
           <div className="container-wide relative z-10">
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-3xl md:text-4xl font-black mb-6 tracking-wide">
+            <div className="max-w-3xl mx-auto text-center px-4">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black mb-6 tracking-wide">
                 <span className="bg-gradient-to-r from-red-400 via-orange-400 to-yellow-400 bg-clip-text text-transparent renegade-text-shadow">
                   NEED QUALITY LUMBER FOR YOUR PROJECT?
                 </span>
               </h2>
               <div className="h-1 w-32 bg-gradient-to-r from-red-600 to-orange-600 mx-auto mb-8 rounded-full"></div>
-              <p className="text-xl mb-8 text-gray-300 leading-relaxed">
+              <p className="text-lg sm:text-xl mb-8 text-gray-300 leading-relaxed">
                 <span className="text-orange-400 font-bold">MilledRight Sawmill</span> provides premium lumber and custom milling services in the 
                 <span className="text-red-400 font-bold"> Whitchurch-Stouffville</span> area. From live edge slabs to dimensional lumber, 
                 <span className="text-yellow-400 font-bold"> we've got you covered</span>.
               </p>
-              <div className="flex flex-wrap justify-center gap-6">
+              <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
                 <Button 
                   size="lg" 
-                  className="renegade-button text-lg px-8 py-4"
+                  className="renegade-button text-lg px-8 py-4 w-full sm:w-auto"
                 >
-                  <Link to="/products" className="flex items-center gap-2">
+                  <Link to="/products" className="flex items-center justify-center gap-2 w-full">
                     BROWSE OUR LUMBER
                   </Link>
                 </Button>
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="bg-transparent border-2 border-red-500 text-red-400 hover:bg-red-500 hover:text-white font-bold px-8 py-4 text-lg transition-all duration-300 transform hover:scale-105"
+                  className="bg-transparent border-2 border-red-500 text-red-400 hover:bg-red-500 hover:text-white font-bold px-8 py-4 text-lg transition-all duration-300 transform hover:scale-105 w-full sm:w-auto"
                 >
-                  <Link to="/contact" className="flex items-center gap-2">
+                  <Link to="/contact" className="flex items-center justify-center gap-2 w-full">
                     REQUEST A QUOTE
                   </Link>
                 </Button>
