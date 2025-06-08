@@ -65,10 +65,10 @@ const SocialMediaLinks: React.FC<SocialMediaLinksProps> = ({
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => handleSocialClick(link.name)}
-          className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-sawmill-medium-brown rounded"
+          className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-sawmill-medium-brown rounded cursor-pointer"
           aria-label={`Follow us on ${link.name}`}
         >
-          <link.icon className="h-5 w-5" />
+          <link.icon className="h-5 w-5 pointer-events-none" />
         </a>
       ))}
     </div>
