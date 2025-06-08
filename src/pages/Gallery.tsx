@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -27,7 +28,7 @@ const Gallery = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [viewMode, setViewMode<'grid' | 'masonry'>('grid');
+  const [viewMode, setViewMode] = useState<'grid' | 'masonry'>('grid');
 
   useEffect(() => {
     const loadImages = async () => {
