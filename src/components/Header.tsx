@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 const Header = () => {
@@ -25,28 +25,15 @@ const Header = () => {
   }, [location.pathname]);
 
   const navigationItems = [
-    { name: 'Home', href: '/' },
     { name: 'Products', href: '/products' },
-    { name: 'Projects', href: '/projects' },
     { name: 'Gallery', href: '/gallery' },
     { name: 'Blog', href: '/blog' },
-    { name: 'Board Foot Calculator', href: '/board-foot-calculator' },
-    { name: 'About', href: '/about' },
-    { name: 'Contact', href: '/contact' }
+    { name: 'Calculator', href: '/board-foot-calculator' },
+    { name: 'Projects', href: '/projects' }
   ];
 
   const handleGetQuote = () => {
-    const isHomePage = location.pathname === '/';
-    if (isHomePage) {
-      const quoteSection = document.getElementById('quote-section');
-      if (quoteSection) {
-        quoteSection.scrollIntoView({
-          behavior: 'smooth'
-        });
-      }
-    } else {
-      navigate('/#quote-section');
-    }
+    navigate('/contact');
     setIsOpen(false);
   };
 
@@ -84,7 +71,7 @@ const Header = () => {
           {/* Desktop Navigation */}
           <nav className="hidden xl:flex items-center">
             <div className="flex items-center space-x-1 bg-gray-50/80 rounded-2xl p-2 mr-6">
-              {navigationItems.slice(0, 6).map((item) => (
+              {navigationItems.map((item) => (
                 <Link 
                   key={item.name} 
                   to={item.href} 
@@ -100,30 +87,9 @@ const Header = () => {
                   )}
                 </Link>
               ))}
-              
-              {/* More dropdown for remaining items */}
-              <div className="relative group">
-                <button className="px-4 py-2.5 rounded-xl font-medium text-sm text-sawmill-dark-brown hover:bg-white hover:shadow-md transition-all duration-300 flex items-center gap-1">
-                  More
-                  <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-300" />
-                </button>
-                <div className="absolute top-full right-0 mt-2 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
-                  <div className="p-2">
-                    {navigationItems.slice(6).map((item) => (
-                      <Link
-                        key={item.name}
-                        to={item.href}
-                        className="block px-4 py-3 text-sawmill-dark-brown hover:bg-sawmill-orange hover:text-white rounded-xl transition-all duration-200 font-medium text-sm"
-                      >
-                        {item.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              </div>
             </div>
             
-            {/* Action Button - Only Get Quote */}
+            {/* Action Button - Get Quote */}
             <div className="flex items-center gap-3">
               <Button 
                 className="bg-gradient-to-r from-sawmill-orange to-sawmill-auburn text-white hover:from-sawmill-auburn hover:to-sawmill-orange shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl font-medium px-8"
