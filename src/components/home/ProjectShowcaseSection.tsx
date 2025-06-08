@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -17,10 +16,23 @@ import { useQuery } from '@tanstack/react-query';
 const ProjectShowcaseSection = () => {
   const [activeProject, setActiveProject] = useState<Project | null>(null);
 
-  const { data: projects = [], isLoading } = useQuery({
+  const { data: allProjects = [], isLoading } = useQuery({
     queryKey: ['projects-showcase'],
     queryFn: fetchProjects,
   });
+
+  // Filter out duplicates by title (case-insensitive)
+  const projects = allProjects.filter((project, index, array) => {
+    const firstOccurrence = array.findIndex(p => 
+      p.title.toLowerCase().trim() === project.title.toLowerCase().trim()
+    );
+    return firstOccurrence === index;
+  });
+
+  // Debug logging
+  console.log('All projects loaded:', allProjects.length);
+  console.log('Projects after duplicate filtering:', projects.length);
+  console.log('Project titles:', projects.map(p => p.title));
 
   useEffect(() => {
     if (projects.length > 0 && !activeProject) {
@@ -41,7 +53,6 @@ const ProjectShowcaseSection = () => {
     );
   }
 
-  // Fallback to static data if no projects are loaded
   if (projects.length === 0) {
     return (
       <section className="py-16">
