@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -17,7 +16,7 @@ interface GalleryImage {
   title: string;
   description?: string;
   image_url: string;
-  category: string;
+  category?: string;
   tags?: string[];
   created_at: string;
 }
@@ -35,8 +34,8 @@ const Gallery = () => {
       try {
         setLoading(true);
         const galleryImages = await fetchGalleryImages();
-        setImages(galleryImages);
-        setFilteredImages(galleryImages);
+        setImages(galleryImages as GalleryImage[]);
+        setFilteredImages(galleryImages as GalleryImage[]);
       } catch (error) {
         console.error('Error loading gallery images:', error);
         toast({
@@ -60,7 +59,7 @@ const Gallery = () => {
         results = results.filter(image =>
           image.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           (image.description && image.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
-          image.category.toLowerCase().includes(searchQuery.toLowerCase())
+          (image.category && image.category.toLowerCase().includes(searchQuery.toLowerCase()))
         );
       }
 
@@ -221,9 +220,11 @@ const Gallery = () => {
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <h3 className="font-semibold text-sawmill-dark-brown">{image.title}</h3>
-                      <Badge variant="outline" className="border-sawmill-orange text-sawmill-orange">
-                        {image.category}
-                      </Badge>
+                      {image.category && (
+                        <Badge variant="outline" className="border-sawmill-orange text-sawmill-orange">
+                          {image.category}
+                        </Badge>
+                      )}
                     </div>
                     {image.description && (
                       <p className="text-gray-600 text-sm mt-2 line-clamp-2">{image.description}</p>

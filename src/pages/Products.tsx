@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -17,7 +18,7 @@ interface Product {
   image_url: string;
   description: string;
   category: string;
-  wood_type: string;
+  wood_type?: string;
   board_feet?: number;
 }
 
@@ -41,7 +42,11 @@ const Products = () => {
       try {
         setLoading(true);
         const productsData = await fetchProducts();
-        setProducts(productsData);
+        setProducts(productsData.map(p => ({
+          ...p,
+          wood_type: p.wood_type || 'Mixed',
+          category: p.category || 'General'
+        })));
       } catch (error) {
         console.error("Error loading products:", error);
         toast({
@@ -103,26 +108,26 @@ const Products = () => {
       
       <main className="flex-1">
         <ProductsHeader 
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          onMobileFiltersClick={() => setMobileFiltersOpen(true)}
           totalProducts={filteredProducts.length}
         />
         
         <div className="container-wide">
           <div className="flex gap-8 py-8">
             <ProductsSidebar
-              categories={categories}
+              productCategories={categories.map(c => c.name)}
               selectedCategory={selectedCategory}
-              onCategoryChange={setSelectedCategory}
-              priceRange={priceRange}
-              onPriceRangeChange={setPriceRange}
+              setSelectedCategory={setSelectedCategory}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
             />
             
             <div className="flex-1">
               <ProductsList 
-                products={filteredProducts}
-                loading={loading}
+                filteredProducts={filteredProducts}
+                selectedCategory={selectedCategory || 'All'}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                setSelectedCategory={setSelectedCategory}
               />
             </div>
           </div>
@@ -131,13 +136,11 @@ const Products = () => {
         <ProductsCallToAction />
         
         <MobileProductFilters 
-          isOpen={mobileFiltersOpen}
-          onClose={() => setMobileFiltersOpen(false)}
-          categories={categories}
+          productCategories={categories.map(c => c.name)}
           selectedCategory={selectedCategory}
-          onCategoryChange={setSelectedCategory}
-          priceRange={priceRange}
-          onPriceRangeChange={setPriceRange}
+          setSelectedCategory={setSelectedCategory}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
         />
       </main>
       
