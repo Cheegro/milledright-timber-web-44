@@ -1,4 +1,25 @@
 
+import { trackEvent as dbTrackEvent, trackPageView as dbTrackPageView } from '@/api/analyticsApi';
+
+// Generate or get session ID
+const getSessionId = () => {
+  let sessionId = sessionStorage.getItem('analytics_session_id');
+  if (!sessionId) {
+    sessionId = Math.random().toString(36).substring(2) + Date.now().toString(36);
+    sessionStorage.setItem('analytics_session_id', sessionId);
+  }
+  return sessionId;
+};
+
+// Get basic client info
+const getClientInfo = () => {
+  return {
+    user_agent: navigator.userAgent,
+    session_id: getSessionId(),
+    page_path: window.location.pathname,
+  };
+};
+
 export const trackEvent = (eventName: string, parameters?: Record<string, any>) => {
   // Google Analytics 4
   if (typeof window !== 'undefined' && (window as any).gtag) {
@@ -12,12 +33,32 @@ export const trackEvent = (eventName: string, parameters?: Record<string, any>) 
     console.log('Meta Pixel Event tracked:', eventName, parameters);
   }
 
+  // Store in our database
+  if (typeof window !== 'undefined') {
+    dbTrackEvent({
+      event_name: eventName,
+      event_category: parameters?.event_category || 'general',
+      parameters,
+      ...getClientInfo()
+    });
+  }
+
   // Console log for debugging
   console.log('Analytics Event:', eventName, parameters);
 };
 
 export const trackPageView = (page: string) => {
   trackEvent('page_view', { page_title: page });
+  
+  // Store page view in our database
+  if (typeof window !== 'undefined') {
+    dbTrackPageView({
+      page_path: window.location.pathname,
+      page_title: page,
+      referrer: document.referrer,
+      ...getClientInfo()
+    });
+  }
 };
 
 export const trackFormSubmission = (formName: string, formData?: Record<string, any>) => {

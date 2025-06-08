@@ -9,6 +9,78 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      analytics_events: {
+        Row: {
+          created_at: string
+          event_category: string | null
+          event_name: string
+          id: string
+          ip_address: unknown | null
+          page_path: string | null
+          parameters: Json | null
+          session_id: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_category?: string | null
+          event_name: string
+          id?: string
+          ip_address?: unknown | null
+          page_path?: string | null
+          parameters?: Json | null
+          session_id?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_category?: string | null
+          event_name?: string
+          id?: string
+          ip_address?: unknown | null
+          page_path?: string | null
+          parameters?: Json | null
+          session_id?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      analytics_page_views: {
+        Row: {
+          created_at: string
+          id: string
+          ip_address: unknown | null
+          page_path: string
+          page_title: string | null
+          referrer: string | null
+          session_id: string | null
+          user_agent: string | null
+          view_duration: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          page_path: string
+          page_title?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          view_duration?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          page_path?: string
+          page_title?: string | null
+          referrer?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          view_duration?: number | null
+        }
+        Relationships: []
+      }
       blog_categories: {
         Row: {
           created_at: string
