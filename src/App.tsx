@@ -1,6 +1,7 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from "@/components/ui/sonner";
 import { useEffect } from "react";
 import { trackPageView } from "@/utils/analytics";
@@ -159,21 +160,23 @@ function App() {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <Analytics />
-        <Routes>
-          {routes.map((route) => (
-            <Route key={route.path} path={route.path} element={route.element}>
-              {route.children?.map((child) => (
-                <Route key={child.path} path={child.path} element={child.element} />
-              ))}
-            </Route>
-          ))}
-        </Routes>
-        <Toaster />
-      </BrowserRouter>
-    </QueryClientProvider>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <Analytics />
+          <Routes>
+            {routes.map((route) => (
+              <Route key={route.path} path={route.path} element={route.element}>
+                {route.children?.map((child) => (
+                  <Route key={child.path} path={child.path} element={child.element} />
+                ))}
+              </Route>
+            ))}
+          </Routes>
+          <Toaster />
+        </BrowserRouter>
+      </QueryClientProvider>
+    </HelmetProvider>
   );
 }
 
