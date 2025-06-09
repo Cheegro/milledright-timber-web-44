@@ -21,44 +21,49 @@ const getClientInfo = () => {
 };
 
 export const trackEvent = (eventName: string, parameters?: Record<string, any>) => {
+  // Only track if we're in the browser
+  if (typeof window === 'undefined') return;
+
   // Google Analytics 4
-  if (typeof window !== 'undefined' && (window as any).gtag) {
+  if ((window as any).gtag) {
     (window as any).gtag('event', eventName, parameters);
     console.log('GA4 Event tracked:', eventName, parameters);
   }
 
   // Meta Pixel
-  if (typeof window !== 'undefined' && (window as any).fbq) {
+  if ((window as any).fbq) {
     (window as any).fbq('track', eventName, parameters);
     console.log('Meta Pixel Event tracked:', eventName, parameters);
   }
 
   // Store in our database
-  if (typeof window !== 'undefined') {
-    dbTrackEvent({
-      event_name: eventName,
-      event_category: parameters?.event_category || 'general',
-      parameters,
-      ...getClientInfo()
-    });
-  }
+  dbTrackEvent({
+    event_name: eventName,
+    event_category: parameters?.event_category || 'general',
+    parameters,
+    ...getClientInfo()
+  }).catch(err => console.error('Failed to track event:', err));
 
   // Console log for debugging
   console.log('Analytics Event:', eventName, parameters);
 };
 
-export const trackPageView = (page: string) => {
-  trackEvent('page_view', { page_title: page });
+export const trackPageView = (page?: string) => {
+  if (typeof window === 'undefined') return;
+
+  const pageTitle = page || document.title;
+  
+  trackEvent('page_view', { page_title: pageTitle });
   
   // Store page view in our database
-  if (typeof window !== 'undefined') {
-    dbTrackPageView({
-      page_path: window.location.pathname,
-      page_title: page,
-      referrer: document.referrer,
-      ...getClientInfo()
-    });
-  }
+  dbTrackPageView({
+    page_path: window.location.pathname,
+    page_title: pageTitle,
+    referrer: document.referrer,
+    ...getClientInfo()
+  }).catch(err => console.error('Failed to track page view:', err));
+
+  console.log('Page view tracked:', window.location.pathname);
 };
 
 export const trackFormSubmission = (formName: string, formData?: Record<string, any>) => {
@@ -102,3 +107,44 @@ export const trackQuoteRequest = (projectType?: string, estimatedValue?: string)
     estimated_value: estimatedValue
   });
 };
+
+export const trackNavigation = (fromPage: string, toPage: string) => {
+  trackEvent('navigation', {
+    from_page: fromPage,
+    to_page: toPage,
+    event_category: 'navigation'
+  });
+};
+
+export const trackSearch = (searchTerm: string, searchCategory?: string) => {
+  trackEvent('search', {
+    search_term: searchTerm,
+    search_category: searchCategory,
+    event_category: 'search'
+  });
+};
+
+// Initialize analytics when the module loads
+if (typeof window !== 'undefined') {
+  // Track initial page view
+  document.addEventListener('DOMContentLoaded', () => {
+    trackPageView();
+  });
+
+  // Track navigation for SPAs
+  let currentPath = window.location.pathname;
+  const observer = new MutationObserver(() => {
+    if (window.location.pathname !== currentPath) {
+      const oldPath = currentPath;
+      currentPath = window.location.pathname;
+      trackNavigation(oldPath, currentPath);
+      trackPageView();
+    }
+  });
+
+  // Start observing
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+}

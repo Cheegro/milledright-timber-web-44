@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { trackButtonClick, trackNavigation } from '@/utils/analytics';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,7 +35,13 @@ const Header = () => {
   ];
 
   const handleGetQuote = () => {
+    trackButtonClick('Get Quote', 'Header');
     navigate('/contact');
+    setIsOpen(false);
+  };
+
+  const handleNavClick = (item: any) => {
+    trackNavigation(location.pathname, item.href);
     setIsOpen(false);
   };
 
@@ -52,7 +59,11 @@ const Header = () => {
       <div className="container-wide">
         <div className="flex items-center justify-between h-16 lg:h-20 px-4 lg:px-0">
           {/* Enhanced Logo */}
-          <Link to="/" className="flex items-center gap-2 lg:gap-3 group touch-manipulation">
+          <Link 
+            to="/" 
+            className="flex items-center gap-2 lg:gap-3 group touch-manipulation"
+            onClick={() => trackNavigation(location.pathname, '/')}
+          >
             <div className="relative">
               <div className="bg-gradient-to-br from-sawmill-dark-brown to-sawmill-medium-brown text-white p-2 lg:p-3 rounded-lg lg:rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
                 <span className="font-bold text-lg lg:text-xl tracking-tight">MR</span>
@@ -76,6 +87,7 @@ const Header = () => {
                 <Link 
                   key={item.name} 
                   to={item.href} 
+                  onClick={() => handleNavClick(item)}
                   className={`px-4 py-2.5 rounded-xl font-medium transition-all duration-300 text-sm relative overflow-hidden group ${
                     isActiveRoute(item.href)
                       ? 'bg-sawmill-orange text-white shadow-lg' 
@@ -118,7 +130,7 @@ const Header = () => {
         </div>
       </div>
       
-      {/* Mobile Navigation Overlay - Full Height & Optimized */}
+      {/* Mobile Navigation Overlay */}
       {isOpen && (
         <>
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 xl:hidden" onClick={() => setIsOpen(false)} />
@@ -136,7 +148,7 @@ const Header = () => {
               </div>
             </div>
             
-            {/* Navigation Items with Full Height Scroll */}
+            {/* Navigation Items */}
             <div className="h-full overflow-y-auto pb-32">
               <nav className="flex flex-col p-4 space-y-2">
                 {navigationItems.map((item) => (
@@ -148,7 +160,7 @@ const Header = () => {
                         ? 'bg-sawmill-orange text-white shadow-lg' 
                         : 'hover:bg-sawmill-orange/10 hover:text-sawmill-orange'
                     }`}
-                    onClick={() => setIsOpen(false)}
+                    onClick={() => handleNavClick(item)}
                   >
                     {item.name}
                   </Link>
