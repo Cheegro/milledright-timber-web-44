@@ -11,71 +11,137 @@ export type Database = {
     Tables: {
       analytics_events: {
         Row: {
+          browser: string | null
+          city: string | null
+          country: string | null
           created_at: string
+          device_type: string | null
           event_category: string | null
           event_name: string
           id: string
           ip_address: unknown | null
+          is_mobile: boolean | null
+          latitude: number | null
+          longitude: number | null
+          operating_system: string | null
           page_path: string | null
           parameters: Json | null
+          region: string | null
+          screen_resolution: string | null
           session_id: string | null
+          timezone: string | null
           user_agent: string | null
         }
         Insert: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
+          device_type?: string | null
           event_category?: string | null
           event_name: string
           id?: string
           ip_address?: unknown | null
+          is_mobile?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          operating_system?: string | null
           page_path?: string | null
           parameters?: Json | null
+          region?: string | null
+          screen_resolution?: string | null
           session_id?: string | null
+          timezone?: string | null
           user_agent?: string | null
         }
         Update: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
+          device_type?: string | null
           event_category?: string | null
           event_name?: string
           id?: string
           ip_address?: unknown | null
+          is_mobile?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          operating_system?: string | null
           page_path?: string | null
           parameters?: Json | null
+          region?: string | null
+          screen_resolution?: string | null
           session_id?: string | null
+          timezone?: string | null
           user_agent?: string | null
         }
         Relationships: []
       }
       analytics_page_views: {
         Row: {
+          browser: string | null
+          city: string | null
+          country: string | null
           created_at: string
+          device_type: string | null
           id: string
           ip_address: unknown | null
+          is_mobile: boolean | null
+          latitude: number | null
+          longitude: number | null
+          operating_system: string | null
           page_path: string
           page_title: string | null
           referrer: string | null
+          region: string | null
+          screen_resolution: string | null
           session_id: string | null
+          timezone: string | null
           user_agent: string | null
           view_duration: number | null
         }
         Insert: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
+          device_type?: string | null
           id?: string
           ip_address?: unknown | null
+          is_mobile?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          operating_system?: string | null
           page_path: string
           page_title?: string | null
           referrer?: string | null
+          region?: string | null
+          screen_resolution?: string | null
           session_id?: string | null
+          timezone?: string | null
           user_agent?: string | null
           view_duration?: number | null
         }
         Update: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
+          device_type?: string | null
           id?: string
           ip_address?: unknown | null
+          is_mobile?: boolean | null
+          latitude?: number | null
+          longitude?: number | null
+          operating_system?: string | null
           page_path?: string
           page_title?: string | null
           referrer?: string | null
+          region?: string | null
+          screen_resolution?: string | null
           session_id?: string | null
+          timezone?: string | null
           user_agent?: string | null
           view_duration?: number | null
         }
@@ -914,7 +980,18 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      analytics_overview: {
+        Row: {
+          desktop_views: number | null
+          mobile_views: number | null
+          top_browser: string | null
+          top_country: string | null
+          top_device: string | null
+          total_page_views: number | null
+          unique_visitors: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never

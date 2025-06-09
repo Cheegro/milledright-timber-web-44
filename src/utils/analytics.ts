@@ -1,5 +1,6 @@
 
 import { trackEvent as dbTrackEvent, trackPageView as dbTrackPageView } from '@/api/analyticsApi';
+import { enhanceAnalyticsData } from '@/services/analyticsService';
 
 // Generate or get session ID
 const getSessionId = () => {
@@ -20,7 +21,7 @@ const getClientInfo = () => {
   };
 };
 
-export const trackEvent = (eventName: string, parameters?: Record<string, any>) => {
+export const trackEvent = async (eventName: string, parameters?: Record<string, any>) => {
   // Only track if we're in the browser
   if (typeof window === 'undefined') return;
 
@@ -36,32 +37,50 @@ export const trackEvent = (eventName: string, parameters?: Record<string, any>) 
     console.log('Meta Pixel Event tracked:', eventName, parameters);
   }
 
-  // Store in our database
-  dbTrackEvent({
+  // Enhanced data with location and device info
+  const baseData = {
     event_name: eventName,
     event_category: parameters?.event_category || 'general',
     parameters,
     ...getClientInfo()
-  }).catch(err => console.error('Failed to track event:', err));
+  };
+
+  try {
+    const enhancedData = await enhanceAnalyticsData(baseData);
+    await dbTrackEvent(enhancedData);
+  } catch (err) {
+    console.error('Failed to track enhanced event:', err);
+    // Fallback to basic tracking
+    dbTrackEvent(baseData).catch(err => console.error('Failed to track event:', err));
+  }
 
   // Console log for debugging
   console.log('Analytics Event:', eventName, parameters);
 };
 
-export const trackPageView = (page?: string) => {
+export const trackPageView = async (page?: string) => {
   if (typeof window === 'undefined') return;
 
   const pageTitle = page || document.title;
   
   trackEvent('page_view', { page_title: pageTitle });
   
-  // Store page view in our database
-  dbTrackPageView({
+  // Enhanced page view data
+  const baseData = {
     page_path: window.location.pathname,
     page_title: pageTitle,
     referrer: document.referrer,
     ...getClientInfo()
-  }).catch(err => console.error('Failed to track page view:', err));
+  };
+
+  try {
+    const enhancedData = await enhanceAnalyticsData(baseData);
+    await dbTrackPageView(enhancedData);
+  } catch (err) {
+    console.error('Failed to track enhanced page view:', err);
+    // Fallback to basic tracking
+    dbTrackPageView(baseData).catch(err => console.error('Failed to track page view:', err));
+  }
 
   console.log('Page view tracked:', window.location.pathname);
 };
