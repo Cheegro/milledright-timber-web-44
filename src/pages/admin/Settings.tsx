@@ -5,9 +5,22 @@ import WebsiteContentTab from '@/components/admin/settings/WebsiteContentTab';
 import AnalyticsTab from '@/components/admin/settings/AnalyticsTab';
 import SEOTab from '@/components/admin/settings/SEOTab';
 import AnalyticsExclusionControls from '@/components/admin/AnalyticsExclusionControls';
+import { useSettings } from '@/hooks/useSettings';
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState('content');
+  const { settings, isLoading, refetch } = useSettings();
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold text-sawmill-dark-brown">Settings</h1>
+          <p className="text-muted-foreground">Loading settings...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -27,15 +40,15 @@ const Settings = () => {
         </TabsList>
 
         <TabsContent value="content" className="space-y-6">
-          <WebsiteContentTab />
+          <WebsiteContentTab settings={settings} onSettingsUpdate={refetch} />
         </TabsContent>
 
         <TabsContent value="analytics" className="space-y-6">
-          <AnalyticsTab />
+          <AnalyticsTab settings={settings} onSettingsUpdate={refetch} />
         </TabsContent>
 
         <TabsContent value="seo" className="space-y-6">
-          <SEOTab />
+          <SEOTab settings={settings} onSettingsUpdate={refetch} />
         </TabsContent>
 
         <TabsContent value="exclusion" className="space-y-6">
