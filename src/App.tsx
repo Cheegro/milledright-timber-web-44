@@ -1,3 +1,4 @@
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
@@ -6,32 +7,28 @@ import { trackPageView } from "@/utils/analytics";
 import Analytics from "@/components/Analytics";
 import AdminLayout from "./layouts/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
-import Products from "./pages/admin/Products";
-import EditProduct from "./pages/admin/EditProduct";
-import NewProduct from "./pages/admin/NewProduct";
-import Gallery from "./pages/admin/Gallery";
-import NewGalleryImage from "./pages/admin/NewGalleryImage";
-import EditGalleryImage from "./pages/admin/EditGalleryImage";
-import Blog from "./pages/admin/Blog";
-import NewBlogPost from "./pages/admin/NewBlogPost";
-import EditBlogPost from "./pages/admin/EditBlogPost";
-import Reviews from "./pages/admin/Reviews";
-import NewReview from "./pages/admin/NewReview";
-import EditReview from "./pages/admin/EditReview";
+import ProductsAdmin from "./pages/admin/ProductsAdmin";
+import ProductFormPage from "./pages/admin/ProductFormPage";
+import GalleryAdmin from "./pages/admin/GalleryAdmin";
+import GalleryImageForm from "./pages/admin/GalleryImageForm";
+import BlogAdmin from "./pages/admin/BlogAdmin";
+import BlogPostEditor from "./pages/admin/BlogPostEditor";
+import ReviewsAdmin from "./pages/admin/ReviewsAdmin";
+import ReviewFormPage from "./pages/admin/ReviewFormPage";
 import Settings from "./pages/admin/Settings";
 import Login from "./pages/admin/Login";
 import PublicLayout from "./layouts/PublicLayout";
 import Home from "./pages/Home";
 import Contact from "./pages/Contact";
-import ProductsPage from "./pages/ProductsPage";
-import ProductDetails from "./pages/ProductDetails";
-import GalleryPage from "./pages/GalleryPage";
-import BlogPage from "./pages/BlogPage";
+import Products from "./pages/Products";
+import ProductDetail from "./pages/ProductDetail";
+import Gallery from "./pages/Gallery";
+import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
-import ProjectsPage from "./pages/ProjectsPage";
-import AboutUs from "./pages/AboutUs";
+import Projects from "./pages/Projects";
+import About from "./pages/About";
 import NotFound from "./pages/NotFound";
-import BoardFootCalculatorPage from "./pages/BoardFootCalculator";
+import BoardFootCalculator from "./pages/BoardFootCalculator";
 
 const routes = [
   {
@@ -44,51 +41,51 @@ const routes = [
       },
       {
         path: "products",
-        element: <Products />,
+        element: <ProductsAdmin />,
       },
       {
         path: "products/new",
-        element: <NewProduct />,
+        element: <ProductFormPage />,
       },
       {
         path: "products/:id/edit",
-        element: <EditProduct />,
+        element: <ProductFormPage />,
       },
       {
         path: "gallery",
-        element: <Gallery />,
+        element: <GalleryAdmin />,
       },
       {
         path: "gallery/new",
-        element: <NewGalleryImage />,
+        element: <GalleryImageForm />,
       },
       {
         path: "gallery/:id/edit",
-        element: <EditGalleryImage />,
+        element: <GalleryImageForm />,
       },
       {
         path: "blog",
-        element: <Blog />,
+        element: <BlogAdmin />,
       },
       {
         path: "blog/new",
-        element: <NewBlogPost />,
+        element: <BlogPostEditor />,
       },
       {
         path: "blog/:id/edit",
-        element: <EditBlogPost />,
+        element: <BlogPostEditor />,
       },
       {
         path: "reviews",
-        element: <Reviews />,
+        element: <ReviewsAdmin />,
       },
       {
         path: "reviews/new",
-        element: <NewReview />,
+        element: <ReviewFormPage />,
       },
       {
         path: "reviews/:id/edit",
-        element: <EditReview />,
+        element: <ReviewFormPage />,
       },
       {
         path: "settings",
@@ -114,19 +111,19 @@ const routes = [
       },
       {
         path: "products",
-        element: <ProductsPage />,
+        element: <Products />,
       },
       {
         path: "products/:id",
-        element: <ProductDetails />,
+        element: <ProductDetail />,
       },
       {
         path: "gallery",
-        element: <GalleryPage />,
+        element: <Gallery />,
       },
       {
         path: "blog",
-        element: <BlogPage />,
+        element: <Blog />,
       },
       {
         path: "blog/:id",
@@ -134,15 +131,15 @@ const routes = [
       },
       {
         path: "projects",
-        element: <ProjectsPage />,
+        element: <Projects />,
       },
       {
         path: "about",
-        element: <AboutUs />,
+        element: <About />,
       },
       {
         path: "board-foot-calculator",
-        element: <BoardFootCalculatorPage />,
+        element: <BoardFootCalculator />,
       },
       {
         path: "*",
@@ -167,7 +164,11 @@ function App() {
         <Analytics />
         <Routes>
           {routes.map((route) => (
-            <Route key={route.path} path={route.path} element={route.element} />
+            <Route key={route.path} path={route.path} element={route.element}>
+              {route.children?.map((child) => (
+                <Route key={child.path} path={child.path} element={child.element} />
+              ))}
+            </Route>
           ))}
         </Routes>
         <Toaster />
