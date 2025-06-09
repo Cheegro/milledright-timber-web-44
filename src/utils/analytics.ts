@@ -1,6 +1,28 @@
-
 import { trackEvent as dbTrackEvent, trackPageView as dbTrackPageView } from '@/api/analyticsApi';
 import { enhanceAnalyticsData } from '@/services/analyticsService';
+
+// Check if analytics should be disabled
+const shouldSkipAnalytics = () => {
+  // Skip if explicitly disabled via localStorage
+  if (localStorage.getItem('disable_analytics') === 'true') {
+    return true;
+  }
+
+  // Skip if on admin pages
+  if (window.location.pathname.startsWith('/admin')) {
+    return true;
+  }
+
+  // Skip if admin exclusion is enabled and user has admin flag
+  const excludeAdmin = localStorage.getItem('exclude_admin_analytics') === 'true';
+  const isAdmin = localStorage.getItem('user_is_admin') === 'true';
+  
+  if (excludeAdmin && isAdmin) {
+    return true;
+  }
+
+  return false;
+};
 
 // Generate or get session ID
 const getSessionId = () => {
@@ -24,6 +46,12 @@ const getClientInfo = () => {
 export const trackEvent = async (eventName: string, parameters?: Record<string, any>) => {
   // Only track if we're in the browser
   if (typeof window === 'undefined') return;
+
+  // Skip analytics if conditions are met
+  if (shouldSkipAnalytics()) {
+    console.log('Analytics tracking skipped (admin exclusion)');
+    return;
+  }
 
   // Google Analytics 4
   if ((window as any).gtag) {
@@ -61,6 +89,12 @@ export const trackEvent = async (eventName: string, parameters?: Record<string, 
 export const trackPageView = async (page?: string) => {
   if (typeof window === 'undefined') return;
 
+  // Skip analytics if conditions are met
+  if (shouldSkipAnalytics()) {
+    console.log('Analytics page view tracking skipped (admin exclusion)');
+    return;
+  }
+
   const pageTitle = page || document.title;
   
   trackEvent('page_view', { page_title: pageTitle });
@@ -83,6 +117,37 @@ export const trackPageView = async (page?: string) => {
   }
 
   console.log('Page view tracked:', window.location.pathname);
+};
+
+// Admin control functions
+export const disableAnalytics = () => {
+  localStorage.setItem('disable_analytics', 'true');
+  console.log('Analytics disabled');
+};
+
+export const enableAnalytics = () => {
+  localStorage.removeItem('disable_analytics');
+  console.log('Analytics enabled');
+};
+
+export const setAdminAnalyticsExclusion = (exclude: boolean) => {
+  if (exclude) {
+    localStorage.setItem('exclude_admin_analytics', 'true');
+    localStorage.setItem('user_is_admin', 'true');
+  } else {
+    localStorage.removeItem('exclude_admin_analytics');
+    localStorage.removeItem('user_is_admin');
+  }
+  console.log(`Admin analytics exclusion ${exclude ? 'enabled' : 'disabled'}`);
+};
+
+export const getAnalyticsStatus = () => {
+  return {
+    disabled: localStorage.getItem('disable_analytics') === 'true',
+    adminExcluded: localStorage.getItem('exclude_admin_analytics') === 'true' && 
+                   localStorage.getItem('user_is_admin') === 'true',
+    onAdminPage: window.location.pathname.startsWith('/admin')
+  };
 };
 
 export const trackFormSubmission = (formName: string, formData?: Record<string, any>) => {
