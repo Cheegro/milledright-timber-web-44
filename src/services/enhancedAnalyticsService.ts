@@ -259,17 +259,20 @@ export const calculateAverageSessionDuration = (sessions: any[]): number => {
 };
 
 export const getTopCountries = (data: any[]): Array<{country: string, count: number, percentage: number}> => {
-  const countryCounts = data.reduce((acc, item) => {
+  const countryCounts: Record<string, number> = {};
+  
+  // Build the counts with proper typing
+  data.forEach(item => {
     if (item.country) {
-      acc[item.country] = (acc[item.country] || 0) + 1;
+      countryCounts[item.country] = (countryCounts[item.country] || 0) + 1;
     }
-    return acc;
-  }, {} as Record<string, number>);
+  });
 
-  const total = Object.values(countryCounts).reduce((sum, count) => sum + count, 0);
+  // Calculate total with proper typing
+  const total = Object.values(countryCounts).reduce((sum: number, count: number) => sum + count, 0);
   
   return Object.entries(countryCounts)
-    .map(([country, count]) => ({
+    .map(([country, count]): {country: string, count: number, percentage: number} => ({
       country,
       count,
       percentage: total > 0 ? Math.round((count / total) * 100) : 0
