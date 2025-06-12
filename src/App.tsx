@@ -1,10 +1,9 @@
-
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from "@/components/ui/sonner";
 import { useEffect } from "react";
-import { trackPageView } from "@/utils/analytics";
+import { trackEnhancedPageView } from "@/utils/enhancedAnalytics";
 import Analytics from "@/components/Analytics";
 import AdminLayout from "./layouts/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
@@ -153,10 +152,10 @@ const routes = [
 const queryClient = new QueryClient();
 
 function App() {
-  // Initialize analytics tracking
+  // Initialize enhanced analytics tracking
   useEffect(() => {
-    // Track initial page view
-    trackPageView();
+    // Track initial page view with enhanced analytics
+    trackEnhancedPageView();
   }, []);
 
   return (
