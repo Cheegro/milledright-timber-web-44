@@ -1,16 +1,20 @@
+
 import { trackEvent as dbTrackEvent, trackPageView as dbTrackPageView } from '@/api/analyticsApi';
 import { enhanceAnalyticsData } from '@/services/enhancedAnalyticsService';
 
-// Check if analytics should be disabled (keeping existing logic)
-const shouldSkipAnalytics = () => {
+// Enhanced analytics exclusion with IP filtering
+const shouldSkipAnalytics = async () => {
+  // Check localStorage flags first
   if (localStorage.getItem('disable_analytics') === 'true') {
     return true;
   }
 
+  // Always exclude admin pages
   if (window.location.pathname.startsWith('/admin')) {
     return true;
   }
 
+  // Check admin exclusion setting
   const excludeAdmin = localStorage.getItem('exclude_admin_analytics') === 'true';
   const isAdmin = localStorage.getItem('user_is_admin') === 'true';
   
@@ -18,27 +22,71 @@ const shouldSkipAnalytics = () => {
     return true;
   }
 
+  // Enhanced IP-based exclusion for admin
+  try {
+    const currentIP = await getCurrentUserIP();
+    const adminIPs = getAdminIPs();
+    
+    if (currentIP && adminIPs.includes(currentIP)) {
+      console.log('Analytics skipped: Admin IP detected');
+      return true;
+    }
+  } catch (error) {
+    console.warn('Could not check IP for admin exclusion:', error);
+  }
+
   return false;
 };
 
-// Enhanced session ID generation with persistence
+// Get current user IP for comparison
+const getCurrentUserIP = async (): Promise<string | null> => {
+  try {
+    const response = await fetch('https://api.ipify.org?format=json');
+    const data = await response.json();
+    return data.ip;
+  } catch {
+    return null;
+  }
+};
+
+// Store and retrieve admin IPs (you can expand this)
+const getAdminIPs = (): string[] => {
+  const stored = localStorage.getItem('admin_ips');
+  return stored ? JSON.parse(stored) : [];
+};
+
+export const addAdminIP = (ip: string) => {
+  const currentIPs = getAdminIPs();
+  if (!currentIPs.includes(ip)) {
+    currentIPs.push(ip);
+    localStorage.setItem('admin_ips', JSON.stringify(currentIPs));
+  }
+};
+
+// Enhanced session ID generation with admin marking
 const getEnhancedSessionId = () => {
   let sessionId = sessionStorage.getItem('analytics_session_id');
   if (!sessionId) {
-    sessionId = `sess_${Math.random().toString(36).substring(2)}_${Date.now().toString(36)}`;
+    const isAdminSession = window.location.pathname.startsWith('/admin') || 
+                          localStorage.getItem('user_is_admin') === 'true';
+    
+    const prefix = isAdminSession ? 'admin_sess' : 'sess';
+    sessionId = `${prefix}_${Math.random().toString(36).substring(2)}_${Date.now().toString(36)}`;
     sessionStorage.setItem('analytics_session_id', sessionId);
     sessionStorage.setItem('session_start_time', Date.now().toString());
   }
   return sessionId;
 };
 
-// Enhanced client info with performance metrics
+// Enhanced client info with admin detection
 const getEnhancedClientInfo = () => {
   const sessionStartTime = parseInt(sessionStorage.getItem('session_start_time') || Date.now().toString());
   const sessionDuration = Math.floor((Date.now() - sessionStartTime) / 1000);
+  const isAdminContext = window.location.pathname.startsWith('/admin') || 
+                        localStorage.getItem('user_is_admin') === 'true';
   
   return {
-    user_agent: navigator.userAgent,
+    user_agent: navigator.userAgent + (isAdminContext ? ' [admin-context]' : ''),
     session_id: getEnhancedSessionId(),
     page_path: window.location.pathname,
     page_url: window.location.href,
@@ -48,15 +96,16 @@ const getEnhancedClientInfo = () => {
     viewport_height: window.innerHeight,
     connection_type: (navigator as any).connection?.effectiveType || 'unknown',
     page_load_time: performance.timing ? 
-      performance.timing.loadEventEnd - performance.timing.navigationStart : null
+      performance.timing.loadEventEnd - performance.timing.navigationStart : null,
+    admin_context: isAdminContext
   };
 };
 
 export const trackEnhancedEvent = async (eventName: string, parameters?: Record<string, any>) => {
   if (typeof window === 'undefined') return;
 
-  if (shouldSkipAnalytics()) {
-    console.log('Analytics tracking skipped (admin exclusion)');
+  if (await shouldSkipAnalytics()) {
+    console.log(`Analytics tracking skipped for event "${eventName}" (admin exclusion)`);
     return;
   }
 
@@ -70,7 +119,7 @@ export const trackEnhancedEvent = async (eventName: string, parameters?: Record<
     (window as any).fbq('track', eventName, parameters);
   }
 
-  // Enhanced database tracking
+  // Enhanced database tracking with admin filtering
   const baseData = {
     event_name: eventName,
     event_category: parameters?.event_category || 'general',
@@ -81,7 +130,11 @@ export const trackEnhancedEvent = async (eventName: string, parameters?: Record<
   try {
     const enhancedData = await enhanceAnalyticsData(baseData);
     await dbTrackEvent(enhancedData);
-    console.log('Enhanced Analytics Event tracked:', eventName, enhancedData);
+    console.log('Enhanced Analytics Event tracked:', eventName, { 
+      ip: enhancedData.ip_address, 
+      country: enhancedData.country,
+      admin_excluded: false 
+    });
   } catch (err) {
     console.error('Failed to track enhanced event:', err);
     // Fallback to basic tracking
@@ -92,8 +145,8 @@ export const trackEnhancedEvent = async (eventName: string, parameters?: Record<
 export const trackEnhancedPageView = async (page?: string) => {
   if (typeof window === 'undefined') return;
 
-  if (shouldSkipAnalytics()) {
-    console.log('Analytics page view tracking skipped (admin exclusion)');
+  if (await shouldSkipAnalytics()) {
+    console.log(`Analytics page view tracking skipped for "${window.location.pathname}" (admin exclusion)`);
     return;
   }
 
@@ -113,7 +166,11 @@ export const trackEnhancedPageView = async (page?: string) => {
   try {
     const enhancedData = await enhanceAnalyticsData(baseData);
     await dbTrackPageView(enhancedData);
-    console.log('Enhanced Page view tracked:', window.location.pathname, enhancedData);
+    console.log('Enhanced Page view tracked:', window.location.pathname, {
+      ip: enhancedData.ip_address,
+      country: enhancedData.country,
+      admin_excluded: false
+    });
   } catch (err) {
     console.error('Failed to track enhanced page view:', err);
     // Fallback to basic tracking
@@ -221,8 +278,20 @@ export {
   getAnalyticsStatus 
 } from '@/utils/analytics';
 
-// Initialize enhanced analytics
+// Initialize enhanced analytics with admin detection
 if (typeof window !== 'undefined') {
+  // Auto-register admin IP when on admin pages
+  if (window.location.pathname.startsWith('/admin')) {
+    getCurrentUserIP().then(ip => {
+      if (ip) {
+        addAdminIP(ip);
+        console.log('Admin IP registered for exclusion:', ip);
+      }
+    }).catch(() => {
+      console.warn('Could not register admin IP');
+    });
+  }
+
   // Track initial page view
   document.addEventListener('DOMContentLoaded', () => {
     trackEnhancedPageView();

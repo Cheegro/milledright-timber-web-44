@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Card } from '@/components/ui/card';
@@ -43,13 +44,9 @@ const EnhancedAnalyticsFooter: React.FC = () => {
     return `${hours}h ${mins}m`;
   };
 
-  const formatPercentage = (value: number) => {
-    return Math.round(value); // Clean integer percentages only
-  };
-
   const getMobilePercentage = () => {
     if (!stats?.totalPageViews || !stats?.mobileVsDesktop) return 0;
-    return formatPercentage((stats.mobileVsDesktop.mobile / stats.totalPageViews) * 100);
+    return Math.round((stats.mobileVsDesktop.mobile / stats.totalPageViews) * 100);
   };
 
   const getTrendIcon = (value: number, threshold: number = 0) => {
@@ -58,8 +55,28 @@ const EnhancedAnalyticsFooter: React.FC = () => {
       <TrendingUp className="h-3 w-3 text-red-500 rotate-180" />;
   };
 
+  // Count active users (exclude admin sessions)
+  const getActiveUsersCount = () => {
+    if (!stats?.recentActivity) return 0;
+    // Count unique sessions from last 5 minutes, excluding admin IPs
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+    const recentSessions = new Set();
+    
+    stats.recentActivity.forEach(activity => {
+      if (new Date(activity.created_at) > fiveMinutesAgo) {
+        // Only count if not from admin IP (basic check)
+        if (!activity.data.user_agent?.includes('admin') && activity.data.session_id) {
+          recentSessions.add(activity.data.session_id);
+        }
+      }
+    });
+    
+    return recentSessions.size;
+  };
+
   // Real data validation - no placeholders
   const hasRealData = stats && stats.totalPageViews > 0;
+  const activeUsersCount = getActiveUsersCount();
 
   return (
     <Card className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t-2 border-sawmill-orange shadow-lg">
@@ -87,7 +104,7 @@ const EnhancedAnalyticsFooter: React.FC = () => {
               <span className="text-sm font-medium text-sawmill-dark-brown">
                 {isLoading ? '...' : (
                   hasRealData && stats.topCountries?.length ? 
-                    `${getCountryFlag(stats.topCountries[0].country)} ${stats.topCountries[0].country} (${formatPercentage(stats.topCountries[0].percentage)}%)` :
+                    `${getCountryFlag(stats.topCountries[0].country)} ${stats.topCountries[0].country} (${Math.round(stats.topCountries[0].percentage)}%)` :
                     '🌍 No data'
                 )}
               </span>
@@ -108,6 +125,14 @@ const EnhancedAnalyticsFooter: React.FC = () => {
                     `Peak: ${getPeakHourLabel(stats.peakHours[0].hour)}` : 
                     'No peak data'
                 )}
+              </span>
+            </div>
+
+            {/* Active Users - Real Count Only */}
+            <div className="flex items-center space-x-2">
+              <Activity className={`h-4 w-4 ${activeUsersCount > 0 ? 'text-green-500' : 'text-gray-400'}`} />
+              <span className="text-sm font-medium text-sawmill-dark-brown">
+                {activeUsersCount > 0 ? `${activeUsersCount} active` : 'No active users'}
               </span>
             </div>
 
@@ -143,7 +168,7 @@ const EnhancedAnalyticsFooter: React.FC = () => {
         {isExpanded && (
           <div className="mt-6 pt-4 border-t border-gray-200">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-6">
+              <TabsList className="grid w-full grid-cols-5">
                 <TabsTrigger value="overview" className="flex items-center gap-1 text-xs">
                   <BarChart3 className="h-3 w-3" />
                   Overview
@@ -159,10 +184,6 @@ const EnhancedAnalyticsFooter: React.FC = () => {
                 <TabsTrigger value="behavior" className="flex items-center gap-1 text-xs">
                   <TrendingUp className="h-3 w-3" />
                   Behavior
-                </TabsTrigger>
-                <TabsTrigger value="business" className="flex items-center gap-1 text-xs">
-                  <Activity className="h-3 w-3" />
-                  Business
                 </TabsTrigger>
                 <TabsTrigger value="realtime" className="flex items-center gap-1 text-xs">
                   <Clock className="h-3 w-3" />
@@ -203,7 +224,7 @@ const EnhancedAnalyticsFooter: React.FC = () => {
                         <div>
                           <p className="text-xs text-purple-600 font-medium">Avg Session</p>
                           <p className="text-xl font-bold text-purple-800">
-                            {formatDuration(stats.averageSessionDuration || 0)}
+                            {formatDuration(Math.round(stats.averageSessionDuration || 0))}
                           </p>
                           <p className="text-xs text-purple-600">Engagement</p>
                         </div>
@@ -215,7 +236,7 @@ const EnhancedAnalyticsFooter: React.FC = () => {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-xs text-orange-600 font-medium">Bounce Rate</p>
-                          <p className="text-xl font-bold text-orange-800">{formatPercentage(stats.bounceRate || 0)}%</p>
+                          <p className="text-xl font-bold text-orange-800">{Math.round(stats.bounceRate || 0)}%</p>
                           <p className="text-xs text-orange-600">
                             {(stats.bounceRate || 0) < 60 ? 'Excellent' : 'Good'}
                           </p>
@@ -247,7 +268,7 @@ const EnhancedAnalyticsFooter: React.FC = () => {
               {/* Geography Tab - Real Data Only */}
               <TabsContent value="geography" className="mt-4">
                 {hasRealData && stats.topCountries?.length ? (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <h4 className="text-sm font-semibold text-sawmill-dark-brown mb-3 flex items-center gap-2">
                         <Globe className="h-4 w-4 text-sawmill-orange" />
@@ -261,9 +282,9 @@ const EnhancedAnalyticsFooter: React.FC = () => {
                               <span className="font-medium">{country.country}</span>
                             </div>
                             <div className="flex items-center gap-2">
-                              <Progress value={country.percentage} className="w-16 h-2" />
+                              <Progress value={Math.round(country.percentage)} className="w-16 h-2" />
                               <span className="text-sawmill-orange font-medium text-xs min-w-[2rem]">
-                                {formatPercentage(country.percentage)}%
+                                {Math.round(country.percentage)}%
                               </span>
                             </div>
                           </div>
@@ -277,7 +298,7 @@ const EnhancedAnalyticsFooter: React.FC = () => {
                         Top Cities
                       </h4>
                       <div className="space-y-1 max-h-40 overflow-y-auto">
-                        {stats.topCities.slice(0, 8).map((city, index) => (
+                        {stats.topCities?.slice(0, 8).map((city, index) => (
                           <div key={index} className="flex items-center justify-between text-sm">
                             <div className="flex items-center gap-2">
                               <MapPin className="h-3 w-3 text-gray-400" />
@@ -293,29 +314,6 @@ const EnhancedAnalyticsFooter: React.FC = () => {
                         )}
                       </div>
                     </div>
-
-                    <div>
-                      <h4 className="text-sm font-semibold text-sawmill-dark-brown mb-3 flex items-center gap-2">
-                        <Activity className="h-4 w-4 text-sawmill-orange" />
-                        Distance Analysis
-                      </h4>
-                      <div className="space-y-2">
-                        <div className="text-xs text-gray-600 mb-2">Visitors by distance from Stouffville:</div>
-                        {/* This would require distance calculation logic */}
-                        <div className="flex items-center justify-between text-sm">
-                          <span>🏠 Local (&lt; 50mi)</span>
-                          <Badge className="bg-green-100 text-green-800">45%</Badge>
-                        </div>
-                        <div className="flex items-center justify-between text-sm">
-                          <span>🌆 Regional (50-200mi)</span>
-                          <Badge className="bg-blue-100 text-blue-800">25%</Badge>
-                        </div>
-                        <div className="flex items-center justify-between text-sm">
-                          <span>🌍 National/Intl (200mi+)</span>
-                          <Badge className="bg-purple-100 text-purple-800">30%</Badge>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 ) : (
                   <div className="text-center py-8 text-gray-500">
@@ -329,7 +327,7 @@ const EnhancedAnalyticsFooter: React.FC = () => {
               {/* Technology Tab - Real Data Only */}
               <TabsContent value="technology" className="mt-4">
                 {hasRealData ? (
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
                       <h4 className="text-sm font-semibold text-sawmill-dark-brown mb-3">Device Types</h4>
                       <div className="space-y-3">
@@ -343,15 +341,15 @@ const EnhancedAnalyticsFooter: React.FC = () => {
                         <div className="flex items-center justify-between text-sm">
                           <span>💻 Desktop</span>
                           <div className="flex items-center gap-2">
-                            <Progress value={(stats.mobileVsDesktop.desktop / (stats.totalPageViews || 1)) * 100} className="w-16 h-2" />
-                            <span className="font-medium min-w-[2rem]">{stats.mobileVsDesktop.desktop || 0}</span>
+                            <Progress value={Math.round((stats.mobileVsDesktop?.desktop || 0) / (stats.totalPageViews || 1) * 100)} className="w-16 h-2" />
+                            <span className="font-medium min-w-[2rem]">{stats.mobileVsDesktop?.desktop || 0}</span>
                           </div>
                         </div>
                         <div className="flex items-center justify-between text-sm">
                           <span>📟 Tablet</span>
                           <div className="flex items-center gap-2">
-                            <Progress value={(stats.mobileVsDesktop.tablet / (stats.totalPageViews || 1)) * 100} className="w-16 h-2" />
-                            <span className="font-medium min-w-[2rem]">{stats.mobileVsDesktop.tablet || 0}</span>
+                            <Progress value={Math.round((stats.mobileVsDesktop?.tablet || 0) / (stats.totalPageViews || 1) * 100)} className="w-16 h-2" />
+                            <span className="font-medium min-w-[2rem]">{stats.mobileVsDesktop?.tablet || 0}</span>
                           </div>
                         </div>
                       </div>
@@ -360,11 +358,11 @@ const EnhancedAnalyticsFooter: React.FC = () => {
                     <div>
                       <h4 className="text-sm font-semibold text-sawmill-dark-brown mb-3">Browsers</h4>
                       <div className="space-y-1 max-h-32 overflow-y-auto">
-                        {stats.browserStats.slice(0, 6).map((browser, index) => (
+                        {stats.browserStats?.slice(0, 6).map((browser, index) => (
                           <div key={index} className="flex items-center justify-between text-sm">
                             <span className="font-medium">{browser.browser}</span>
                             <div className="flex items-center gap-2">
-                              <Progress value={browser.percentage} className="w-12 h-2" />
+                              <Progress value={Math.round(browser.percentage)} className="w-12 h-2" />
                               <span className="text-sawmill-orange text-xs min-w-[2rem]">{browser.count}</span>
                             </div>
                           </div>
@@ -377,34 +375,16 @@ const EnhancedAnalyticsFooter: React.FC = () => {
                     <div>
                       <h4 className="text-sm font-semibold text-sawmill-dark-brown mb-3">Peak Hours</h4>
                       <div className="space-y-1">
-                        {stats.peakHours.slice(0, 5).map((peak, index) => (
+                        {stats.peakHours?.slice(0, 5).map((peak, index) => (
                           <div key={index} className="flex items-center justify-between text-sm">
                             <span className="font-medium">{getPeakHourLabel(peak.hour)}</span>
                             <Badge className="bg-sawmill-orange text-white text-xs">
-                              {peak.views}
+                              {peak.count}
                             </Badge>
                           </div>
                         )) || (
                           <div className="text-xs text-gray-500">No peak data</div>
                         )}
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className="text-sm font-semibold text-sawmill-dark-brown mb-3">Performance</h4>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span>Page Load Speed</span>
-                          <Badge className="bg-green-100 text-green-800">Fast</Badge>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Mobile Experience</span>
-                          <Badge className="bg-green-100 text-green-800">Good</Badge>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Connectivity</span>
-                          <Badge className="bg-blue-100 text-blue-800">4G+</Badge>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -417,14 +397,14 @@ const EnhancedAnalyticsFooter: React.FC = () => {
                 )}
               </TabsContent>
 
-              {/* Business Intelligence & Behavior */}
+              {/* Behavior Tab - Real Data Only */}
               <TabsContent value="behavior" className="mt-4">
                 {hasRealData ? (
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <h4 className="text-sm font-semibold text-sawmill-dark-brown mb-3">Popular Content</h4>
                       <div className="space-y-1 max-h-32 overflow-y-auto">
-                        {stats.topPages.slice(0, 6).map((page, index) => (
+                        {stats.topPages?.slice(0, 6).map((page, index) => (
                           <div key={index} className="flex items-center justify-between text-sm">
                             <span className="font-medium truncate max-w-[120px]">
                               {page.page_path === '/' ? '🏠 Home' : 
@@ -444,7 +424,7 @@ const EnhancedAnalyticsFooter: React.FC = () => {
                     <div>
                       <h4 className="text-sm font-semibold text-sawmill-dark-brown mb-3">User Interactions</h4>
                       <div className="space-y-1 max-h-32 overflow-y-auto">
-                        {stats.topEvents.slice(0, 6).map((event, index) => (
+                        {stats.topEvents?.slice(0, 6).map((event, index) => (
                           <div key={index} className="flex items-center justify-between text-sm">
                             <span className="font-medium truncate max-w-[120px]">
                               {event.event_name === 'page_view' ? '👁️ Page Views' :
@@ -462,119 +442,12 @@ const EnhancedAnalyticsFooter: React.FC = () => {
                         )}
                       </div>
                     </div>
-
-                    <div>
-                      <h4 className="text-sm font-semibold text-sawmill-dark-brown mb-3">Engagement Quality</h4>
-                      <div className="space-y-3 text-sm">
-                        <div className="flex justify-between items-center">
-                          <span>Session Quality</span>
-                          <Badge className="bg-green-100 text-green-800">High</Badge>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span>Return Rate</span>
-                          <span className="font-medium">23%</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span>Pages/Session</span>
-                          <span className="font-medium">2.4</span>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <span>Time on Site</span>
-                          <span className="font-medium">{formatDuration(stats.averageSessionDuration || 0)}</span>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 ) : (
                   <div className="text-center py-8 text-gray-500">
                     <TrendingUp className="h-12 w-12 mx-auto mb-4 text-gray-400" />
                     <p className="text-lg font-medium">No Behavior Data</p>
                     <p className="text-sm">User behavior insights will appear with site activity</p>
-                  </div>
-                )}
-              </TabsContent>
-
-              {/* Business Intelligence */}
-              <TabsContent value="business" className="mt-4">
-                {hasRealData ? (
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div>
-                      <h4 className="text-sm font-semibold text-sawmill-dark-brown mb-3">Lead Generation</h4>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span>Quote Requests</span>
-                          <Badge className="bg-green-100 text-green-800">12</Badge>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Phone Clicks</span>
-                          <Badge className="bg-blue-100 text-blue-800">8</Badge>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Email Clicks</span>
-                          <Badge className="bg-purple-100 text-purple-800">5</Badge>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className="text-sm font-semibold text-sawmill-dark-brown mb-3">Product Interest</h4>
-                      <div className="space-y-1 text-sm">
-                        <div className="flex justify-between">
-                          <span>Live Edge Slabs</span>
-                          <span className="font-medium">45%</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Lumber</span>
-                          <span className="font-medium">32%</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Custom Work</span>
-                          <span className="font-medium">23%</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className="text-sm font-semibold text-sawmill-dark-brown mb-3">Traffic Sources</h4>
-                      <div className="space-y-1 text-sm">
-                        <div className="flex justify-between">
-                          <span>🔍 Google Search</span>
-                          <span className="font-medium">52%</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>📧 Direct</span>
-                          <span className="font-medium">28%</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>📱 Social Media</span>
-                          <span className="font-medium">20%</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <h4 className="text-sm font-semibold text-sawmill-dark-brown mb-3">Conversion Metrics</h4>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span>Contact Rate</span>
-                          <Badge className="bg-green-100 text-green-800">8.5%</Badge>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Engagement Rate</span>
-                          <Badge className="bg-blue-100 text-blue-800">67%</Badge>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Quality Score</span>
-                          <Badge className="bg-purple-100 text-purple-800">High</Badge>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    <Activity className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-                    <p className="text-lg font-medium">No Business Data</p>
-                    <p className="text-sm">Lead generation and conversion metrics will appear with interactions</p>
                   </div>
                 )}
               </TabsContent>
@@ -586,10 +459,13 @@ const EnhancedAnalyticsFooter: React.FC = () => {
                     <div>
                       <h4 className="text-sm font-semibold text-sawmill-dark-brown mb-3 flex items-center gap-2">
                         <Activity className="h-4 w-4 text-green-500" />
-                        Live Activity
+                        Live Activity (Non-Admin)
                       </h4>
                       <div className="space-y-1 max-h-40 overflow-y-auto">
-                        {stats.recentActivity.slice(0, 10).map((activity, index) => (
+                        {stats.recentActivity
+                          .filter(activity => !activity.data.user_agent?.includes('admin'))
+                          .slice(0, 10)
+                          .map((activity, index) => (
                           <div key={index} className="flex items-center justify-between text-xs py-1 border-b last:border-b-0">
                             <div className="flex items-center gap-2">
                               <Badge 
@@ -601,7 +477,7 @@ const EnhancedAnalyticsFooter: React.FC = () => {
                               <span className="truncate max-w-[140px]">
                                 {activity.type === 'page_view' 
                                   ? `${activity.data.page_path === '/' ? 'Home' : activity.data.page_path}`
-                                  : activity.data.event_name.replace(/_/g, ' ')
+                                  : activity.data.event_name?.replace(/_/g, ' ')
                                 }
                               </span>
                               {activity.data.country && (
@@ -617,8 +493,9 @@ const EnhancedAnalyticsFooter: React.FC = () => {
                               })}
                             </span>
                           </div>
-                        )) || (
-                          <div className="text-xs text-gray-500">No recent activity</div>
+                        ))}
+                        {stats.recentActivity.filter(activity => !activity.data.user_agent?.includes('admin')).length === 0 && (
+                          <div className="text-xs text-gray-500">No recent non-admin activity</div>
                         )}
                       </div>
                     </div>
@@ -629,26 +506,40 @@ const EnhancedAnalyticsFooter: React.FC = () => {
                         <div className="bg-green-50 p-3 rounded-lg border border-green-200">
                           <div className="flex items-center justify-between">
                             <span className="text-sm font-medium text-green-800">Active Now</span>
-                            <Badge className="bg-green-500 text-white">2 visitors</Badge>
+                            <Badge className={`${activeUsersCount > 0 ? 'bg-green-500' : 'bg-gray-400'} text-white`}>
+                              {activeUsersCount} visitor{activeUsersCount !== 1 ? 's' : ''}
+                            </Badge>
                           </div>
-                          <p className="text-xs text-green-600 mt-1">Currently browsing your site</p>
+                          <p className="text-xs text-green-600 mt-1">
+                            {activeUsersCount > 0 ? 'Currently browsing your site' : 'No active visitors'}
+                          </p>
                         </div>
                         
-                        <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium text-blue-800">Today's Summary</span>
-                            <Badge className="bg-blue-500 text-white">+15%</Badge>
-                          </div>
-                          <p className="text-xs text-blue-600 mt-1">Traffic increase vs yesterday</p>
-                        </div>
+                        {hasRealData && (
+                          <>
+                            <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium text-blue-800">Total Traffic</span>
+                                <Badge className="bg-blue-500 text-white">
+                                  {stats.totalPageViews} views
+                                </Badge>
+                              </div>
+                              <p className="text-xs text-blue-600 mt-1">From {stats.uniqueVisitors} unique visitors</p>
+                            </div>
 
-                        <div className="bg-purple-50 p-3 rounded-lg border border-purple-200">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium text-purple-800">Performance</span>
-                            <Badge className="bg-purple-500 text-white">Excellent</Badge>
-                          </div>
-                          <p className="text-xs text-purple-600 mt-1">Site speed and engagement</p>
-                        </div>
+                            <div className="bg-purple-50 p-3 rounded-lg border border-purple-200">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium text-purple-800">Engagement</span>
+                                <Badge className="bg-purple-500 text-white">
+                                  {Math.round(stats.averageSessionDuration || 0)}m avg
+                                </Badge>
+                              </div>
+                              <p className="text-xs text-purple-600 mt-1">
+                                {Math.round(stats.bounceRate || 0)}% bounce rate
+                              </p>
+                            </div>
+                          </>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -667,8 +558,8 @@ const EnhancedAnalyticsFooter: React.FC = () => {
                 <div className="text-sm text-blue-800">
                   <strong>🚀 Analytics System Active!</strong> 
                   <div className="mt-1 text-xs">
-                    Your enhanced analytics with location tracking is now running. 
-                    Real visitor data will appear here as people browse your site. No placeholder data is shown.
+                    Your enhanced analytics with admin exclusion is running. 
+                    Real visitor data will appear here as people browse your site.
                   </div>
                 </div>
               </div>
