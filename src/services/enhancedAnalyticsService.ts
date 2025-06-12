@@ -272,7 +272,7 @@ export const getTopCountries = (data: any[]): Array<{country: string, count: num
     .map(([country, count]) => ({
       country,
       count: count as number,
-      percentage: total > 0 ? Math.round((count / total) * 100) : 0
+      percentage: total > 0 ? Math.round(((count as number) / total) * 100) : 0
     }))
     .sort((a, b) => b.count - a.count);
 };
