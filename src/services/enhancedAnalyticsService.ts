@@ -40,7 +40,6 @@ export const getClientIP = async (): Promise<string | null> => {
     for (const service of ipServices) {
       try {
         const response = await fetch(service, { 
-          timeout: 3000,
           headers: { 'Accept': 'application/json' }
         });
         const data = await response.json();
@@ -69,7 +68,6 @@ export const getLocationFromIP = async (ip: string): Promise<LocationData> => {
   try {
     // Use ipapi.co service (1000 free requests/month)
     const response = await fetch(`https://ipapi.co/${ip}/json/`, {
-      timeout: 5000,
       headers: {
         'User-Agent': 'MilledRight Analytics/1.0'
       }
@@ -166,12 +164,7 @@ export const getAdvancedDeviceInfo = (): DeviceData => {
 
   // Screen and display info
   const screenResolution = `${screen.width}x${screen.height}`;
-  const colorDepth = screen.colorDepth;
-  const pixelRatio = window.devicePixelRatio || 1;
-
-  // Timezone and locale
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const locale = navigator.language || 'en-US';
 
   return {
     device_type: deviceType,
@@ -273,12 +266,12 @@ export const getTopCountries = (data: any[]): Array<{country: string, count: num
     return acc;
   }, {} as Record<string, number>);
 
-  const total = Object.values(countryCounts).reduce((sum, count) => sum + count, 0);
+  const total = Object.values(countryCounts).reduce((sum: number, count: number) => sum + count, 0);
   
   return Object.entries(countryCounts)
     .map(([country, count]) => ({
       country,
-      count,
+      count: count as number,
       percentage: total > 0 ? Math.round((count / total) * 100) : 0
     }))
     .sort((a, b) => b.count - a.count);
