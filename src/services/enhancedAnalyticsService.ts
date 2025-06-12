@@ -266,13 +266,13 @@ export const getTopCountries = (data: any[]): Array<{country: string, count: num
     return acc;
   }, {} as Record<string, number>);
 
-  const total = Object.values(countryCounts).reduce((sum: number, count: number) => sum + count, 0);
+  const total = Object.values(countryCounts).reduce((sum, count) => sum + count, 0);
   
   return Object.entries(countryCounts)
     .map(([country, count]) => ({
       country,
-      count: count as number,
-      percentage: total > 0 ? Math.round(((count as number) / total) * 100) : 0
+      count,
+      percentage: total > 0 ? Math.round((count / total) * 100) : 0
     }))
     .sort((a, b) => b.count - a.count);
 };
