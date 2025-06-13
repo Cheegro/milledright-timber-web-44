@@ -63,15 +63,15 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				sawmill: {
-					'dark-brown': '#6B4423',
-					'medium-brown': '#8B5A2B',
-					'light-brown': '#D2B48C',
-					'auburn': '#A0522D',
-					'forest': '#2E8B57',
-					'dark-gray': '#4F4F4F',
-					'mid-gray': '#696969',
-					'orange': '#D2691E',
+				// Modern theme colors matching the design
+				modern: {
+					'dark': '#1a1a1a',
+					'darker': '#111111',
+					'orange': '#ff6b35',
+					'orange-dark': '#e55a2b',
+					'gray-light': '#f5f5f5',
+					'gray-medium': '#888888',
+					'gray-dark': '#333333',
 				}
 			},
 			borderRadius: {
