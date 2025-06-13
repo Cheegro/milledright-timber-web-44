@@ -207,7 +207,7 @@ const Footer = () => {
           {/* Admin Access */}
           <div className="mt-4 md:mt-0">
             <Link to="/admin" onClick={handleAdminAccess}>
-              <Button variant="outline" size="sm" className="border border-sawmill-orange/50 text-sawmill-orange hover:bg-sawmill-orange hover:text-white transition-all duration-300 rounded-lg font-medium bg-transparent">
+              <Button variant="outline" size="sm" className="border border-sawmill-orange/50 text-sawmill-orange hover:bg-sawmill-orange transition-all duration-300 text-cyan-400 text-xs font-thin bg-neutral-950 hover:bg-neutral-800 rounded-full">
                 <ShieldCheck className="mr-2 h-4 w-4" />
                 Admin Access
               </Button>
