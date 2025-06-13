@@ -73,23 +73,23 @@ const NewsletterSubscription: React.FC<NewsletterSubscriptionProps> = ({
   if (variant === 'footer') {
     return (
       <div className={className}>
-        <h3 className="text-xl font-bold mb-4 border-b border-sawmill-medium-brown pb-2">
+        <h3 className="text-xl font-bold mb-4 border-b border-border pb-2 text-foreground">
           {title}
         </h3>
-        <p className="mb-4">{description}</p>
+        <p className="mb-4 text-muted-foreground">{description}</p>
         <form onSubmit={handleSubmit} className="flex flex-col space-y-2">
           <Input
             type="email"
             placeholder="Your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-sawmill-orange text-sawmill-dark-gray"
+            className="px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground border-border"
             disabled={isLoading}
           />
           <Button
             type="submit"
             disabled={isLoading}
-            className="bg-sawmill-orange hover:bg-sawmill-auburn transition-colors px-4 py-2 rounded font-bold"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground transition-colors px-4 py-2 rounded font-bold"
           >
             {isLoading ? 'Subscribing...' : 'Subscribe'}
           </Button>
@@ -100,22 +100,22 @@ const NewsletterSubscription: React.FC<NewsletterSubscriptionProps> = ({
 
   if (variant === 'inline') {
     return (
-      <div className={`bg-sawmill-light-brown/20 p-6 rounded-lg ${className}`}>
-        <h3 className="text-lg font-semibold mb-2">{title}</h3>
-        <p className="text-sm mb-4">{description}</p>
+      <div className={`bg-secondary/20 p-6 rounded-lg border border-border ${className}`}>
+        <h3 className="text-lg font-semibold mb-2 text-foreground">{title}</h3>
+        <p className="text-sm mb-4 text-muted-foreground">{description}</p>
         <form onSubmit={handleSubmit} className="flex gap-2">
           <Input
             type="email"
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="flex-1"
+            className="flex-1 bg-background text-foreground border-border"
             disabled={isLoading}
           />
           <Button
             type="submit"
             disabled={isLoading}
-            className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground"
           >
             {isLoading ? 'Subscribing...' : 'Subscribe'}
           </Button>
