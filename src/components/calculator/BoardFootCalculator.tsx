@@ -382,7 +382,7 @@ const BoardFootCalculator = () => {
               </div>
             </div>)}
           
-          <Button onClick={addCalculation} variant="outline" className="w-full border-2 border-dashed border-red-400 hover:border-red-600 py-4 text-base tracking-wide transform hover:scale-[1.02] transition-all duration-200 lg:text-xl text-slate-50 rounded-full bg-neutral-950 hover:bg-neutral-800 font-normal">
+          <Button onClick={addCalculation} variant="outline" className="w-full border-2 border-dashed border-red-400 hover:border-red-600 py-4 text-base tracking-wide transform hover:scale-[1.02] transition-all duration-200 lg:text-xl text-slate-50 rounded-full font-normal bg-slate-900 hover:bg-slate-800">
             <Plus className="h-5 w-5 mr-2 text-red-600" />
             ADD ANOTHER PIECE
           </Button>
