@@ -97,14 +97,14 @@ const Projects = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                   </div>
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-lg text-sawmill-dark-brown">{project.title}</CardTitle>
+                    <CardTitle className="text-lg text-sawmill-dark-brown text-stone-950">{project.title}</CardTitle>
                     <div className="flex gap-2 mt-1">
-                      <Badge className="bg-sawmill-medium-brown text-white bg-orange-500 rounded-none">{project.wood_type}</Badge>
+                      <Badge className="bg-sawmill-medium-brown text-white bg-orange-500 rounded-2xl">{project.wood_type}</Badge>
                       <Badge variant="outline" className="border-sawmill-orange text-sawmill-orange bg-slate-950">{project.category}</Badge>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground text-sm line-clamp-3">
+                    <p className="text-sm line-clamp-3 text-gray-950 text-left font-light">
                       {project.description}
                     </p>
                   </CardContent>
@@ -119,12 +119,9 @@ const Projects = () => {
             </div>}
           
           <div className="mt-12 bg-gradient-to-r from-sawmill-orange/10 to-sawmill-auburn/10 p-8 rounded-2xl border border-sawmill-orange/20">
-            <h2 className="text-2xl font-bold mb-4 text-sawmill-dark-brown">Start Your Custom Project</h2>
-            <p className="mb-6 text-gray-700">
-              Have an idea for a custom woodworking project? Contact us today to discuss your vision 
-              and how our premium lumber can bring it to life. From initial concept to final delivery, 
-              we'll work with you every step of the way.
-            </p>
+            <h2 className="text-2xl font-bold mb-4 text-sawmill-dark-brown">We Value Your Trees - Contact us and Arrange a Trade</h2>
+            <p className="mb-6 text-orange-500">Got Logs? Need Lumber?
+ Let's make a deal. Bring us your logs, and we'll cut them to your exact specifications. You pay us with a portion of the wood, and you keep the rest. It's the smartest, most efficient way to get custom lumber.</p>
             <Link to="/contact">
               <Button size="lg" className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown">
                 Contact Us Today
