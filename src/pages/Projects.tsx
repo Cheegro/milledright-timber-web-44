@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -9,11 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Loader2, Hammer, Palette, TreePine } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
 const Projects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
-  
   useEffect(() => {
     const loadProjects = async () => {
       try {
@@ -26,17 +23,10 @@ const Projects = () => {
         setLoading(false);
       }
     };
-
     loadProjects();
   }, []);
-
-  return (
-    <div className="min-h-screen flex flex-col">
-      <SEOHead 
-        title="Custom Projects Gallery"
-        description="Explore our portfolio of custom woodworking projects created with premium lumber from MilledRight Sawmill. From furniture to structures, see what's possible."
-        keywords="custom projects, woodworking gallery, lumber projects, furniture making, custom structures"
-      />
+  return <div className="min-h-screen flex flex-col">
+      <SEOHead title="Custom Projects Gallery" description="Explore our portfolio of custom woodworking projects created with premium lumber from MilledRight Sawmill. From furniture to structures, see what's possible." keywords="custom projects, woodworking gallery, lumber projects, furniture making, custom structures" />
       
       <Header />
       
@@ -91,36 +81,26 @@ const Projects = () => {
         </section>
 
         <div className="container-wide py-12">
-          {loading ? (
-            <div className="flex justify-center py-20">
+          {loading ? <div className="flex justify-center py-20">
               <Loader2 className="h-8 w-8 animate-spin text-sawmill-dark-brown" />
-            </div>
-          ) : projects.length === 0 ? (
-            <div className="text-center py-20">
+            </div> : projects.length === 0 ? <div className="text-center py-20">
               <p className="text-muted-foreground mb-4">No projects found.</p>
               <Link to="/contact">
                 <Button className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown">
                   Contact Us To Start Your Project
                 </Button>
               </Link>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {projects.map((project) => (
-                <Card key={project.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-0 bg-white shadow-lg hover:transform hover:scale-105">
+            </div> : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {projects.map(project => <Card key={project.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-0 bg-white shadow-lg hover:transform hover:scale-105">
                   <div className="aspect-[4/3] relative overflow-hidden">
-                    <img
-                      src={project.image_url}
-                      alt={project.title}
-                      className="object-cover w-full h-full transition-transform duration-300 hover:scale-110"
-                    />
+                    <img src={project.image_url} alt={project.title} className="object-cover w-full h-full transition-transform duration-300 hover:scale-110" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                   </div>
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg text-sawmill-dark-brown">{project.title}</CardTitle>
                     <div className="flex gap-2 mt-1">
-                      <Badge className="bg-sawmill-medium-brown text-white">{project.wood_type}</Badge>
-                      <Badge variant="outline" className="border-sawmill-orange text-sawmill-orange">{project.category}</Badge>
+                      <Badge className="bg-sawmill-medium-brown text-white bg-orange-500 rounded-none">{project.wood_type}</Badge>
+                      <Badge variant="outline" className="border-sawmill-orange text-sawmill-orange bg-slate-950">{project.category}</Badge>
                     </div>
                   </CardHeader>
                   <CardContent>
@@ -135,10 +115,8 @@ const Projects = () => {
                       </Button>
                     </Link>
                   </CardFooter>
-                </Card>
-              ))}
-            </div>
-          )}
+                </Card>)}
+            </div>}
           
           <div className="mt-12 bg-gradient-to-r from-sawmill-orange/10 to-sawmill-auburn/10 p-8 rounded-2xl border border-sawmill-orange/20">
             <h2 className="text-2xl font-bold mb-4 text-sawmill-dark-brown">Start Your Custom Project</h2>
@@ -157,8 +135,6 @@ const Projects = () => {
       </main>
       
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default Projects;
