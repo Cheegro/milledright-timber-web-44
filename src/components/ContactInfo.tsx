@@ -31,7 +31,7 @@ const ContactInfo: React.FC<ContactInfoProps> = ({
       <a 
         href={`tel:${phone.replace(/[^\d]/g, '')}`}
         onClick={handlePhoneClick}
-        className="flex items-center gap-2 text-gray-600 hover:text-sawmill-orange transition-colors"
+        className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
       >
         {showIcons && <Phone className="h-4 w-4" />}
         <span>{phone}</span>
@@ -40,7 +40,7 @@ const ContactInfo: React.FC<ContactInfoProps> = ({
       <a 
         href={`mailto:${email}`}
         onClick={handleEmailClick}
-        className="flex items-center gap-2 text-gray-600 hover:text-sawmill-orange transition-colors"
+        className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
       >
         {showIcons && <Mail className="h-4 w-4" />}
         <span>{email}</span>

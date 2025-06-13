@@ -15,12 +15,12 @@ const NewsletterBanner: React.FC<NewsletterBannerProps> = ({
   showCloseButton = true 
 }) => {
   return (
-    <div className="bg-gradient-to-r from-sawmill-orange to-sawmill-auburn text-white py-3 px-4 relative">
+    <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-3 px-4 relative">
       <div className="container-wide flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Bell className="h-5 w-5 flex-shrink-0" />
           <div className="flex-1">
-            <p className="text-sm md:text-base font-medium">
+            <p className="text-sm md:text-base font-medium text-primary-foreground">
               Stay updated with our latest products, workshop tips, and project showcases!
             </p>
           </div>
@@ -31,7 +31,7 @@ const NewsletterBanner: React.FC<NewsletterBannerProps> = ({
             onClick={onSubscribeClick}
             variant="secondary"
             size="sm"
-            className="bg-white text-sawmill-dark-brown hover:bg-gray-100 font-medium"
+            className="bg-background text-foreground hover:bg-secondary font-medium"
           >
             Subscribe Now
           </Button>
@@ -39,7 +39,7 @@ const NewsletterBanner: React.FC<NewsletterBannerProps> = ({
           {showCloseButton && onClose && (
             <button
               onClick={onClose}
-              className="text-white hover:text-gray-200 transition-colors p-1"
+              className="text-primary-foreground hover:text-primary-foreground/80 transition-colors p-1"
               aria-label="Close banner"
             >
               <X className="h-4 w-4" />

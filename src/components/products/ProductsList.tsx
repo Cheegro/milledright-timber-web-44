@@ -29,20 +29,21 @@ const ProductsList = ({
 }: ProductsListProps) => {
   return (
     <div className="flex-1">
-      <h2 className="text-2xl font-bold mb-6 border-b border-sawmill-medium-brown pb-2">
+      <h2 className="text-2xl font-bold mb-6 border-b border-border pb-2 text-foreground">
         {selectedCategory === 'All' ? 'All Lumber' : selectedCategory}
-        <span className="text-sm font-normal ml-2 text-gray-500">({filteredProducts.length} items)</span>
+        <span className="text-sm font-normal ml-2 text-muted-foreground">({filteredProducts.length} items)</span>
       </h2>
       
       {filteredProducts.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-lg">No lumber products match your criteria.</p>
+          <p className="text-lg text-muted-foreground">No lumber products match your criteria.</p>
           <Button 
             variant="link" 
             onClick={() => {
               setSearchQuery('');
               setSelectedCategory('All');
             }}
+            className="text-primary hover:text-primary/80"
           >
             Clear filters
           </Button>
