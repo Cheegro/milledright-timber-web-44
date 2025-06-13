@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, MapPin, Phone, Mail, Clock } from 'lucide-react';
@@ -8,12 +7,10 @@ import SocialMediaLinks from './SocialMediaLinks';
 import { fetchProductCategories } from '@/api/productApi';
 import { fetchRecentBlogPosts } from '@/api/blogApi';
 import { toast } from "@/hooks/use-toast";
-
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   const [productCategories, setProductCategories] = useState<any[]>([]);
   const [recentPosts, setRecentPosts] = useState<any[]>([]);
-  
   useEffect(() => {
     const loadCategories = async () => {
       try {
@@ -23,7 +20,6 @@ const Footer = () => {
         console.error('Error loading product categories:', error);
       }
     };
-    
     const loadRecentPosts = async () => {
       try {
         const posts = await fetchRecentBlogPosts(3);
@@ -32,30 +28,26 @@ const Footer = () => {
         console.error('Error loading recent blog posts:', error);
       }
     };
-    
     loadCategories();
     loadRecentPosts();
   }, []);
-
   const handleAdminAccess = () => {
     toast({
       title: "Admin Dashboard",
       description: "Redirecting to admin dashboard..."
     });
   };
-  
-  return (
-    <footer className="bg-gradient-to-br from-sawmill-dark-brown to-sawmill-medium-brown text-white relative z-10">
+  return <footer className="bg-gradient-to-br from-sawmill-dark-brown to-sawmill-medium-brown text-white relative z-10">
       <div className="container-wide py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-6">
-              <div className="bg-gradient-to-br from-sawmill-orange to-sawmill-auburn text-white p-3 rounded-xl shadow-lg">
-                <span className="font-bold text-xl tracking-tight">MR</span>
+              <div className="bg-gradient-to-br from-sawmill-orange to-sawmill-auburn text-white p-3 rounded-xl shadow-lg bg-orange-600">
+                <span className="font-bold text-xl tracking-tight text-slate-950">MR</span>
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white">MilledRight</h3>
+                <h3 className="font-bold text-[modern-orange-dark] text-modern-orange">MilledRight</h3>
                 <p className="text-sawmill-light-brown text-sm">Sawmill Solutions</p>
               </div>
             </div>
@@ -122,42 +114,27 @@ const Footer = () => {
             <h3 className="text-xl font-bold mb-6 text-white border-b border-sawmill-orange/30 pb-2">Our Services</h3>
             <ul className="space-y-3">
               <li>
-                <Link 
-                  to="/products?category=Live%20Edge%20Slabs" 
-                  className="text-gray-200 hover:text-sawmill-orange transition-colors block py-1 hover:translate-x-1 transform duration-200"
-                >
+                <Link to="/products?category=Live%20Edge%20Slabs" className="text-gray-200 hover:text-sawmill-orange transition-colors block py-1 hover:translate-x-1 transform duration-200">
                   Live Edge Slabs
                 </Link>
               </li>
               <li>
-                <Link 
-                  to="/products?category=Dimensional%20Lumber" 
-                  className="text-gray-200 hover:text-sawmill-orange transition-colors block py-1 hover:translate-x-1 transform duration-200"
-                >
+                <Link to="/products?category=Dimensional%20Lumber" className="text-gray-200 hover:text-sawmill-orange transition-colors block py-1 hover:translate-x-1 transform duration-200">
                   Dimensional Lumber
                 </Link>
               </li>
               <li>
-                <Link 
-                  to="/products" 
-                  className="text-gray-200 hover:text-sawmill-orange transition-colors block py-1 hover:translate-x-1 transform duration-200"
-                >
+                <Link to="/products" className="text-gray-200 hover:text-sawmill-orange transition-colors block py-1 hover:translate-x-1 transform duration-200">
                   Custom Milling
                 </Link>
               </li>
               <li>
-                <Link 
-                  to="/projects" 
-                  className="text-gray-200 hover:text-sawmill-orange transition-colors block py-1 hover:translate-x-1 transform duration-200"
-                >
+                <Link to="/projects" className="text-gray-200 hover:text-sawmill-orange transition-colors block py-1 hover:translate-x-1 transform duration-200">
                   Custom Structures
                 </Link>
               </li>
               <li>
-                <Link 
-                  to="/contact" 
-                  className="text-gray-200 hover:text-sawmill-orange transition-colors block py-1 hover:translate-x-1 transform duration-200"
-                >
+                <Link to="/contact" className="text-gray-200 hover:text-sawmill-orange transition-colors block py-1 hover:translate-x-1 transform duration-200">
                   Firewood Sales
                 </Link>
               </li>
@@ -189,12 +166,8 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-bold mb-6 text-white border-b border-sawmill-orange/30 pb-2">Latest Updates</h3>
             <ul className="space-y-4">
-              {recentPosts.map((post) => (
-                <li key={post.id}>
-                  <Link 
-                    to={`/blog/${post.id}`} 
-                    className="block group"
-                  >
+              {recentPosts.map(post => <li key={post.id}>
+                  <Link to={`/blog/${post.id}`} className="block group">
                     <h4 className="text-sm font-medium line-clamp-2 text-white group-hover:text-sawmill-orange transition-colors mb-1">
                       {post.title}
                     </h4>
@@ -202,16 +175,10 @@ const Footer = () => {
                       {new Date(post.published_at).toLocaleDateString()}
                     </p>
                   </Link>
-                </li>
-              ))}
-              {recentPosts.length === 0 && (
-                <li className="text-sm text-gray-300">No recent posts</li>
-              )}
+                </li>)}
+              {recentPosts.length === 0 && <li className="text-sm text-gray-300">No recent posts</li>}
             </ul>
-            <Link 
-              to="/blog" 
-              className="inline-flex items-center mt-4 text-sm text-sawmill-orange hover:text-white transition-colors group"
-            >
+            <Link to="/blog" className="inline-flex items-center mt-4 text-sm text-sawmill-orange hover:text-white transition-colors group">
               <span>View All Posts</span>
               <span className="ml-1 group-hover:translate-x-1 transform transition-transform">→</span>
             </Link>
@@ -228,16 +195,10 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row items-center gap-4">
             <p className="text-gray-200">© {currentYear} MilledRight Sawmill. All rights reserved.</p>
             <div className="flex space-x-4">
-              <Link 
-                to="/terms" 
-                className="text-gray-300 hover:text-sawmill-orange transition-colors text-sm"
-              >
+              <Link to="/terms" className="text-gray-300 hover:text-sawmill-orange transition-colors text-sm">
                 Terms of Service
               </Link>
-              <Link 
-                to="/privacy" 
-                className="text-gray-300 hover:text-sawmill-orange transition-colors text-sm"
-              >
+              <Link to="/privacy" className="text-gray-300 hover:text-sawmill-orange transition-colors text-sm">
                 Privacy Policy
               </Link>
             </div>
@@ -246,11 +207,7 @@ const Footer = () => {
           {/* Admin Access */}
           <div className="mt-4 md:mt-0">
             <Link to="/admin" onClick={handleAdminAccess}>
-              <Button 
-                variant="outline" 
-                size="sm"
-                className="border border-sawmill-orange/50 text-sawmill-orange hover:bg-sawmill-orange hover:text-white transition-all duration-300 rounded-lg font-medium bg-transparent"
-              >
+              <Button variant="outline" size="sm" className="border border-sawmill-orange/50 text-sawmill-orange hover:bg-sawmill-orange hover:text-white transition-all duration-300 rounded-lg font-medium bg-transparent">
                 <ShieldCheck className="mr-2 h-4 w-4" />
                 Admin Access
               </Button>
@@ -258,8 +215,6 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>
-  );
+    </footer>;
 };
-
 export default Footer;
