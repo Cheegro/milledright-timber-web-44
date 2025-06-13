@@ -41,7 +41,7 @@ const TestimonialsSection = () => {
         <div className="container-wide">
           <h2 className="section-title text-center mx-auto">What Our Customers Say</h2>
           <div className="flex justify-center py-8">
-            <Loader2 className="h-8 w-8 animate-spin text-sawmill-dark-brown" />
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         </div>
       </section>
@@ -56,10 +56,10 @@ const TestimonialsSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
           {displayTestimonials.map(testimonial => (
             <div key={testimonial.id} className="bg-white p-6 rounded-lg shadow-md">
-              <p className="italic text-sawmill-dark-gray mb-4">"{testimonial.text}"</p>
+              <p className="italic text-foreground mb-4">"{testimonial.text}"</p>
               <div>
-                <p className="font-bold text-sawmill-dark-brown">{testimonial.author}</p>
-                <p className="text-sawmill-medium-brown">{testimonial.location}</p>
+                <p className="font-bold text-primary">{testimonial.author}</p>
+                <p className="text-foreground">{testimonial.location}</p>
               </div>
             </div>
           ))}
@@ -68,7 +68,7 @@ const TestimonialsSection = () => {
         <div className="text-center mt-12">
           <Link 
             to="/reviews"
-            className="text-sawmill-orange hover:text-sawmill-auburn font-medium underline"
+            className="text-primary hover:text-primary/80 font-medium underline"
           >
             Read More Customer Reviews
           </Link>
