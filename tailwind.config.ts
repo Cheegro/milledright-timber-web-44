@@ -63,11 +63,18 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
+        // Sawmill Brand Colors
+        'sawmill-dark-brown': '#4A3B31',
+        'sawmill-medium-brown': '#7B5E48',
+        'sawmill-auburn': '#A0522D',
+        'sawmill-orange': '#F08C2D', // A distinct orange, primary is hsl(24 95% 53%)
+        'sawmill-light-brown': '#C8A985',
+        'sawmill-forest': '#2E7D32',
 				// Modern theme colors matching the design
 				modern: {
 					'dark': '#1a1a1a',
 					'darker': '#111111',
-					'orange': '#ff6b35',
+					'orange': '#ff6b35', // This might be the same as primary or sawmill-orange
 					'orange-dark': '#e55a2b',
 					'gray-light': '#f5f5f5',
 					'gray-medium': '#888888',
