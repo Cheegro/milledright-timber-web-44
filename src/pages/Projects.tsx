@@ -8,33 +8,25 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Loader2, Hammer, Palette, TreePine } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
 const Projects = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const loadProjects = async () => {
       try {
         setLoading(true);
         const data = await fetchProjects();
         setProjects(data);
+        setLoading(false);
       } catch (error) {
         console.error("Error loading projects:", error);
-      } finally {
         setLoading(false);
       }
     };
     loadProjects();
   }, []);
-
-  return (
-    <div className="min-h-screen flex flex-col">
-      <SEOHead
-        title="Custom Projects Gallery"
-        description="Explore our portfolio of custom woodworking projects created with premium lumber from MilledRight Sawmill. From furniture to structures, see what's possible."
-        keywords="custom projects, woodworking gallery, lumber projects, furniture making, custom structures"
-      />
+  return <div className="min-h-screen flex flex-col">
+      <SEOHead title="Custom Projects Gallery" description="Explore our portfolio of custom woodworking projects created with premium lumber from MilledRight Sawmill. From furniture to structures, see what's possible." keywords="custom projects, woodworking gallery, lumber projects, furniture making, custom structures" />
       
       <Header />
       
@@ -76,7 +68,7 @@ const Projects = () => {
               </div>
               
               <div className="bg-sawmill-orange/20 border border-sawmill-orange/30 rounded-2xl p-6 backdrop-blur-sm">
-                <h3 className="text-xl font-bold text-primary mb-2">Ready to Start Your Project?</h3>
+                <h3 className="text-xl font-bold text-sawmill-orange mb-2">Ready to Start Your Project?</h3>
                 <p className="text-white mb-4">Let's discuss how we can bring your vision to life with our premium lumber and expert craftsmanship.</p>
                 <Link to="/contact">
                   <Button size="lg" className="bg-sawmill-orange hover:bg-sawmill-auburn text-white">
@@ -89,36 +81,30 @@ const Projects = () => {
         </section>
 
         <div className="container-wide py-12">
-          {loading ? (
-            <div className="flex justify-center py-20">
+          {loading ? <div className="flex justify-center py-20">
               <Loader2 className="h-8 w-8 animate-spin text-sawmill-dark-brown" />
-            </div>
-          ) : projects.length === 0 ? (
-            <div className="text-center py-20">
+            </div> : projects.length === 0 ? <div className="text-center py-20">
               <p className="text-muted-foreground mb-4">No projects found.</p>
               <Link to="/contact">
                 <Button className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown">
                   Contact Us To Start Your Project
                 </Button>
               </Link>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {projects.map(project => (
-                <Card key={project.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-0 bg-card shadow-lg hover:transform hover:scale-105">
+            </div> : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {projects.map(project => <Card key={project.id} className="overflow-hidden hover:shadow-xl transition-all duration-300 border-0 bg-white shadow-lg hover:transform hover:scale-105">
                   <div className="aspect-[4/3] relative overflow-hidden">
                     <img src={project.image_url} alt={project.title} className="object-cover w-full h-full transition-transform duration-300 hover:scale-110" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                   </div>
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-lg text-sawmill-dark-brown">{project.title}</CardTitle>
+                    <CardTitle className="text-lg text-sawmill-dark-brown text-stone-950">{project.title}</CardTitle>
                     <div className="flex gap-2 mt-1">
-                      <Badge className="bg-sawmill-medium-brown text-white rounded-md">{project.wood_type}</Badge>
-                      <Badge variant="outline" className="border-primary text-primary rounded-md bg-primary/10">{project.category}</Badge>
+                      <Badge className="bg-sawmill-medium-brown text-white bg-orange-500 rounded-2xl">{project.wood_type}</Badge>
+                      <Badge variant="outline" className="border-sawmill-orange text-sawmill-orange bg-slate-950">{project.category}</Badge>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm line-clamp-3 text-card-foreground font-light text-left">
+                    <p className="text-sm line-clamp-3 text-gray-950 text-left font-light">
                       {project.description}
                     </p>
                   </CardContent>
@@ -129,14 +115,12 @@ const Projects = () => {
                       </Button>
                     </Link>
                   </CardFooter>
-                </Card>
-              ))}
-            </div>
-          )}
+                </Card>)}
+            </div>}
           
-          <div className="mt-12 bg-gradient-to-r from-sawmill-orange/10 via-primary/5 to-sawmill-auburn/10 p-8 rounded-2xl border border-primary/20">
+          <div className="mt-12 bg-gradient-to-r from-sawmill-orange/10 to-sawmill-auburn/10 p-8 rounded-2xl border border-sawmill-orange/20">
             <h2 className="text-2xl font-bold mb-4 text-sawmill-dark-brown">We Value Your Trees - Contact us and Arrange a Trade</h2>
-            <p className="mb-6 text-primary">Got Logs? Need Lumber?
+            <p className="mb-6 text-orange-500">Got Logs? Need Lumber?
  Let's make a deal. Bring us your logs, and we'll cut them to your exact specifications. You pay us with a portion of the wood, and you keep the rest. It's the smartest, most efficient way to get custom lumber.</p>
             <Link to="/contact">
               <Button size="lg" className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown">
@@ -148,7 +132,6 @@ const Projects = () => {
       </main>
       
       <Footer />
-    </div>
-  );
+    </div>;
 };
 export default Projects;
