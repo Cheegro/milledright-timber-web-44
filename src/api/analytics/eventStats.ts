@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import type { AnalyticsEvent } from '../analyticsApi';
 
@@ -11,7 +10,7 @@ export const fetchRawEvents = async (startDate: Date): Promise<AnalyticsEvent[]>
     console.error('Error fetching raw events:', error);
     return [];
   }
-  return data || [];
+  return (data as AnalyticsEvent[]) || [];
 };
 
 export const calculateTopEvents = (eventsData: AnalyticsEvent[], limit: number = 10): Array<{ event_name: string; count: number }> => {

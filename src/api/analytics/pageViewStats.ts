@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import type { AnalyticsPageView } from '../analyticsApi'; // Adjust path as needed if types move
 
@@ -19,7 +18,7 @@ export const fetchRawPageViews = async (startDate: Date): Promise<AnalyticsPageV
     console.error('Error fetching raw page views:', error);
     return [];
   }
-  return data || [];
+  return (data as AnalyticsPageView[]) || [];
 };
 
 export const calculateUniqueVisitors = (pageViewsData: AnalyticsPageView[]): number => {
