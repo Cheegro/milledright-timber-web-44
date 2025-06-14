@@ -21,7 +21,7 @@ export const fetchRecentActivity = async (limit: number = 10): Promise<Array<{ t
     if (recentPageViewsResult.error) console.error('Error fetching recent page views:', recentPageViewsResult.error);
     if (recentEventsResult.error) console.error('Error fetching recent events:', recentEventsResult.error);
 
-    const mappedPageViews = recentPageViewsResult.data?.map((pv: any) => {
+    const mappedPageViews = recentPageViewsResult.data?.map((pv: { [key: string]: any; ip_address: unknown }) => {
       // Explicitly construct the AnalyticsPageView object for type safety
       const pageViewData: AnalyticsPageView = {
         id: pv.id as string,
@@ -52,7 +52,7 @@ export const fetchRecentActivity = async (limit: number = 10): Promise<Array<{ t
       };
     }) || [];
 
-    const mappedEvents = recentEventsResult.data?.map((ev: any) => {
+    const mappedEvents = recentEventsResult.data?.map((ev: { [key: string]: any; ip_address: unknown }) => {
       // Explicitly construct the AnalyticsEvent object for type safety
       const eventData: AnalyticsEvent = {
         id: ev.id as string,
