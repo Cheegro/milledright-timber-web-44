@@ -187,16 +187,16 @@ body {
 
   /* Enhanced service cards */
   .service-card {
-    @apply premium-card p-8 hover:border-sawmill-orange/40 group;
+    @apply premium-card p-8 hover:border-sawmill-orange/40;
   }
 
   .service-icon {
-    @apply w-16 h-16 bg-gradient-to-br from-sawmill-orange to-sawmill-orange-dark rounded-2xl flex items-center justify-center text-white shadow-modern-lg group-hover:shadow-glow transition-all duration-300;
+    @apply w-16 h-16 bg-gradient-to-br from-sawmill-orange to-sawmill-orange-dark rounded-2xl flex items-center justify-center text-white shadow-modern-lg transition-all duration-300;
   }
 
   /* Enhanced product cards */
   .product-card {
-    @apply premium-card overflow-hidden hover:border-sawmill-orange/40 group transform transition-all duration-500 hover:scale-105;
+    @apply premium-card overflow-hidden hover:border-sawmill-orange/40 transform transition-all duration-500 hover:scale-105;
   }
 
   .product-badge {
@@ -254,10 +254,8 @@ body {
   .touch-optimized {
     @apply min-h-[48px] min-w-[48px] touch-manipulation;
   }
-}
-
-/* Enhanced responsive utilities */
-@responsive {
+  
+  /* Enhanced responsive utilities */
   .mobile-hidden {
     @apply hidden lg:block;
   }
