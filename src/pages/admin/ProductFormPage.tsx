@@ -29,8 +29,9 @@ const ProductFormPage = () => {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sawmill-dark-brown mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          {/* Using theme-aware colors for spinner */}
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading...</p>
         </div>
       </div>
     );
@@ -47,12 +48,12 @@ const ProductFormPage = () => {
           <ArrowLeft className="h-4 w-4" />
           Back to Products
         </Button>
-        <h1 className="text-2xl md:text-3xl font-bold text-sawmill-dark-brown">
+        <h1 className="text-2xl md:text-3xl font-bold text-foreground"> {/* Changed text-sawmill-dark-brown to text-foreground */}
           {isEditing ? 'Edit Product' : 'Add New Product'}
         </h1>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border p-6">
+      <div className="bg-card rounded-lg shadow-sm border p-6"> {/* Changed bg-white to bg-card */}
         <ProductForm
           categories={categories}
           product={product}
