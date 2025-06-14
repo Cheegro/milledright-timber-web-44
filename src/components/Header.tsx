@@ -51,71 +51,74 @@ const Header = () => {
   };
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
       scrolled 
-        ? 'bg-background/95 backdrop-blur-lg shadow-xl border-b border-border' 
-        : 'bg-background/90 backdrop-blur-sm shadow-lg'
+        ? 'premium-header shadow-modern-xl border-b-2 border-sawmill-orange/30' 
+        : 'bg-white/90 backdrop-blur-sm shadow-modern-lg'
     }`}>
       <div className="container-wide">
         <div className="flex items-center justify-between h-16 lg:h-20 px-4 lg:px-0">
-          {/* Modern Logo */}
+          {/* Enhanced Logo */}
           <Link 
             to="/" 
             className="flex items-center gap-2 lg:gap-3 group touch-manipulation"
             onClick={() => trackNavigation(location.pathname, '/')}
           >
             <div className="relative">
-              <div className="bg-primary text-primary-foreground p-2 lg:p-3 rounded-lg lg:rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+              <div className="bg-gradient-to-br from-sawmill-orange to-sawmill-orange-dark text-white p-3 lg:p-4 rounded-2xl shadow-modern-lg group-hover:shadow-glow transition-all duration-500 group-hover:scale-110">
                 <span className="font-bold text-lg lg:text-xl tracking-tight">MR</span>
               </div>
-              <div className="absolute -top-1 -right-1 w-2 lg:w-3 h-2 lg:h-3 bg-primary rounded-full animate-pulse"></div>
+              <div className="absolute -top-1 -right-1 w-3 lg:w-4 h-3 lg:h-4 bg-sawmill-orange rounded-full animate-glow-pulse"></div>
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-xl lg:text-2xl font-bold text-foreground">
+              <h1 className="text-xl lg:text-2xl font-bold text-sawmill-dark-brown group-hover:text-sawmill-orange transition-colors duration-300">
                 MilledRight
               </h1>
-              <p className="text-xs lg:text-sm text-muted-foreground font-medium tracking-wide">
+              <p className="text-xs lg:text-sm text-sawmill-medium-brown font-semibold tracking-wide">
                 Sawmill Solutions
               </p>
             </div>
           </Link>
           
-          {/* Desktop Navigation */}
+          {/* Enhanced Desktop Navigation */}
           <nav className="hidden xl:flex items-center">
-            <div className="flex items-center space-x-1 bg-card/80 rounded-2xl p-2 mr-6 border border-border">
+            <div className="flex items-center space-x-1 bg-white/80 backdrop-blur-sm rounded-3xl p-2 mr-6 border-2 border-sawmill-orange/20 shadow-modern-lg">
               {navigationItems.map((item) => (
                 <Link 
                   key={item.name} 
                   to={item.href} 
                   onClick={() => handleNavClick(item)}
-                  className={`px-4 py-2.5 rounded-xl font-medium transition-all duration-300 text-sm relative overflow-hidden group ${
+                  className={`px-5 py-3 rounded-2xl font-semibold transition-all duration-500 text-sm relative overflow-hidden group ${
                     isActiveRoute(item.href)
-                      ? 'bg-primary text-primary-foreground shadow-lg' 
-                      : 'text-foreground hover:bg-secondary hover:shadow-md'
+                      ? 'bg-gradient-to-r from-sawmill-orange to-sawmill-orange-dark text-white shadow-modern-lg' 
+                      : 'text-sawmill-dark-brown hover:bg-sawmill-cream hover:text-sawmill-orange hover:shadow-modern'
                   }`}
                 >
                   <span className="relative z-10">{item.name}</span>
                   {!isActiveRoute(item.href) && (
-                    <div className="absolute inset-0 bg-primary opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-sawmill-orange/10 to-sawmill-orange-light/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   )}
                 </Link>
               ))}
             </div>
             
-            {/* Action Button - Get Quote */}
+            {/* Enhanced Action Button */}
             <div className="flex items-center gap-3">
               <Button 
-                className="bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300 rounded-xl font-medium px-8"
+                className="modern-button-primary group"
                 onClick={handleGetQuote}
               >
                 Get Quote
+                <div className="ml-2 w-0 group-hover:w-4 transition-all duration-300 overflow-hidden">
+                  →
+                </div>
               </Button>
             </div>
           </nav>
           
-          {/* Mobile menu button */}
+          {/* Enhanced Mobile menu button */}
           <button 
-            className="xl:hidden text-foreground p-2 lg:p-3 hover:bg-secondary rounded-lg lg:rounded-xl transition-all duration-300 touch-manipulation group" 
+            className="xl:hidden text-sawmill-dark-brown p-3 hover:bg-sawmill-cream rounded-2xl transition-all duration-300 touch-manipulation group border-2 border-sawmill-orange/20 hover:border-sawmill-orange/40" 
             onClick={() => setIsOpen(!isOpen)} 
             aria-label="Toggle menu"
           >
@@ -130,17 +133,17 @@ const Header = () => {
         </div>
       </div>
       
-      {/* Mobile Navigation Overlay */}
+      {/* Enhanced Mobile Navigation Overlay */}
       {isOpen && (
         <>
-          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 xl:hidden" onClick={() => setIsOpen(false)} />
-          <div className="fixed top-0 right-0 h-full w-full max-w-sm bg-card shadow-2xl z-50 xl:hidden transform transition-transform duration-300 border-l border-border">
-            <div className="p-4 border-b border-border bg-primary/10">
+          <div className="fixed inset-0 bg-sawmill-dark-brown/50 backdrop-blur-sm z-40 xl:hidden" onClick={() => setIsOpen(false)} />
+          <div className="fixed top-0 right-0 h-full w-full max-w-sm bg-white shadow-modern-xl z-50 xl:hidden transform transition-transform duration-500 border-l-4 border-sawmill-orange">
+            <div className="p-6 border-b-2 border-sawmill-orange/20 bg-gradient-to-r from-sawmill-cream to-sawmill-warm-white">
               <div className="flex items-center justify-between">
-                <span className="font-bold text-lg text-foreground">Navigation</span>
+                <span className="font-bold text-lg text-sawmill-dark-brown">Navigation</span>
                 <button 
                   onClick={() => setIsOpen(false)} 
-                  className="p-2 text-foreground hover:bg-secondary rounded-lg transition-all duration-300 touch-manipulation" 
+                  className="p-2 text-sawmill-dark-brown hover:bg-white rounded-xl transition-all duration-300 touch-manipulation" 
                   aria-label="Close menu"
                 >
                   <X size={20} />
@@ -148,17 +151,17 @@ const Header = () => {
               </div>
             </div>
             
-            {/* Navigation Items */}
-            <div className="h-full overflow-y-auto pb-32">
-              <nav className="flex flex-col p-4 space-y-2">
+            {/* Enhanced Navigation Items */}
+            <div className="h-full overflow-y-auto pb-32 scrollbar-custom">
+              <nav className="flex flex-col p-6 space-y-3">
                 {navigationItems.map((item) => (
                   <Link 
                     key={item.name} 
                     to={item.href} 
-                    className={`text-foreground font-medium py-4 px-4 rounded-xl transition-all duration-300 touch-manipulation text-base min-h-[56px] flex items-center ${
+                    className={`text-sawmill-dark-brown font-semibold py-4 px-6 rounded-2xl transition-all duration-300 touch-manipulation text-base min-h-[56px] flex items-center border-2 ${
                       isActiveRoute(item.href)
-                        ? 'bg-primary text-primary-foreground shadow-lg' 
-                        : 'hover:bg-secondary'
+                        ? 'bg-gradient-to-r from-sawmill-orange to-sawmill-orange-dark text-white shadow-modern-lg border-transparent' 
+                        : 'hover:bg-sawmill-cream border-sawmill-orange/20 hover:border-sawmill-orange/40'
                     }`}
                     onClick={() => handleNavClick(item)}
                   >
@@ -166,9 +169,9 @@ const Header = () => {
                   </Link>
                 ))}
                 
-                <div className="pt-6 space-y-3 border-t border-border mt-6">
+                <div className="pt-8 space-y-4 border-t-2 border-sawmill-orange/20 mt-8">
                   <Button 
-                    className="bg-primary text-primary-foreground w-full h-14 text-base font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300" 
+                    className="modern-button-primary w-full h-16 text-base font-semibold" 
                     onClick={handleGetQuote}
                   >
                     Get Quote

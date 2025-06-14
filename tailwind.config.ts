@@ -63,21 +63,41 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Modern theme colors matching the design
-				modern: {
-					'dark': '#1a1a1a',
-					'darker': '#111111',
-					'orange': '#ff6b35',
-					'orange-dark': '#e55a2b',
-					'gray-light': '#f5f5f5',
-					'gray-medium': '#888888',
-					'gray-dark': '#333333',
+				// Enhanced sawmill brand colors
+				sawmill: {
+					'orange': '#FF6B35',
+					'orange-light': '#FF8C5A',
+					'orange-dark': '#E55A2B',
+					'dark-brown': '#2C1810',
+					'medium-brown': '#4A2C1A',
+					'light-brown': '#8B4513',
+					'auburn': '#A0522D',
+					'forest': '#2D4A2B',
+					'cream': '#F5F5DC',
+					'warm-white': '#FFFEF7'
+				},
+				// Modern gradient colors
+				gradient: {
+					'start': '#FF6B35',
+					'middle': '#FF8C5A',
+					'end': '#E55A2B',
+					'dark-start': '#2C1810',
+					'dark-end': '#4A2C1A'
 				}
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
-				sm: 'calc(var(--radius) - 4px)'
+				sm: 'calc(var(--radius) - 4px)',
+				'2xl': '1rem',
+				'3xl': '1.5rem'
+			},
+			boxShadow: {
+				'modern': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+				'modern-lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+				'modern-xl': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+				'glow': '0 0 20px rgba(255, 107, 53, 0.3)',
+				'glow-lg': '0 0 40px rgba(255, 107, 53, 0.4)'
 			},
 			keyframes: {
 				'accordion-down': {
@@ -95,11 +115,31 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'float': {
+					'0%, 100%': { transform: 'translateY(0px)' },
+					'50%': { transform: 'translateY(-10px)' }
+				},
+				'shimmer': {
+					'0%': { backgroundPosition: '-200% center' },
+					'100%': { backgroundPosition: '200% center' }
+				},
+				'glow-pulse': {
+					'0%, 100%': { boxShadow: '0 0 20px rgba(255, 107, 53, 0.3)' },
+					'50%': { boxShadow: '0 0 40px rgba(255, 107, 53, 0.6)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'float': 'float 3s ease-in-out infinite',
+				'shimmer': 'shimmer 3s ease-in-out infinite',
+				'glow-pulse': 'glow-pulse 2s ease-in-out infinite'
+			},
+			backgroundImage: {
+				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+				'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+				'wood-grain': 'url("data:image/svg+xml,%3Csvg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" stroke="%23000" stroke-width="0.1" opacity="0.1"%3E%3Cpath d="M0 5q10 5 20 0t20 0v1q-10 5-20 0t-20 0z"/%3E%3Cpath d="M0 15q10 5 20 0t20 0v1q-10 5-20 0t-20 0z"/%3E%3Cpath d="M0 25q10 5 20 0t20 0v1q-10 5-20 0t-20 0z"/%3E%3Cpath d="M0 35q10 5 20 0t20 0v1q-10 5-20 0t-20 0z"/%3E%3C/g%3E%3C/svg%3E")'
 			}
 		}
 	},
