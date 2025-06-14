@@ -1,4 +1,29 @@
 import { supabase } from '@/integrations/supabase/client';
+import {
+  fetchTotalPageViewsCount,
+  fetchRawPageViews,
+  calculateUniqueVisitors,
+  calculateTopPages,
+} from './analytics/pageViewStats';
+import {
+  calculateTopCountries,
+  calculateTopCities,
+} from './analytics/geographicStats';
+import {
+  calculateDeviceBreakdown,
+  calculateBrowserStats,
+  calculateMobileVsDesktop,
+} from './analytics/technologyStats';
+import {
+  calculateHourlyStats,
+  calculatePeakHours,
+} from './analytics/temporalStats';
+import {
+  fetchRawEvents,
+  calculateTopEvents,
+} from './analytics/eventStats';
+import { fetchRecentActivity } from './analytics/activityStats';
+import { calculateSessionMetrics } from './analytics/behavioralStats';
 
 export interface AnalyticsEvent {
   id?: string;
@@ -98,205 +123,49 @@ export const getAdvancedAnalyticsStats = async (days: number = 30): Promise<Adva
   startDate.setDate(startDate.getDate() - days);
   
   try {
-    // Get total page views
-    const { count: totalPageViews } = await supabase
-      .from('analytics_page_views')
-      .select('*', { count: 'exact', head: true })
-      .gte('created_at', startDate.toISOString());
+    const [
+      totalPageViews,
+      pageViewsData,
+      eventsData,
+      recentActivityData
+    ] = await Promise.all([
+      fetchTotalPageViewsCount(startDate),
+      fetchRawPageViews(startDate),
+      fetchRawEvents(startDate),
+      fetchRecentActivity(10) // Fetch 10 recent activities
+    ]);
 
-    // Get unique visitors
-    const { data: uniqueSessionsData } = await supabase
-      .from('analytics_page_views')
-      .select('session_id')
-      .gte('created_at', startDate.toISOString())
-      .not('session_id', 'is', null);
+    const uniqueVisitors = calculateUniqueVisitors(pageViewsData);
+    const topPages = calculateTopPages(pageViewsData);
+    const topCountries = calculateTopCountries(pageViewsData);
+    const topCities = calculateTopCities(pageViewsData);
+    const deviceBreakdown = calculateDeviceBreakdown(pageViewsData);
+    const browserStats = calculateBrowserStats(pageViewsData);
+    const mobileVsDesktop = calculateMobileVsDesktop(pageViewsData);
+    const hourlyStats = calculateHourlyStats(pageViewsData);
+    const peakHours = calculatePeakHours(hourlyStats);
+    const topEvents = calculateTopEvents(eventsData);
+    const { averageSessionDuration, bounceRate } = calculateSessionMetrics(pageViewsData);
     
-    const uniqueVisitors = new Set(uniqueSessionsData?.map(d => d.session_id)).size;
-
-    // Get page views with enhanced data
-    const { data: pageViewsData } = await supabase
-      .from('analytics_page_views')
-      .select('*')
-      .gte('created_at', startDate.toISOString());
-
-    // Top pages
-    const pageViewCounts = pageViewsData?.reduce((acc, view) => {
-      acc[view.page_path] = (acc[view.page_path] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>) || {};
-    
-    const topPages = Object.entries(pageViewCounts)
-      .map(([page_path, views]) => ({ page_path, views }))
-      .sort((a, b) => b.views - a.views)
-      .slice(0, 10);
-
-    // Top countries with percentages
-    const countryCounts = pageViewsData?.reduce((acc, view) => {
-      if (view.country) {
-        acc[view.country] = (acc[view.country] || 0) + 1;
-      }
-      return acc;
-    }, {} as Record<string, number>) || {};
-
-    const totalCountryViews = Object.values(countryCounts).reduce((sum, count) => sum + count, 0);
-    const topCountries = Object.entries(countryCounts)
-      .map(([country, count]) => ({ 
-        country, 
-        count, 
-        percentage: totalCountryViews > 0 ? (count / totalCountryViews) * 100 : 0 
-      }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 10);
-
-    // Top cities
-    const cityCounts = pageViewsData?.reduce((acc, view) => {
-      if (view.city && view.country) {
-        const key = `${view.city}, ${view.country}`;
-        acc[key] = (acc[key] || 0) + 1;
-      }
-      return acc;
-    }, {} as Record<string, number>) || {};
-
-    const topCities = Object.entries(cityCounts)
-      .map(([cityCountry, count]) => {
-        const [city, country] = cityCountry.split(', ');
-        return { city, country, count };
-      })
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 10);
-
-    // Device breakdown
-    const deviceCounts = pageViewsData?.reduce((acc, view) => {
-      if (view.device_type) {
-        acc[view.device_type] = (acc[view.device_type] || 0) + 1;
-      }
-      return acc;
-    }, {} as Record<string, number>) || {};
-
-    const totalDeviceViews = Object.values(deviceCounts).reduce((sum, count) => sum + count, 0);
-    const deviceBreakdown = Object.entries(deviceCounts)
-      .map(([device_type, count]) => ({ 
-        device_type, 
-        count, 
-        percentage: totalDeviceViews > 0 ? (count / totalDeviceViews) * 100 : 0 
-      }))
-      .sort((a, b) => b.count - a.count);
-
-    // Browser stats
-    const browserCounts = pageViewsData?.reduce((acc, view) => {
-      if (view.browser) {
-        acc[view.browser] = (acc[view.browser] || 0) + 1;
-      }
-      return acc;
-    }, {} as Record<string, number>) || {};
-
-    const totalBrowserViews = Object.values(browserCounts).reduce((sum, count) => sum + count, 0);
-    const browserStats = Object.entries(browserCounts)
-      .map(([browser, count]) => ({ 
-        browser, 
-        count, 
-        percentage: totalBrowserViews > 0 ? (count / totalBrowserViews) * 100 : 0 
-      }))
-      .sort((a, b) => b.count - a.count);
-
-    // Mobile vs Desktop
-    const mobileViews = pageViewsData?.filter(view => view.is_mobile === true).length || 0;
-    const desktopViews = pageViewsData?.filter(view => view.is_mobile === false && view.device_type !== 'Tablet').length || 0;
-    const tabletViews = pageViewsData?.filter(view => view.device_type === 'Tablet').length || 0;
-
-    // Hourly stats
-    const hourlyData = Array(24).fill(0);
-    pageViewsData?.forEach(view => {
-      const hour = new Date(view.created_at).getHours();
-      hourlyData[hour]++;
-    });
-    const hourlyStats = hourlyData.map((views, hour) => ({ hour, views }));
-
-    // Peak hours (top 3)
-    const peakHours = hourlyStats
-      .sort((a, b) => b.views - a.views)
-      .slice(0, 3);
-
-    // Get events data
-    const { data: eventsData } = await supabase
-      .from('analytics_events')
-      .select('*')
-      .gte('created_at', startDate.toISOString());
-
-    const eventCounts = eventsData?.reduce((acc, event) => {
-      acc[event.event_name] = (acc[event.event_name] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>) || {};
-    
-    const topEvents = Object.entries(eventCounts)
-      .map(([event_name, count]) => ({ event_name, count }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 10);
-
-    // Recent activity
-    const recentPageViews = await supabase
-      .from('analytics_page_views')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(5);
-
-    const recentEvents = await supabase
-      .from('analytics_events')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(5);
-
-    const recentActivity = [
-      ...(recentPageViews.data?.map(pv => ({ type: 'page_view' as const, data: pv, created_at: pv.created_at })) || []),
-      ...(recentEvents.data?.map(ev => ({ type: 'event' as const, data: ev, created_at: ev.created_at })) || [])
-    ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 10);
-
-    // Calculate average session duration and bounce rate
-    const sessions = pageViewsData?.reduce((acc, view) => {
-      if (view.session_id) {
-        if (!acc[view.session_id]) {
-          acc[view.session_id] = [];
-        }
-        acc[view.session_id].push(new Date(view.created_at).getTime());
-      }
-      return acc;
-    }, {} as Record<string, number[]>) || {};
-
-    let totalSessionDuration = 0;
-    let bounces = 0;
-    const sessionCount = Object.keys(sessions).length;
-
-    Object.values(sessions).forEach(sessionTimes => {
-      sessionTimes.sort((a, b) => a - b);
-      if (sessionTimes.length === 1) {
-        bounces++;
-      } else {
-        const duration = sessionTimes[sessionTimes.length - 1] - sessionTimes[0];
-        totalSessionDuration += duration;
-      }
-    });
-
-    const averageSessionDuration = sessionCount > bounces ? totalSessionDuration / (sessionCount - bounces) : 0;
-    const bounceRate = sessionCount > 0 ? (bounces / sessionCount) * 100 : 0;
-
     return {
-      totalPageViews: totalPageViews || 0,
+      totalPageViews,
       uniqueVisitors,
       topPages,
       topEvents,
-      recentActivity,
+      recentActivity: recentActivityData,
       topCountries,
       topCities,
       deviceBreakdown,
       browserStats,
-      mobileVsDesktop: { mobile: mobileViews, desktop: desktopViews, tablet: tabletViews },
+      mobileVsDesktop,
       hourlyStats,
-      averageSessionDuration: Math.round(averageSessionDuration / 1000 / 60), // Convert to minutes
-      bounceRate: Math.round(bounceRate),
+      averageSessionDuration,
+      bounceRate,
       peakHours
     };
   } catch (error) {
     console.error('Error getting advanced analytics stats:', error);
+    // Return default structure on error
     return {
       totalPageViews: 0,
       uniqueVisitors: 0,
