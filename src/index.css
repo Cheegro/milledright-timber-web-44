@@ -1,43 +1,40 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
   --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-display: 'Playfair Display', Georgia, serif;
 }
 
 body {
   font-family: var(--font-sans);
-  background: #FFFEF7;
 }
 
 @layer base {
   :root {
-    --background: 0 0% 99%;
-    --foreground: 20 14.3% 4.1%;
-    --card: 0 0% 100%;
-    --card-foreground: 20 14.3% 4.1%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 20 14.3% 4.1%;
-    --primary: 15 86% 58%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 30 10% 92%;
-    --secondary-foreground: 20 14.3% 11%;
-    --muted: 30 10% 95%;
-    --muted-foreground: 25 10% 45%;
-    --accent: 30 10% 92%;
-    --accent-foreground: 20 14.3% 11%;
+    --background: 222 22% 8%;
+    --foreground: 0 0% 95%;
+    --card: 222 22% 10%;
+    --card-foreground: 0 0% 95%;
+    --popover: 222 22% 10%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 24 95% 53%;
+    --primary-foreground: 222 22% 8%;
+    --secondary: 222 22% 15%;
+    --secondary-foreground: 0 0% 95%;
+    --muted: 222 22% 15%;
+    --muted-foreground: 0 0% 65%;
+    --accent: 24 95% 53%;
+    --accent-foreground: 222 22% 8%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 30 10% 88%;
-    --input: 30 10% 88%;
-    --ring: 15 86% 58%;
-    --radius: 0.75rem;
-    --chart-1: 15 86% 58%;
+    --border: 222 22% 20%;
+    --input: 222 22% 20%;
+    --ring: 24 95% 53%;
+    --radius: 0.5rem;
+    --chart-1: 24 95% 53%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
@@ -45,26 +42,26 @@ body {
   }
 
   .dark {
-    --background: 20 14.3% 4.1%;
+    --background: 222 22% 8%;
     --foreground: 0 0% 95%;
-    --card: 20 14.3% 6%;
+    --card: 222 22% 10%;
     --card-foreground: 0 0% 95%;
-    --popover: 20 14.3% 6%;
+    --popover: 222 22% 10%;
     --popover-foreground: 0 0% 95%;
-    --primary: 15 86% 58%;
-    --primary-foreground: 20 14.3% 4.1%;
-    --secondary: 20 14.3% 10%;
+    --primary: 24 95% 53%;
+    --primary-foreground: 222 22% 8%;
+    --secondary: 222 22% 15%;
     --secondary-foreground: 0 0% 95%;
-    --muted: 20 14.3% 10%;
+    --muted: 222 22% 15%;
     --muted-foreground: 0 0% 65%;
-    --accent: 20 14.3% 10%;
-    --accent-foreground: 0 0% 95%;
+    --accent: 24 95% 53%;
+    --accent-foreground: 222 22% 8%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 20 14.3% 15%;
-    --input: 20 14.3% 15%;
-    --ring: 15 86% 58%;
-    --chart-1: 15 86% 58%;
+    --border: 222 22% 20%;
+    --input: 222 22% 20%;
+    --ring: 24 95% 53%;
+    --chart-1: 24 95% 53%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
@@ -77,10 +74,7 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground antialiased;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-display);
+    @apply bg-background text-foreground;
   }
 }
 
@@ -93,169 +87,142 @@ body {
     @apply mx-auto max-w-4xl px-4 sm:px-6 lg:px-8;
   }
 
-  /* Enhanced modern gradient backgrounds */
+  /* Modern black and orange theme */
   .modern-gradient {
-    @apply bg-gradient-to-br from-sawmill-orange via-sawmill-orange-light to-sawmill-orange-dark;
+    @apply bg-gradient-to-br from-background via-card to-secondary;
   }
   
   .modern-gradient-light {
-    @apply bg-gradient-to-br from-sawmill-cream via-sawmill-warm-white to-background;
+    @apply bg-gradient-to-br from-primary/10 via-transparent to-primary/5;
   }
 
-  .modern-gradient-dark {
-    @apply bg-gradient-to-br from-sawmill-dark-brown via-sawmill-medium-brown to-sawmill-auburn;
-  }
-
-  /* Enhanced card styling */
   .modern-card {
-    @apply bg-card border border-border rounded-2xl shadow-modern-lg hover:shadow-modern-xl transition-all duration-500 backdrop-blur-sm;
+    @apply bg-card border border-border rounded-xl shadow-lg;
   }
 
-  .premium-card {
-    @apply bg-gradient-to-br from-white via-sawmill-warm-white to-sawmill-cream border border-sawmill-orange/20 rounded-3xl shadow-modern-xl hover:shadow-glow-lg transition-all duration-700 backdrop-blur-sm;
-  }
-
-  /* Enhanced button styles */
   .modern-button-primary {
-    @apply bg-gradient-to-r from-sawmill-orange to-sawmill-orange-dark hover:from-sawmill-orange-dark hover:to-sawmill-orange text-white font-semibold px-8 py-4 rounded-2xl shadow-modern-lg hover:shadow-glow transition-all duration-300 transform hover:scale-105;
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 font-medium px-6 py-3 rounded-lg transition-all duration-300;
   }
 
   .modern-button-secondary {
-    @apply bg-white hover:bg-sawmill-cream text-sawmill-dark-brown font-semibold px-8 py-4 rounded-2xl border-2 border-sawmill-orange shadow-modern hover:shadow-modern-lg transition-all duration-300 transform hover:scale-105;
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 font-medium px-6 py-3 rounded-lg transition-all duration-300 border border-border;
   }
 
-  /* Enhanced typography system */
-  .display-xl {
-    @apply text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-tight text-foreground;
-    font-family: var(--font-display);
-  }
-  
+  /* Enhanced mobile-first responsive typography */
   .heading-xl {
     @apply text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-foreground;
-    font-family: var(--font-display);
   }
   
   .heading-lg {
     @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-foreground;
-    font-family: var(--font-display);
   }
   
   .heading-md {
     @apply text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold leading-tight text-foreground;
-    font-family: var(--font-display);
   }
   
   .heading-sm {
     @apply text-lg sm:text-xl md:text-2xl font-bold leading-tight text-foreground;
-    font-family: var(--font-display);
   }
 
-  /* Enhanced text styling */
+  /* Modern text styling */
   .text-body {
-    @apply text-base sm:text-lg leading-relaxed text-foreground font-medium;
-  }
-  
-  .text-body-light {
     @apply text-base sm:text-lg leading-relaxed text-muted-foreground;
   }
   
   .text-body-sm {
-    @apply text-sm sm:text-base leading-relaxed text-foreground;
+    @apply text-sm sm:text-base leading-relaxed text-muted-foreground;
   }
 
-  /* Enhanced spacing utilities */
+  /* Enhanced mobile spacing utilities */
   .section-padding {
-    @apply py-16 sm:py-20 md:py-24 lg:py-32;
+    @apply py-12 sm:py-16 md:py-20 lg:py-24;
   }
   
   .section-padding-sm {
-    @apply py-12 sm:py-16 md:py-20;
+    @apply py-8 sm:py-12 md:py-16;
   }
 
-  /* Premium interactive elements */
-  .interactive-card {
-    @apply transform transition-all duration-500 hover:scale-105 hover:shadow-glow-lg cursor-pointer;
+  /* Modern button styles */
+  .btn-mobile {
+    @apply w-full sm:w-auto px-6 py-3 text-base font-medium;
+  }
+  
+  .btn-mobile-lg {
+    @apply w-full sm:w-auto px-8 py-4 text-lg font-medium;
   }
 
-  .floating-element {
-    @apply animate-float;
+  /* Enhanced card styles for modern theme */
+  .card-mobile {
+    @apply rounded-xl lg:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-border bg-card;
   }
 
-  .shimmer-effect {
-    @apply bg-gradient-to-r from-transparent via-white/20 to-transparent bg-[length:200%_100%] animate-shimmer;
-  }
-
-  /* Enhanced service cards */
+  /* Modern service cards */
   .service-card {
-    @apply premium-card p-8 hover:border-sawmill-orange/40;
+    @apply bg-card border border-border rounded-xl p-6 hover:border-primary/50 transition-all duration-300;
   }
 
   .service-icon {
-    @apply w-16 h-16 bg-gradient-to-br from-sawmill-orange to-sawmill-orange-dark rounded-2xl flex items-center justify-center text-white shadow-modern-lg transition-all duration-300;
+    @apply w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary;
   }
 
-  /* Enhanced product cards */
+  /* Product cards modern styling */
   .product-card {
-    @apply premium-card overflow-hidden hover:border-sawmill-orange/40 transform transition-all duration-500 hover:scale-105;
+    @apply bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-all duration-300;
   }
 
   .product-badge {
-    @apply bg-gradient-to-r from-sawmill-orange to-sawmill-orange-dark text-white text-sm px-4 py-2 rounded-full font-semibold shadow-modern;
+    @apply bg-primary text-primary-foreground text-xs px-3 py-1 rounded-full font-medium;
   }
 
-  /* Premium banner styling */
-  .premium-banner {
-    @apply bg-gradient-to-r from-sawmill-cream via-sawmill-warm-white to-background border-2 border-sawmill-orange/20 rounded-3xl p-8 shadow-modern-xl;
+  /* Modern banner styling */
+  .modern-banner {
+    @apply bg-secondary border border-border rounded-xl p-6;
   }
 
-  /* Enhanced mobile optimizations */
+  /* Mobile-optimized spacing */
   .mobile-safe-padding {
-    @apply px-4 py-8 sm:px-6 sm:py-12 lg:px-8 lg:py-16;
+    @apply px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-12;
   }
 
+  /* Enhanced hover effects for mobile touch */
   .mobile-hover {
-    @apply transition-all duration-300 active:scale-95 lg:hover:scale-105 touch-manipulation;
+    @apply transition-all duration-300 active:scale-95 lg:hover:scale-105;
   }
 
-  /* Enhanced grid layouts */
-  .premium-grid {
-    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10;
+  /* Mobile-first grid layouts */
+  .mobile-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6;
   }
   
-  .premium-grid-2 {
-    @apply grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12;
+  .mobile-grid-2 {
+    @apply grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8;
   }
 
-  /* Enhanced header and footer */
-  .premium-header {
-    @apply bg-white/95 backdrop-blur-md border-b border-sawmill-orange/20 shadow-modern-lg;
+  /* Modern header styling */
+  .modern-header {
+    @apply bg-background/95 backdrop-blur-sm border-b border-border;
   }
 
-  .premium-footer {
-    @apply bg-gradient-to-t from-sawmill-dark-brown to-sawmill-medium-brown text-white;
-  }
-
-  /* Visual enhancement utilities */
-  .glass-effect {
-    @apply bg-white/10 backdrop-blur-md border border-white/20;
-  }
-
-  .wood-texture {
-    @apply bg-wood-grain bg-repeat;
+  /* Modern footer styling */
+  .modern-footer {
+    @apply bg-card border-t border-border;
   }
 }
 
-/* Enhanced focus states and accessibility */
+/* Enhanced focus states for modern accessibility */
 @layer utilities {
-  .focus-premium {
-    @apply focus:ring-4 focus:ring-sawmill-orange/30 focus:ring-offset-2 focus:ring-offset-background focus:outline-none transition-all duration-300;
+  .focus-modern {
+    @apply focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background focus:outline-none;
   }
   
   .touch-optimized {
-    @apply min-h-[48px] min-w-[48px] touch-manipulation;
+    @apply min-h-[44px] min-w-[44px] touch-manipulation;
   }
-  
-  /* Enhanced responsive utilities */
+}
+
+/* Mobile-first responsive utilities */
+@responsive {
   .mobile-hidden {
     @apply hidden lg:block;
   }
@@ -265,32 +232,13 @@ body {
   }
 }
 
-/* Premium typography scale */
+/* Enhanced mobile typography scale */
 @layer utilities {
-  .text-premium-xs { @apply text-xs sm:text-sm font-medium; }
-  .text-premium-sm { @apply text-sm sm:text-base font-medium; }
-  .text-premium-base { @apply text-base sm:text-lg font-medium; }
-  .text-premium-lg { @apply text-lg sm:text-xl font-semibold; }
-  .text-premium-xl { @apply text-xl sm:text-2xl font-semibold; }
-  .text-premium-2xl { @apply text-2xl sm:text-3xl font-bold; }
-  .text-premium-3xl { @apply text-3xl sm:text-4xl font-bold; }
-}
-
-/* Custom scrollbar */
-@layer utilities {
-  .scrollbar-custom::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  .scrollbar-custom::-webkit-scrollbar-track {
-    @apply bg-muted rounded-full;
-  }
-  
-  .scrollbar-custom::-webkit-scrollbar-thumb {
-    @apply bg-sawmill-orange rounded-full;
-  }
-  
-  .scrollbar-custom::-webkit-scrollbar-thumb:hover {
-    @apply bg-sawmill-orange-dark;
-  }
+  .text-mobile-xs { @apply text-xs sm:text-sm; }
+  .text-mobile-sm { @apply text-sm sm:text-base; }
+  .text-mobile-base { @apply text-base sm:text-lg; }
+  .text-mobile-lg { @apply text-lg sm:text-xl; }
+  .text-mobile-xl { @apply text-xl sm:text-2xl; }
+  .text-mobile-2xl { @apply text-2xl sm:text-3xl; }
+  .text-mobile-3xl { @apply text-3xl sm:text-4xl; }
 }
