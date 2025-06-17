@@ -133,10 +133,10 @@ const Header = () => {
       {/* Mobile Navigation Full Screen */}
       {isOpen && (
         <>
-          <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-40 xl:hidden" onClick={() => setIsOpen(false)} />
+          <div className="fixed inset-0 bg-black/50 z-40 xl:hidden" onClick={() => setIsOpen(false)} />
           <div className="fixed inset-0 bg-background z-50 xl:hidden flex flex-col">
             {/* Header */}
-            <div className="flex items-center justify-between p-6 border-b border-border">
+            <div className="flex items-center justify-between p-6 border-b border-border bg-card">
               <div className="flex items-center gap-3">
                 <div className="bg-primary text-primary-foreground p-2 rounded-lg shadow-lg">
                   <span className="font-bold text-lg tracking-tight">MR</span>
@@ -156,7 +156,7 @@ const Header = () => {
             </div>
             
             {/* Navigation Items - Full Screen Layout */}
-            <div className="flex-1 flex flex-col justify-center px-6">
+            <div className="flex-1 flex flex-col justify-center px-6 bg-background">
               <nav className="space-y-4">
                 {navigationItems.map((item) => (
                   <Link 
@@ -165,7 +165,7 @@ const Header = () => {
                     className={`block text-2xl font-medium py-4 px-6 rounded-xl transition-all duration-300 touch-manipulation text-center ${
                       isActiveRoute(item.href)
                         ? 'bg-primary text-primary-foreground shadow-lg' 
-                        : 'text-foreground hover:bg-secondary hover:shadow-md'
+                        : 'text-foreground hover:bg-secondary hover:shadow-md bg-card border border-border'
                     }`}
                     onClick={() => handleNavClick(item)}
                   >
@@ -186,7 +186,7 @@ const Header = () => {
             </div>
             
             {/* Footer */}
-            <div className="p-6 border-t border-border text-center">
+            <div className="p-6 border-t border-border text-center bg-card">
               <p className="text-sm text-muted-foreground">
                 Premium lumber & custom milling services
               </p>
