@@ -130,51 +130,66 @@ const Header = () => {
         </div>
       </div>
       
-      {/* Mobile Navigation Overlay */}
+      {/* Mobile Navigation Full Screen */}
       {isOpen && (
         <>
-          <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-40 xl:hidden" onClick={() => setIsOpen(false)} />
-          <div className="fixed top-0 right-0 h-full w-full max-w-sm bg-card shadow-2xl z-50 xl:hidden transform transition-transform duration-300 border-l border-border">
-            <div className="p-4 border-b border-border bg-primary/10">
-              <div className="flex items-center justify-between">
-                <span className="font-bold text-lg text-foreground">Navigation</span>
-                <button 
-                  onClick={() => setIsOpen(false)} 
-                  className="p-2 text-foreground hover:bg-secondary rounded-lg transition-all duration-300 touch-manipulation" 
-                  aria-label="Close menu"
-                >
-                  <X size={20} />
-                </button>
+          <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-40 xl:hidden" onClick={() => setIsOpen(false)} />
+          <div className="fixed inset-0 bg-background z-50 xl:hidden flex flex-col">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-border">
+              <div className="flex items-center gap-3">
+                <div className="bg-primary text-primary-foreground p-2 rounded-lg shadow-lg">
+                  <span className="font-bold text-lg tracking-tight">MR</span>
+                </div>
+                <div>
+                  <h1 className="text-lg font-bold text-foreground">MilledRight</h1>
+                  <p className="text-xs text-muted-foreground">Sawmill Solutions</p>
+                </div>
               </div>
+              <button 
+                onClick={() => setIsOpen(false)} 
+                className="p-2 text-foreground hover:bg-secondary rounded-lg transition-all duration-300 touch-manipulation" 
+                aria-label="Close menu"
+              >
+                <X size={24} />
+              </button>
             </div>
             
-            {/* Navigation Items */}
-            <div className="h-full overflow-y-auto pb-32">
-              <nav className="flex flex-col p-4 space-y-2">
+            {/* Navigation Items - Full Screen Layout */}
+            <div className="flex-1 flex flex-col justify-center px-6">
+              <nav className="space-y-4">
                 {navigationItems.map((item) => (
                   <Link 
                     key={item.name} 
                     to={item.href} 
-                    className={`text-foreground font-medium py-4 px-4 rounded-xl transition-all duration-300 touch-manipulation text-base min-h-[56px] flex items-center ${
+                    className={`block text-2xl font-medium py-4 px-6 rounded-xl transition-all duration-300 touch-manipulation text-center ${
                       isActiveRoute(item.href)
                         ? 'bg-primary text-primary-foreground shadow-lg' 
-                        : 'hover:bg-secondary'
+                        : 'text-foreground hover:bg-secondary hover:shadow-md'
                     }`}
                     onClick={() => handleNavClick(item)}
                   >
                     {item.name}
                   </Link>
                 ))}
-                
-                <div className="pt-6 space-y-3 border-t border-border mt-6">
-                  <Button 
-                    className="bg-primary text-primary-foreground w-full h-14 text-base font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300" 
-                    onClick={handleGetQuote}
-                  >
-                    Get Quote
-                  </Button>
-                </div>
               </nav>
+              
+              {/* Get Quote Button */}
+              <div className="mt-8 px-6">
+                <Button 
+                  className="bg-primary text-primary-foreground w-full h-16 text-xl font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300" 
+                  onClick={handleGetQuote}
+                >
+                  Get Quote
+                </Button>
+              </div>
+            </div>
+            
+            {/* Footer */}
+            <div className="p-6 border-t border-border text-center">
+              <p className="text-sm text-muted-foreground">
+                Premium lumber & custom milling services
+              </p>
             </div>
           </div>
         </>
