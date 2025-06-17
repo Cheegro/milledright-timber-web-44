@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -16,22 +18,10 @@ import {
   Calendar,
   BarChart3,
   PieChart,
-  Activity
+  Activity,
+  Loader2
 } from 'lucide-react';
-
-interface AnalyticsData {
-  totalViews: number;
-  uniqueVisitors: number;
-  bounceRate: number;
-  avgSessionDuration: string;
-  topPages: { page: string; views: number }[];
-  deviceBreakdown: { device: string; percentage: number }[];
-  trafficSources: { source: string; percentage: number }[];
-  hourlyViews: { hour: number; views: number }[];
-  dailyViews: { date: string; views: number }[];
-  weeklyViews: { week: string; views: number }[];
-  monthlyViews: { month: string; views: number }[];
-}
+import { getAdvancedAnalyticsStats } from '@/api/analyticsApi';
 
 // Helper function to format numbers
 const formatNumber = (num: number): string => {
@@ -43,75 +33,37 @@ const formatNumber = (num: number): string => {
   return num.toString();
 };
 
+const formatDuration = (minutes: number) => {
+  if (minutes < 0) minutes = 0;
+  if (minutes < 1) return '<1m';
+  if (minutes < 60) return `${Math.round(minutes)}m`;
+  const hours = Math.floor(minutes / 60);
+  const mins = Math.round(minutes % 60);
+  if (mins === 0) return `${hours}h`;
+  return `${hours}h ${mins}m`;
+};
+
 const EnhancedAnalyticsFooter = () => {
-  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
   const [activeTab, setActiveTab] = useState('daily');
-  const [isLoading, setIsLoading] = useState(true);
+  const [timeRange, setTimeRange] = useState(30);
 
-  useEffect(() => {
-    // Simulate API call to fetch analytics data
-    const fetchAnalytics = async () => {
-      setIsLoading(true);
-      try {
-        // In a real app, this would be an API call
-        // For demo purposes, we'll use mock data
-        setTimeout(() => {
-          const mockData: AnalyticsData = {
-            totalViews: 128547,
-            uniqueVisitors: 45289,
-            bounceRate: 42.3,
-            avgSessionDuration: '2m 37s',
-            topPages: [
-              { page: '/products', views: 32456 },
-              { page: '/blog/woodworking-tips', views: 18932 },
-              { page: '/contact', views: 12543 },
-              { page: '/about', views: 9876 },
-              { page: '/gallery', views: 7654 }
-            ],
-            deviceBreakdown: [
-              { device: 'Mobile', percentage: 58 },
-              { device: 'Desktop', percentage: 34 },
-              { device: 'Tablet', percentage: 8 }
-            ],
-            trafficSources: [
-              { source: 'Organic Search', percentage: 45 },
-              { source: 'Direct', percentage: 30 },
-              { source: 'Social', percentage: 15 },
-              { source: 'Referral', percentage: 10 }
-            ],
-            hourlyViews: Array.from({ length: 24 }, (_, i) => ({
-              hour: i,
-              views: Math.floor(Math.random() * 500) + 100
-            })),
-            dailyViews: Array.from({ length: 30 }, (_, i) => ({
-              date: `${i + 1}/5`,
-              views: Math.floor(Math.random() * 2000) + 500
-            })),
-            weeklyViews: Array.from({ length: 12 }, (_, i) => ({
-              week: `W${i + 1}`,
-              views: Math.floor(Math.random() * 10000) + 5000
-            })),
-            monthlyViews: Array.from({ length: 12 }, (_, i) => ({
-              month: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][i],
-              views: Math.floor(Math.random() * 50000) + 20000
-            }))
-          };
-          setAnalytics(mockData);
-          setIsLoading(false);
-        }, 1000);
-      } catch (error) {
-        console.error('Error fetching analytics:', error);
-        setIsLoading(false);
-      }
-    };
-
-    fetchAnalytics();
-  }, []);
+  // Fetch real analytics data
+  const { data: analytics, isLoading } = useQuery({
+    queryKey: ['enhanced-analytics-footer', timeRange],
+    queryFn: () => getAdvancedAnalyticsStats(timeRange),
+    refetchInterval: 60000,
+  });
 
   const renderHourlyChart = () => {
-    if (!analytics?.hourlyViews?.length) return null;
+    if (!analytics?.hourlyStats?.length) {
+      return (
+        <div className="text-center py-8 text-muted-foreground">
+          No hourly data available yet
+        </div>
+      );
+    }
 
-    const maxViews = Math.max(...analytics.hourlyViews.map(item => item.views));
+    const maxViews = Math.max(...analytics.hourlyStats.map(item => item.views));
     
     return (
       <div className="space-y-2">
@@ -123,11 +75,11 @@ const EnhancedAnalyticsFooter = () => {
           <span>24</span>
         </div>
         <div className="flex items-end space-x-1 h-32">
-          {analytics.hourlyViews.map((item, index) => (
+          {analytics.hourlyStats.map((item, index) => (
             <div
               key={index}
               className="flex-1 bg-primary/20 rounded-t flex flex-col justify-end relative group"
-              style={{ height: `${(item.views / maxViews) * 100}%` }}
+              style={{ height: maxViews > 0 ? `${(item.views / maxViews) * 100}%` : '2px' }}
             >
               <div className="bg-primary rounded-t h-full min-h-[2px]"></div>
               <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-popover text-popover-foreground px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-lg border">
@@ -140,64 +92,14 @@ const EnhancedAnalyticsFooter = () => {
     );
   };
 
-  const renderTimeSeriesChart = () => {
-    if (!analytics) return null;
-
-    let data;
-    let labelKey;
-    let valueKey;
-
-    switch (activeTab) {
-      case 'daily':
-        data = analytics.dailyViews;
-        labelKey = 'date';
-        valueKey = 'views';
-        break;
-      case 'weekly':
-        data = analytics.weeklyViews;
-        labelKey = 'week';
-        valueKey = 'views';
-        break;
-      case 'monthly':
-        data = analytics.monthlyViews;
-        labelKey = 'month';
-        valueKey = 'views';
-        break;
-      default:
-        data = analytics.dailyViews;
-        labelKey = 'date';
-        valueKey = 'views';
-    }
-
-    const maxValue = Math.max(...data.map(item => item[valueKey]));
-
-    return (
-      <div className="space-y-2">
-        <div className="flex justify-between text-xs text-muted-foreground">
-          {data.filter((_, i) => i % Math.ceil(data.length / 5) === 0).map((item, index) => (
-            <span key={index}>{item[labelKey]}</span>
-          ))}
-        </div>
-        <div className="flex items-end space-x-1 h-32">
-          {data.map((item, index) => (
-            <div
-              key={index}
-              className="flex-1 bg-primary/20 rounded-t flex flex-col justify-end relative group"
-              style={{ height: `${(item[valueKey] / maxValue) * 100}%` }}
-            >
-              <div className="bg-primary rounded-t h-full min-h-[2px]"></div>
-              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-popover text-popover-foreground px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-lg border">
-                {item[labelKey]}: {formatNumber(item[valueKey])} views
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  };
-
   const renderDeviceChart = () => {
-    if (!analytics?.deviceBreakdown?.length) return null;
+    if (!analytics?.deviceBreakdown?.length) {
+      return (
+        <div className="text-center py-4 text-muted-foreground">
+          No device data available yet
+        </div>
+      );
+    }
 
     return (
       <div className="space-y-4">
@@ -205,10 +107,10 @@ const EnhancedAnalyticsFooter = () => {
           <div key={index} className="space-y-1">
             <div className="flex justify-between text-sm">
               <div className="flex items-center">
-                {item.device === 'Mobile' && <Smartphone className="h-4 w-4 mr-2" />}
-                {item.device === 'Desktop' && <Monitor className="h-4 w-4 mr-2" />}
-                {item.device === 'Tablet' && <Globe className="h-4 w-4 mr-2" />}
-                {item.device}
+                {item.device_type === 'Mobile' && <Smartphone className="h-4 w-4 mr-2" />}
+                {item.device_type === 'Desktop' && <Monitor className="h-4 w-4 mr-2" />}
+                {item.device_type === 'Tablet' && <Globe className="h-4 w-4 mr-2" />}
+                {item.device_type}
               </div>
               <span>{item.percentage}%</span>
             </div>
@@ -224,25 +126,24 @@ const EnhancedAnalyticsFooter = () => {
     );
   };
 
-  const renderTrafficSourcesChart = () => {
-    if (!analytics?.trafficSources?.length) return null;
-
-    const colors = ['bg-primary', 'bg-blue-500', 'bg-green-500', 'bg-yellow-500', 'bg-purple-500'];
+  const renderTopPagesChart = () => {
+    if (!analytics?.topPages?.length) {
+      return (
+        <div className="text-center py-4 text-muted-foreground">
+          No page data available yet
+        </div>
+      );
+    }
 
     return (
       <div className="space-y-4">
-        {analytics.trafficSources.map((item, index) => (
-          <div key={index} className="space-y-1">
-            <div className="flex justify-between text-sm">
-              <span>{item.source}</span>
-              <span>{item.percentage}%</span>
+        {analytics.topPages.slice(0, 5).map((page, index) => (
+          <div key={index} className="flex justify-between items-center">
+            <div className="flex items-center">
+              <span className="text-muted-foreground mr-2">{index + 1}.</span>
+              <span className="text-sm font-medium truncate max-w-[150px]">{page.page_path}</span>
             </div>
-            <div className="w-full bg-muted rounded-full h-2">
-              <div 
-                className={`${colors[index % colors.length]} rounded-full h-2`}
-                style={{ width: `${item.percentage}%` }}
-              ></div>
-            </div>
+            <span className="text-sm text-muted-foreground">{formatNumber(page.views)}</span>
           </div>
         ))}
       </div>
@@ -252,12 +153,8 @@ const EnhancedAnalyticsFooter = () => {
   if (isLoading) {
     return (
       <div className="p-4 border rounded-lg bg-card animate-pulse">
-        <div className="h-8 bg-muted rounded w-1/3 mb-4"></div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="h-24 bg-muted rounded"></div>
-          <div className="h-24 bg-muted rounded"></div>
-          <div className="h-24 bg-muted rounded"></div>
-          <div className="h-24 bg-muted rounded"></div>
+        <div className="flex justify-center items-center py-8">
+          <Loader2 className="h-8 w-8 animate-spin text-sawmill-dark-brown" />
         </div>
       </div>
     );
@@ -274,13 +171,18 @@ const EnhancedAnalyticsFooter = () => {
   return (
     <div className="space-y-4">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <h2 className="text-2xl font-bold">Analytics Overview</h2>
+        <h2 className="text-2xl font-bold">Real Website Analytics</h2>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" className="flex items-center gap-2">
             <Download className="h-4 w-4" />
             Export Data
           </Button>
-          <Button variant="outline" size="sm" className="flex items-center gap-2">
+          <Button 
+            variant={timeRange === 30 ? 'default' : 'outline'} 
+            size="sm" 
+            className="flex items-center gap-2"
+            onClick={() => setTimeRange(30)}
+          >
             <Calendar className="h-4 w-4" />
             Last 30 Days
           </Button>
@@ -295,11 +197,13 @@ const EnhancedAnalyticsFooter = () => {
               <Eye className="h-4 w-4 text-muted-foreground" />
             </div>
             <div className="flex items-end justify-between mt-2">
-              <h3 className="text-2xl font-bold">{formatNumber(analytics.totalViews)}</h3>
-              <Badge variant="outline" className="flex items-center gap-1 text-green-500">
-                <TrendingUp className="h-3 w-3" />
-                12.5%
-              </Badge>
+              <h3 className="text-2xl font-bold">{formatNumber(analytics.totalPageViews)}</h3>
+              {analytics.totalPageViews > 0 && (
+                <Badge variant="outline" className="flex items-center gap-1 text-green-500">
+                  <TrendingUp className="h-3 w-3" />
+                  Live
+                </Badge>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -312,10 +216,12 @@ const EnhancedAnalyticsFooter = () => {
             </div>
             <div className="flex items-end justify-between mt-2">
               <h3 className="text-2xl font-bold">{formatNumber(analytics.uniqueVisitors)}</h3>
-              <Badge variant="outline" className="flex items-center gap-1 text-green-500">
-                <TrendingUp className="h-3 w-3" />
-                8.2%
-              </Badge>
+              {analytics.uniqueVisitors > 0 && (
+                <Badge variant="outline" className="flex items-center gap-1 text-green-500">
+                  <TrendingUp className="h-3 w-3" />
+                  Live
+                </Badge>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -328,10 +234,12 @@ const EnhancedAnalyticsFooter = () => {
             </div>
             <div className="flex items-end justify-between mt-2">
               <h3 className="text-2xl font-bold">{analytics.bounceRate}%</h3>
-              <Badge variant="outline" className="flex items-center gap-1 text-red-500">
-                <TrendingUp className="h-3 w-3" />
-                2.1%
-              </Badge>
+              {analytics.bounceRate > 0 && (
+                <Badge variant="outline" className="flex items-center gap-1 text-blue-500">
+                  <Activity className="h-3 w-3" />
+                  Live
+                </Badge>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -343,55 +251,53 @@ const EnhancedAnalyticsFooter = () => {
               <Clock className="h-4 w-4 text-muted-foreground" />
             </div>
             <div className="flex items-end justify-between mt-2">
-              <h3 className="text-2xl font-bold">{analytics.avgSessionDuration}</h3>
-              <Badge variant="outline" className="flex items-center gap-1 text-green-500">
-                <TrendingUp className="h-3 w-3" />
-                5.3%
-              </Badge>
+              <h3 className="text-2xl font-bold">{formatDuration(analytics.averageSessionDuration)}</h3>
+              {analytics.averageSessionDuration > 0 && (
+                <Badge variant="outline" className="flex items-center gap-1 text-green-500">
+                  <TrendingUp className="h-3 w-3" />
+                  Live
+                </Badge>
+              )}
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Card className="lg:col-span-2">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <Card>
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-lg font-medium">Traffic Overview</CardTitle>
-              <div className="flex items-center gap-1">
-                <BarChart3 className="h-4 w-4 text-muted-foreground" />
-              </div>
+              <CardTitle className="text-lg font-medium">Hourly Traffic Pattern</CardTitle>
+              <Activity className="h-4 w-4 text-muted-foreground" />
             </div>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="daily" className="w-full" onValueChange={setActiveTab}>
-              <TabsList className="grid grid-cols-3 mb-4">
-                <TabsTrigger value="daily">Daily</TabsTrigger>
-                <TabsTrigger value="weekly">Weekly</TabsTrigger>
-                <TabsTrigger value="monthly">Monthly</TabsTrigger>
-              </TabsList>
-              <TabsContent value="daily" className="mt-0">
-                {renderTimeSeriesChart()}
-              </TabsContent>
-              <TabsContent value="weekly" className="mt-0">
-                {renderTimeSeriesChart()}
-              </TabsContent>
-              <TabsContent value="monthly" className="mt-0">
-                {renderTimeSeriesChart()}
-              </TabsContent>
-            </Tabs>
+            {renderHourlyChart()}
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-lg font-medium">Hourly Traffic</CardTitle>
-              <Activity className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-lg font-medium">Peak Hours</CardTitle>
+              <Clock className="h-4 w-4 text-muted-foreground" />
             </div>
           </CardHeader>
           <CardContent>
-            {renderHourlyChart()}
+            {analytics.peakHours && analytics.peakHours.length > 0 ? (
+              <div className="space-y-3">
+                {analytics.peakHours.map((peak, index) => (
+                  <div key={index} className="flex justify-between items-center">
+                    <span className="text-sm font-medium">{peak.hour}:00 - {peak.hour + 1}:00</span>
+                    <span className="text-sm text-muted-foreground">{peak.views} views</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-4 text-muted-foreground">
+                No peak hour data available yet
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -405,17 +311,7 @@ const EnhancedAnalyticsFooter = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {analytics.topPages.map((page, index) => (
-                <div key={index} className="flex justify-between items-center">
-                  <div className="flex items-center">
-                    <span className="text-muted-foreground mr-2">{index + 1}.</span>
-                    <span className="text-sm font-medium truncate max-w-[150px]">{page.page}</span>
-                  </div>
-                  <span className="text-sm text-muted-foreground">{formatNumber(page.views)}</span>
-                </div>
-              ))}
-            </div>
+            {renderTopPagesChart()}
           </CardContent>
         </Card>
 
@@ -434,15 +330,50 @@ const EnhancedAnalyticsFooter = () => {
         <Card>
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-lg font-medium">Traffic Sources</CardTitle>
-              <PieChart className="h-4 w-4 text-muted-foreground" />
+              <CardTitle className="text-lg font-medium">Geographic Distribution</CardTitle>
+              <Globe className="h-4 w-4 text-muted-foreground" />
             </div>
           </CardHeader>
           <CardContent>
-            {renderTrafficSourcesChart()}
+            {analytics.topCountries && analytics.topCountries.length > 0 ? (
+              <div className="space-y-4">
+                {analytics.topCountries.slice(0, 5).map((country, index) => (
+                  <div key={index} className="space-y-1">
+                    <div className="flex justify-between text-sm">
+                      <span>{country.country}</span>
+                      <span>{country.percentage}%</span>
+                    </div>
+                    <div className="w-full bg-muted rounded-full h-2">
+                      <div 
+                        className="bg-primary rounded-full h-2" 
+                        style={{ width: `${country.percentage}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-4 text-muted-foreground">
+                No location data available yet
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
+
+      {analytics.totalPageViews === 0 && (
+        <Card className="border-yellow-200 bg-yellow-50">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2 text-yellow-800">
+              <Activity className="h-5 w-5" />
+              <p className="font-medium">No Analytics Data Yet</p>
+            </div>
+            <p className="text-sm text-yellow-700 mt-2">
+              Visit your website pages to start collecting real analytics data. The tracking should begin automatically once users visit your site.
+            </p>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
