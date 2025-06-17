@@ -137,10 +137,10 @@ const MultiStepQuoteForm = ({
   const stepTitles = ["Basic Information", "Project Details", "Additional Information"];
   return <Card className="bg-white rounded-lg shadow-lg">
       <CardHeader>
-        <CardTitle className="text-xl font-bold text-sawmill-dark-brown">
+        <CardTitle className="text-xl font-bold text-sawmill-dark-brown text-zinc-950">
           Request a Quote - Step {currentStep} of 3
         </CardTitle>
-        <div className="flex items-center space-x-2 mt-4">
+        <div className="flex items-center space-x-2 mt-4 rounded-xl bg-amber-600 px-[61px] mx-[81px]">
           {[1, 2, 3].map(step => <div key={step} className="flex items-center">
               <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${step < currentStep ? 'bg-green-500 text-white' : step === currentStep ? 'bg-sawmill-orange text-white' : 'bg-gray-200 text-gray-600'}`}>
                 {step < currentStep ? <Check className="w-4 h-4" /> : step}
@@ -148,7 +148,7 @@ const MultiStepQuoteForm = ({
               {step < 3 && <div className={`w-12 h-1 mx-2 ${step < currentStep ? 'bg-green-500' : 'bg-gray-200'}`} />}
             </div>)}
         </div>
-        <p className="text-sm text-gray-600 mt-2">{stepTitles[currentStep - 1]}</p>
+        <p className="text-gray-600 mt-2 font-semibold text-base text-center">{stepTitles[currentStep - 1]}</p>
       </CardHeader>
       
       <CardContent>
