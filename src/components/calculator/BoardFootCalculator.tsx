@@ -119,21 +119,19 @@ const BoardFootCalculator = () => {
     doc.line(margin, currentY, pageWidth - margin, currentY);
     currentY += 20;
 
-    // Important Disclaimers
+    // Professional notice section
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(12);
-    doc.setTextColor(180, 0, 0);
-    doc.text('IMPORTANT DISCLAIMERS:', margin, currentY);
-    currentY += 10;
+    doc.setFontSize(11);
+    doc.setTextColor(101, 67, 33);
+    doc.text('CALCULATION NOTICE:', margin, currentY);
+    currentY += 8;
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
-    doc.setTextColor(0, 0, 0);
-    const disclaimers = ['• This document is a CALCULATION RECEIPT, not an invoice or quote', '• This tool may be used by any lumber operator or individual', '• Calculations are estimates only - verify all measurements independently', '• Final pricing may vary based on actual wood selection and market conditions', '• Not affiliated with any specific lumber supplier unless otherwise noted'];
-    disclaimers.forEach(disclaimer => {
-      doc.text(disclaimer, margin, currentY);
-      currentY += 8;
-    });
-    currentY += 10;
+    doc.setTextColor(60, 60, 60);
+    doc.text('This is a calculation receipt for estimation purposes. Verify measurements independently.', margin, currentY);
+    currentY += 6;
+    doc.text('Pricing may vary based on actual wood selection and current market conditions.', margin, currentY);
+    currentY += 15;
 
     // Date and receipt info
     doc.setFont('helvetica', 'normal');
@@ -155,7 +153,7 @@ const BoardFootCalculator = () => {
     // Table header
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(9);
-    doc.setFillColor(240, 240, 240);
+    doc.setFillColor(245, 245, 245);
     doc.rect(margin, currentY - 8, pageWidth - 2 * margin, 12, 'F');
     const colWidths = [15, 45, 25, 20, 25, 30];
     const colX = [margin + 5];
@@ -180,7 +178,7 @@ const BoardFootCalculator = () => {
       if (calc.boardFeet > 0) {
         // Draw alternating row background
         if (itemNumber % 2 === 0) {
-          doc.setFillColor(248, 248, 248);
+          doc.setFillColor(252, 252, 252);
           doc.rect(margin, currentY - 6, pageWidth - 2 * margin, 10, 'F');
         }
         doc.setTextColor(0, 0, 0);
@@ -228,26 +226,29 @@ const BoardFootCalculator = () => {
       });
     }
 
-    // Footer
+    // Professional footer - smaller and cleaner
     currentY += 30;
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.setTextColor(100, 100, 100);
-    doc.text('This calculation tool is provided as-is for estimation purposes only.', pageWidth / 2, currentY, {
-      align: 'center'
-    });
+    
+    // Footer border line
+    doc.setDrawColor(101, 67, 33);
+    doc.setLineWidth(0.5);
+    doc.line(margin, currentY, pageWidth - margin, currentY);
     currentY += 8;
-    doc.text('Always verify measurements and pricing with your lumber supplier.', pageWidth / 2, currentY, {
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(120, 120, 120);
+    doc.text('This calculation is provided for estimation purposes only. Please verify all measurements with your lumber supplier.', pageWidth / 2, currentY, {
       align: 'center'
     });
 
-    // Add a subtle border around the entire receipt
+    // Add professional border around the entire document
     doc.setDrawColor(101, 67, 33);
-    doc.setLineWidth(1.5);
-    doc.rect(15, 15, pageWidth - 30, currentY + 15);
+    doc.setLineWidth(1);
+    doc.rect(12, 12, pageWidth - 24, currentY + 8);
 
     // Save the PDF
-    const fileName = `Lumber-Calculation-Receipt-${new Date().toISOString().split('T')[0]}.pdf`;
+    const fileName = `Lumber-Calculation-${new Date().toISOString().split('T')[0]}.pdf`;
     doc.save(fileName);
   };
   const totalBoardFeet = calculations.reduce((sum, calc) => sum + calc.boardFeet, 0);
