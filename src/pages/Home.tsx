@@ -16,7 +16,7 @@ import BottomCTASection from '@/components/home/BottomCTASection';
 
 const Home = () => {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <SEOHead 
         title="Premium Lumber & Custom Milling Services"
         description="Professional sawmill services in Whitchurch-Stouffville, ON. Custom lumber milling, live edge slabs, dimensional lumber, and quality wood products direct from our sawmill."

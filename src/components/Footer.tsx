@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, MapPin, Phone, Mail, Clock } from 'lucide-react';
@@ -7,19 +8,22 @@ import SocialMediaLinks from './SocialMediaLinks';
 import { fetchProductCategories } from '@/api/productApi';
 import { fetchRecentBlogPosts } from '@/api/blogApi';
 import { toast } from "@/hooks/use-toast";
+
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   const [productCategories, setProductCategories] = useState<any[]>([]);
   const [recentPosts, setRecentPosts] = useState<any[]>([]);
+
   useEffect(() => {
     const loadCategories = async () => {
       try {
         const categories = await fetchProductCategories();
-        setProductCategories(categories.slice(0, 5)); // Limit to 5 categories
+        setProductCategories(categories.slice(0, 5));
       } catch (error) {
         console.error('Error loading product categories:', error);
       }
     };
+
     const loadRecentPosts = async () => {
       try {
         const posts = await fetchRecentBlogPosts(3);
@@ -28,41 +32,45 @@ const Footer = () => {
         console.error('Error loading recent blog posts:', error);
       }
     };
+
     loadCategories();
     loadRecentPosts();
   }, []);
+
   const handleAdminAccess = () => {
     toast({
       title: "Admin Dashboard",
       description: "Redirecting to admin dashboard..."
     });
   };
-  return <footer className="bg-gradient-to-br from-sawmill-dark-brown to-sawmill-medium-brown text-white relative z-10">
+
+  return (
+    <footer className="modern-footer bg-gradient-to-br from-card to-secondary text-foreground relative z-10">
       <div className="container-wide py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-6">
-              <div className="bg-gradient-to-br from-sawmill-orange to-sawmill-auburn text-white p-3 rounded-xl shadow-lg bg-orange-600">
-                <span className="font-bold text-xl tracking-tight text-slate-950">MR</span>
+              <div className="bg-gradient-to-br from-primary to-accent text-primary-foreground p-3 rounded-xl shadow-lg">
+                <span className="font-bold text-xl tracking-tight">MR</span>
               </div>
               <div>
-                <h3 className="font-bold text-[modern-orange-dark] text-modern-orange">MilledRight</h3>
-                <p className="text-sawmill-light-brown text-sm">Sawmill Solutions</p>
+                <h3 className="font-bold text-primary text-xl">MilledRight</h3>
+                <p className="text-muted-foreground text-sm">Sawmill Solutions</p>
               </div>
             </div>
             
-            <p className="mb-6 text-gray-200 leading-relaxed">
+            <p className="mb-6 text-muted-foreground leading-relaxed">
               Premium quality lumber and custom milling services for professional and hobbyist woodworkers. From custom structures to live edge slabs, we handle all your wood needs.
             </p>
             
-            <div className="bg-sawmill-orange/20 p-4 rounded-xl mb-6 border border-sawmill-orange/30">
-              <h4 className="font-bold text-sawmill-orange mb-2 flex items-center gap-2">
+            <div className="bg-primary/10 border border-primary/20 p-4 rounded-xl mb-6">
+              <h4 className="font-bold text-primary mb-2 flex items-center gap-2">
                 <Clock className="w-4 h-4" />
                 Free Services Available
               </h4>
-              <p className="text-sm mb-2 text-gray-200">We accept free lumber if you're getting rid of it!</p>
-              <p className="text-sm text-gray-200">Have logs? We can work out a deal to mill some for you - no money transaction required.</p>
+              <p className="text-sm mb-2 text-muted-foreground">We accept free lumber if you're getting rid of it!</p>
+              <p className="text-sm text-muted-foreground">Have logs? We can work out a deal to mill some for you - no money transaction required.</p>
             </div>
             
             <SocialMediaLinks showLabels />
@@ -70,40 +78,40 @@ const Footer = () => {
           
           {/* Contact Info */}
           <div>
-            <h3 className="text-xl font-bold mb-6 text-white border-b border-sawmill-orange/30 pb-2">Contact Info</h3>
+            <h3 className="text-xl font-bold mb-6 text-foreground border-b border-primary/30 pb-2">Contact Info</h3>
             <div className="space-y-4">
               <div className="flex items-start gap-3">
-                <Phone className="w-5 h-5 text-sawmill-orange mt-1 flex-shrink-0" />
+                <Phone className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
                 <div>
-                  <p className="font-medium text-white">Primary</p>
-                  <a href="tel:4378980642" className="text-gray-200 hover:text-sawmill-orange transition-colors">
+                  <p className="font-medium text-foreground">Primary</p>
+                  <a href="tel:4378980642" className="text-muted-foreground hover:text-primary transition-colors">
                     (437) 898-0642
                   </a>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <Phone className="w-5 h-5 text-sawmill-orange mt-1 flex-shrink-0" />
+                <Phone className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
                 <div>
-                  <p className="font-medium text-white">Alternative</p>
-                  <a href="tel:9057173474" className="text-gray-200 hover:text-sawmill-orange transition-colors">
+                  <p className="font-medium text-foreground">Alternative</p>
+                  <a href="tel:9057173474" className="text-muted-foreground hover:text-primary transition-colors">
                     (905) 717-3474
                   </a>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <Mail className="w-5 h-5 text-sawmill-orange mt-1 flex-shrink-0" />
+                <Mail className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
                 <div>
-                  <p className="font-medium text-white">Email</p>
-                  <a href="mailto:Lucas@Flamingfirewood.ca" className="text-gray-200 hover:text-sawmill-orange transition-colors">
+                  <p className="font-medium text-foreground">Email</p>
+                  <a href="mailto:Lucas@Flamingfirewood.ca" className="text-muted-foreground hover:text-primary transition-colors">
                     Lucas@Flamingfirewood.ca
                   </a>
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-sawmill-orange mt-1 flex-shrink-0" />
+                <MapPin className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
                 <div>
-                  <p className="font-medium text-white">Location</p>
-                  <p className="text-gray-200">16720 Hwy 48<br />Whitchurch-Stouffville, ON</p>
+                  <p className="font-medium text-foreground">Location</p>
+                  <p className="text-muted-foreground">16720 Hwy 48<br />Whitchurch-Stouffville, ON</p>
                 </div>
               </div>
             </div>
@@ -111,50 +119,50 @@ const Footer = () => {
           
           {/* Services */}
           <div>
-            <h3 className="text-xl font-bold mb-6 text-white border-b border-sawmill-orange/30 pb-2">Our Services</h3>
+            <h3 className="text-xl font-bold mb-6 text-foreground border-b border-primary/30 pb-2">Our Services</h3>
             <ul className="space-y-3">
               <li>
-                <Link to="/products?category=Live%20Edge%20Slabs" className="text-gray-200 hover:text-sawmill-orange transition-colors block py-1 hover:translate-x-1 transform duration-200">
+                <Link to="/products?category=Live%20Edge%20Slabs" className="text-muted-foreground hover:text-primary transition-colors block py-1 hover:translate-x-1 transform duration-200">
                   Live Edge Slabs
                 </Link>
               </li>
               <li>
-                <Link to="/products?category=Dimensional%20Lumber" className="text-gray-200 hover:text-sawmill-orange transition-colors block py-1 hover:translate-x-1 transform duration-200">
+                <Link to="/products?category=Dimensional%20Lumber" className="text-muted-foreground hover:text-primary transition-colors block py-1 hover:translate-x-1 transform duration-200">
                   Dimensional Lumber
                 </Link>
               </li>
               <li>
-                <Link to="/products" className="text-gray-200 hover:text-sawmill-orange transition-colors block py-1 hover:translate-x-1 transform duration-200">
+                <Link to="/products" className="text-muted-foreground hover:text-primary transition-colors block py-1 hover:translate-x-1 transform duration-200">
                   Custom Milling
                 </Link>
               </li>
               <li>
-                <Link to="/projects" className="text-gray-200 hover:text-sawmill-orange transition-colors block py-1 hover:translate-x-1 transform duration-200">
+                <Link to="/projects" className="text-muted-foreground hover:text-primary transition-colors block py-1 hover:translate-x-1 transform duration-200">
                   Custom Structures
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="text-gray-200 hover:text-sawmill-orange transition-colors block py-1 hover:translate-x-1 transform duration-200">
+                <Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors block py-1 hover:translate-x-1 transform duration-200">
                   Firewood Sales
                 </Link>
               </li>
             </ul>
             
             <div className="mt-6">
-              <h4 className="font-semibold text-white mb-3">Quick Links</h4>
+              <h4 className="font-semibold text-foreground mb-3">Quick Links</h4>
               <ul className="space-y-2">
                 <li>
-                  <Link to="/gallery" className="text-gray-200 hover:text-sawmill-orange transition-colors text-sm">
+                  <Link to="/gallery" className="text-muted-foreground hover:text-primary transition-colors text-sm">
                     Project Gallery
                   </Link>
                 </li>
                 <li>
-                  <Link to="/board-foot-calculator" className="text-gray-200 hover:text-sawmill-orange transition-colors text-sm">
+                  <Link to="/board-foot-calculator" className="text-muted-foreground hover:text-primary transition-colors text-sm">
                     Board Foot Calculator
                   </Link>
                 </li>
                 <li>
-                  <Link to="/about" className="text-gray-200 hover:text-sawmill-orange transition-colors text-sm">
+                  <Link to="/about" className="text-muted-foreground hover:text-primary transition-colors text-sm">
                     About Us
                   </Link>
                 </li>
@@ -164,21 +172,25 @@ const Footer = () => {
           
           {/* Recent Blog Posts */}
           <div>
-            <h3 className="text-xl font-bold mb-6 text-white border-b border-sawmill-orange/30 pb-2">Latest Updates</h3>
+            <h3 className="text-xl font-bold mb-6 text-foreground border-b border-primary/30 pb-2">Latest Updates</h3>
             <ul className="space-y-4">
-              {recentPosts.map(post => <li key={post.id}>
+              {recentPosts.map(post => (
+                <li key={post.id}>
                   <Link to={`/blog/${post.id}`} className="block group">
-                    <h4 className="text-sm font-medium line-clamp-2 text-white group-hover:text-sawmill-orange transition-colors mb-1">
+                    <h4 className="text-sm font-medium line-clamp-2 text-foreground group-hover:text-primary transition-colors mb-1">
                       {post.title}
                     </h4>
-                    <p className="text-xs text-gray-300">
+                    <p className="text-xs text-muted-foreground">
                       {new Date(post.published_at).toLocaleDateString()}
                     </p>
                   </Link>
-                </li>)}
-              {recentPosts.length === 0 && <li className="text-sm text-gray-300">No recent posts</li>}
+                </li>
+              ))}
+              {recentPosts.length === 0 && (
+                <li className="text-sm text-muted-foreground">No recent posts</li>
+              )}
             </ul>
-            <Link to="/blog" className="inline-flex items-center mt-4 text-sm text-sawmill-orange hover:text-white transition-colors group">
+            <Link to="/blog" className="inline-flex items-center mt-4 text-sm text-primary hover:text-accent transition-colors group">
               <span>View All Posts</span>
               <span className="ml-1 group-hover:translate-x-1 transform transition-transform">→</span>
             </Link>
@@ -186,19 +198,19 @@ const Footer = () => {
         </div>
         
         {/* Newsletter Subscription */}
-        <div className="mt-10 pt-8 border-t border-sawmill-orange/30">
+        <div className="mt-10 pt-8 border-t border-border">
           <NewsletterSubscription variant="footer" />
         </div>
         
         {/* Bottom Bar */}
-        <div className="mt-10 pt-8 border-t border-sawmill-orange/30 flex flex-col md:flex-row justify-between items-center">
+        <div className="mt-10 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center">
           <div className="flex flex-col md:flex-row items-center gap-4">
-            <p className="text-gray-200">© {currentYear} MilledRight Sawmill. All rights reserved.</p>
+            <p className="text-muted-foreground">© {currentYear} MilledRight Sawmill. All rights reserved.</p>
             <div className="flex space-x-4">
-              <Link to="/terms" className="text-gray-300 hover:text-sawmill-orange transition-colors text-sm">
+              <Link to="/terms" className="text-muted-foreground hover:text-primary transition-colors text-sm">
                 Terms of Service
               </Link>
-              <Link to="/privacy" className="text-gray-300 hover:text-sawmill-orange transition-colors text-sm">
+              <Link to="/privacy" className="text-muted-foreground hover:text-primary transition-colors text-sm">
                 Privacy Policy
               </Link>
             </div>
@@ -207,7 +219,7 @@ const Footer = () => {
           {/* Admin Access */}
           <div className="mt-4 md:mt-0">
             <Link to="/admin" onClick={handleAdminAccess}>
-              <Button variant="outline" size="sm" className="border border-sawmill-orange/50 text-sawmill-orange hover:bg-sawmill-orange transition-all duration-300 text-cyan-400 text-xs font-thin bg-neutral-950 hover:bg-neutral-800 rounded-full">
+              <Button variant="outline" size="sm" className="border border-primary/50 text-primary hover:bg-primary/10 transition-all duration-300 text-xs font-thin rounded-full">
                 <ShieldCheck className="mr-2 h-4 w-4" />
                 Admin Access
               </Button>
@@ -215,6 +227,8 @@ const Footer = () => {
           </div>
         </div>
       </div>
-    </footer>;
+    </footer>
+  );
 };
+
 export default Footer;

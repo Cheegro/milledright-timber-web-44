@@ -62,16 +62,6 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				},
-				// Modern theme colors matching the design
-				modern: {
-					'dark': '#1a1a1a',
-					'darker': '#111111',
-					'orange': '#ff6b35',
-					'orange-dark': '#e55a2b',
-					'gray-light': '#f5f5f5',
-					'gray-medium': '#888888',
-					'gray-dark': '#333333',
 				}
 			},
 			borderRadius: {
