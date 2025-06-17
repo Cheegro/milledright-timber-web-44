@@ -5,20 +5,28 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 import AnalyticsDebugPanel from "@/components/admin/AnalyticsDebugPanel";
-
 const Dashboard = () => {
   // Fetch actual counts from database tables
-  const { data: counts, isLoading: countsLoading } = useQuery({
+  const {
+    data: counts,
+    isLoading: countsLoading
+  } = useQuery({
     queryKey: ['dashboard-counts'],
     queryFn: async () => {
       // Fetch counts for all relevant tables
-      const [productsResponse, blogPostsResponse, galleryImagesResponse, reviewsResponse] = await Promise.all([
-        supabase.from('products').select('id', { count: 'exact', head: true }),
-        supabase.from('blog_posts').select('id', { count: 'exact', head: true }),
-        supabase.from('gallery_images').select('id', { count: 'exact', head: true }),
-        supabase.from('reviews').select('id', { count: 'exact', head: true }),
-      ]);
-      
+      const [productsResponse, blogPostsResponse, galleryImagesResponse, reviewsResponse] = await Promise.all([supabase.from('products').select('id', {
+        count: 'exact',
+        head: true
+      }), supabase.from('blog_posts').select('id', {
+        count: 'exact',
+        head: true
+      }), supabase.from('gallery_images').select('id', {
+        count: 'exact',
+        head: true
+      }), supabase.from('reviews').select('id', {
+        count: 'exact',
+        head: true
+      })]);
       return {
         products: productsResponse.count || 0,
         blogPosts: blogPostsResponse.count || 0,
@@ -29,42 +37,35 @@ const Dashboard = () => {
   });
 
   // Add analytics data debugging
-  const { data: analyticsDebug, isLoading: analyticsLoading } = useQuery({
+  const {
+    data: analyticsDebug,
+    isLoading: analyticsLoading
+  } = useQuery({
     queryKey: ['analytics-debug'],
     queryFn: async () => {
       console.log('=== ANALYTICS DEBUG ===');
-      
-      const pageViewsResponse = await supabase
-        .from('analytics_page_views')
-        .select('*', { count: 'exact' })
-        .limit(5);
-      
-      const eventsResponse = await supabase
-        .from('analytics_events')
-        .select('*', { count: 'exact' })
-        .limit(5);
-      
+      const pageViewsResponse = await supabase.from('analytics_page_views').select('*', {
+        count: 'exact'
+      }).limit(5);
+      const eventsResponse = await supabase.from('analytics_events').select('*', {
+        count: 'exact'
+      }).limit(5);
       console.log('Page views count:', pageViewsResponse.count);
       console.log('Page views sample:', pageViewsResponse.data);
       console.log('Events count:', eventsResponse.count);
       console.log('Events sample:', eventsResponse.data);
-      
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-      
-      const recentPageViewsResponse = await supabase
-        .from('analytics_page_views')
-        .select('*', { count: 'exact', head: true })
-        .gte('created_at', sevenDaysAgo.toISOString());
-      
-      const recentEventsResponse = await supabase
-        .from('analytics_events')
-        .select('*', { count: 'exact', head: true })
-        .gte('created_at', sevenDaysAgo.toISOString());
-      
+      const recentPageViewsResponse = await supabase.from('analytics_page_views').select('*', {
+        count: 'exact',
+        head: true
+      }).gte('created_at', sevenDaysAgo.toISOString());
+      const recentEventsResponse = await supabase.from('analytics_events').select('*', {
+        count: 'exact',
+        head: true
+      }).gte('created_at', sevenDaysAgo.toISOString());
       console.log('Recent page views (last 7 days):', recentPageViewsResponse.count);
       console.log('Recent events (last 7 days):', recentEventsResponse.count);
-      
       return {
         totalPageViews: pageViewsResponse.count || 0,
         totalEvents: eventsResponse.count || 0,
@@ -77,17 +78,19 @@ const Dashboard = () => {
   });
 
   // Fetch recent products for the dashboard
-  const { data: recentProducts, isLoading: productsLoading } = useQuery({
+  const {
+    data: recentProducts,
+    isLoading: productsLoading
+  } = useQuery({
     queryKey: ['recent-products'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('products')
-        .select('id, name, category_id, created_at, product_categories(name)')
-        .order('created_at', { ascending: false })
-        .limit(3);
-      
+      const {
+        data,
+        error
+      } = await supabase.from('products').select('id, name, category_id, created_at, product_categories(name)').order('created_at', {
+        ascending: false
+      }).limit(3);
       if (error) throw error;
-      
       return data.map(product => ({
         id: product.id,
         name: product.name,
@@ -102,17 +105,19 @@ const Dashboard = () => {
   });
 
   // Fetch recent blog posts for the dashboard
-  const { data: recentPosts, isLoading: postsLoading } = useQuery({
+  const {
+    data: recentPosts,
+    isLoading: postsLoading
+  } = useQuery({
     queryKey: ['recent-posts'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('blog_posts')
-        .select('id, title, created_at')
-        .order('created_at', { ascending: false })
-        .limit(3);
-      
+      const {
+        data,
+        error
+      } = await supabase.from('blog_posts').select('id, title, created_at').order('created_at', {
+        ascending: false
+      }).limit(3);
       if (error) throw error;
-      
       return data.map(post => ({
         id: post.id,
         title: post.title,
@@ -124,18 +129,25 @@ const Dashboard = () => {
       }));
     }
   });
-
-  const stats = [
-    { title: "Products", value: countsLoading ? "..." : counts?.products.toString(), link: "/admin/products" },
-    { title: "Blog Posts", value: countsLoading ? "..." : counts?.blogPosts.toString(), link: "/admin/blog" },
-    { title: "Gallery Images", value: countsLoading ? "..." : counts?.galleryImages.toString(), link: "/admin/gallery" },
-    { title: "Reviews", value: countsLoading ? "..." : counts?.reviews.toString(), link: "/admin/reviews" },
-  ];
-
+  const stats = [{
+    title: "Products",
+    value: countsLoading ? "..." : counts?.products.toString(),
+    link: "/admin/products"
+  }, {
+    title: "Blog Posts",
+    value: countsLoading ? "..." : counts?.blogPosts.toString(),
+    link: "/admin/blog"
+  }, {
+    title: "Gallery Images",
+    value: countsLoading ? "..." : counts?.galleryImages.toString(),
+    link: "/admin/gallery"
+  }, {
+    title: "Reviews",
+    value: countsLoading ? "..." : counts?.reviews.toString(),
+    link: "/admin/reviews"
+  }];
   const isLoading = countsLoading || productsLoading || postsLoading;
-
-  return (
-    <div className="space-y-6">
+  return <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl md:text-3xl font-bold text-sawmill-dark-brown">Dashboard</h1>
         <Button className="bg-sawmill-orange hover:bg-sawmill-auburn">
@@ -147,12 +159,11 @@ const Dashboard = () => {
       <AnalyticsDebugPanel />
       
       {/* Analytics Debug Info */}
-      {analyticsDebug && (
-        <Card className="border-orange-200 bg-orange-50">
-          <CardHeader>
+      {analyticsDebug && <Card className="border-orange-200 bg-orange-50">
+          <CardHeader className="bg-zinc-950">
             <CardTitle className="text-lg text-orange-800">Analytics Debug Information</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="bg-zinc-950">
             <div className="space-y-2 text-sm">
               <p><strong>Total Page Views in DB:</strong> {analyticsDebug.totalPageViews}</p>
               <p><strong>Total Events in DB:</strong> {analyticsDebug.totalEvents}</p>
@@ -161,25 +172,19 @@ const Dashboard = () => {
               <p className="text-orange-600">
                 <strong>Check browser console for detailed sample data</strong>
               </p>
-              {analyticsDebug.totalPageViews === 0 && analyticsDebug.totalEvents === 0 && (
-                <p className="text-red-600 font-semibold">
+              {analyticsDebug.totalPageViews === 0 && analyticsDebug.totalEvents === 0 && <p className="text-red-600 font-semibold">
                   ⚠️ No analytics data found! Analytics tracking may not be working.
-                </p>
-              )}
-              {analyticsDebug.recentPageViews === 0 && analyticsDebug.recentEvents === 0 && analyticsDebug.totalPageViews > 0 && (
-                <p className="text-yellow-600 font-semibold">
+                </p>}
+              {analyticsDebug.recentPageViews === 0 && analyticsDebug.recentEvents === 0 && analyticsDebug.totalPageViews > 0 && <p className="text-yellow-600 font-semibold">
                   ⚠️ No recent analytics data! You may be seeing old test data.
-                </p>
-              )}
+                </p>}
             </div>
           </CardContent>
-        </Card>
-      )}
+        </Card>}
       
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => (
-          <Card key={index}>
+        {stats.map((stat, index) => <Card key={index}>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 {stat.title}
@@ -188,22 +193,14 @@ const Dashboard = () => {
             <CardContent>
               <div className="flex items-center justify-between">
                 <div className="text-3xl font-bold text-sawmill-dark-brown">
-                  {isLoading ? (
-                    <Loader2 className="h-6 w-6 animate-spin text-sawmill-medium-brown" />
-                  ) : (
-                    stat.value
-                  )}
+                  {isLoading ? <Loader2 className="h-6 w-6 animate-spin text-sawmill-medium-brown" /> : stat.value}
                 </div>
-                <Link 
-                  to={stat.link}
-                  className="text-sawmill-orange hover:text-sawmill-auburn text-sm font-medium"
-                >
+                <Link to={stat.link} className="text-sawmill-orange hover:text-sawmill-auburn text-sm font-medium">
                   View All
                 </Link>
               </div>
             </CardContent>
-          </Card>
-        ))}
+          </Card>)}
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -220,41 +217,27 @@ const Dashboard = () => {
             </div>
           </CardHeader>
           <CardContent>
-            {productsLoading ? (
-              <div className="flex justify-center py-4">
+            {productsLoading ? <div className="flex justify-center py-4">
                 <Loader2 className="h-8 w-8 animate-spin text-sawmill-medium-brown" />
-              </div>
-            ) : recentProducts && recentProducts.length > 0 ? (
-              <div className="space-y-4">
-                {recentProducts.map(product => (
-                  <div key={product.id} className="flex items-center justify-between border-b pb-3 last:border-0 last:pb-0">
+              </div> : recentProducts && recentProducts.length > 0 ? <div className="space-y-4">
+                {recentProducts.map(product => <div key={product.id} className="flex items-center justify-between border-b pb-3 last:border-0 last:pb-0">
                     <div>
                       <p className="font-medium text-sawmill-dark-brown">{product.name}</p>
                       <p className="text-sm text-muted-foreground">Category: {product.category}</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-muted-foreground">{product.date}</span>
-                      <Link 
-                        to={`/admin/products/${product.id}/edit`}
-                        className="text-sawmill-orange hover:text-sawmill-auburn text-sm"
-                      >
+                      <Link to={`/admin/products/${product.id}/edit`} className="text-sawmill-orange hover:text-sawmill-auburn text-sm">
                         Edit
                       </Link>
                     </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-4">
+                  </div>)}
+              </div> : <div className="text-center py-4">
                 <p className="text-muted-foreground">No products found</p>
-              </div>
-            )}
+              </div>}
             
             <div className="mt-4 text-center">
-              <Link 
-                to="/admin/products"
-                className="text-sawmill-orange hover:text-sawmill-auburn text-sm font-medium"
-              >
+              <Link to="/admin/products" className="text-sawmill-orange hover:text-sawmill-auburn text-sm font-medium">
                 View All Products
               </Link>
             </div>
@@ -274,40 +257,26 @@ const Dashboard = () => {
             </div>
           </CardHeader>
           <CardContent>
-            {postsLoading ? (
-              <div className="flex justify-center py-4">
+            {postsLoading ? <div className="flex justify-center py-4">
                 <Loader2 className="h-8 w-8 animate-spin text-sawmill-medium-brown" />
-              </div>
-            ) : recentPosts && recentPosts.length > 0 ? (
-              <div className="space-y-4">
-                {recentPosts.map(post => (
-                  <div key={post.id} className="flex items-center justify-between border-b pb-3 last:border-0 last:pb-0">
+              </div> : recentPosts && recentPosts.length > 0 ? <div className="space-y-4">
+                {recentPosts.map(post => <div key={post.id} className="flex items-center justify-between border-b pb-3 last:border-0 last:pb-0">
                     <div>
                       <p className="font-medium text-sawmill-dark-brown">{post.title}</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-muted-foreground">{post.date}</span>
-                      <Link 
-                        to={`/admin/blog/${post.id}/edit`}
-                        className="text-sawmill-orange hover:text-sawmill-auburn text-sm"
-                      >
+                      <Link to={`/admin/blog/${post.id}/edit`} className="text-sawmill-orange hover:text-sawmill-auburn text-sm">
                         Edit
                       </Link>
                     </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-4">
+                  </div>)}
+              </div> : <div className="text-center py-4">
                 <p className="text-muted-foreground">No blog posts found</p>
-              </div>
-            )}
+              </div>}
             
             <div className="mt-4 text-center">
-              <Link 
-                to="/admin/blog"
-                className="text-sawmill-orange hover:text-sawmill-auburn text-sm font-medium"
-              >
+              <Link to="/admin/blog" className="text-sawmill-orange hover:text-sawmill-auburn text-sm font-medium">
                 View All Blog Posts
               </Link>
             </div>
@@ -374,8 +343,6 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Dashboard;
