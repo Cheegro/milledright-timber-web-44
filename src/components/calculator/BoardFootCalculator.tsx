@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -116,106 +115,120 @@ const BoardFootCalculator = () => {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.width;
     const pageHeight = doc.internal.pageSize.height;
-    const margin = 25;
-    let currentY = 30;
+    const margin = 20;
+    let currentY = 25;
 
-    // Sophisticated Header
+    // Elegant Header with Branding
+    doc.setFillColor(248, 250, 252);
+    doc.rect(0, 0, pageWidth, 65, 'F');
+    
+    // Company Name
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(28);
+    doc.setTextColor(30, 41, 59);
+    doc.text('MILLEDRIGHT SAWMILL', margin, currentY + 20);
+    
+    // Tagline
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(32);
-    doc.setTextColor(45, 45, 45);
-    doc.text('LUMBER CALCULATION', pageWidth / 2, currentY, { align: 'center' });
+    doc.setFontSize(12);
+    doc.setTextColor(100, 116, 139);
+    doc.text('Premium Lumber & Custom Milling Services', margin, currentY + 32);
     
-    currentY += 12;
-    doc.setFontSize(14);
-    doc.setTextColor(120, 120, 120);
-    doc.text('Material Estimate & Specifications', pageWidth / 2, currentY, { align: 'center' });
-    
-    // Elegant minimal line
-    currentY += 20;
-    doc.setDrawColor(220, 220, 220);
-    doc.setLineWidth(0.5);
-    doc.line(margin + 50, currentY, pageWidth - margin - 50, currentY);
-    
-    // Document details in clean layout
-    currentY += 25;
+    // Contact Info (right side)
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
-    doc.setTextColor(90, 90, 90);
+    doc.setTextColor(71, 85, 105);
+    doc.text('Phone: (647) 123-4567', pageWidth - margin - 45, currentY + 20);
+    doc.text('milledrightsawmill.com', pageWidth - margin - 45, currentY + 32);
     
+    // Decorative line
+    doc.setDrawColor(239, 68, 68);
+    doc.setLineWidth(2);
+    doc.line(margin, currentY + 45, pageWidth - margin, currentY + 45);
+    
+    currentY = 85;
+
+    // Document Title and Info
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(20);
+    doc.setTextColor(30, 41, 59);
+    doc.text('LUMBER CALCULATION ESTIMATE', margin, currentY);
+    
+    currentY += 20;
+    
+    // Document details
     const currentDate = new Date();
     const dateString = currentDate.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
-    const timeString = currentDate.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
     
-    // Left aligned info
-    doc.text(`Document Date: ${dateString}`, margin, currentY);
-    doc.text(`Generated: ${timeString}`, margin, currentY + 8);
-    doc.text(`Reference: LC-${Date.now().toString().slice(-8)}`, margin, currentY + 16);
-    
-    currentY += 40;
-
-    // Sophisticated table header
-    doc.setFont('helvetica', 'bold');
+    doc.setFont('helvetica', 'normal');
     doc.setFontSize(10);
-    doc.setFillColor(248, 249, 250);
+    doc.setTextColor(100, 116, 139);
+    doc.text(`Date: ${dateString}`, margin, currentY);
+    doc.text(`Reference: LC-${Date.now().toString().slice(-8)}`, pageWidth - margin - 40, currentY);
     
-    const headerHeight = 12;
-    doc.rect(margin, currentY - 8, pageWidth - 2 * margin, headerHeight, 'F');
+    currentY += 25;
+
+    // Enhanced Table Design
+    const tableStartY = currentY;
+    const rowHeight = 16;
+    const headerHeight = 20;
     
-    // Subtle header border
-    doc.setDrawColor(230, 230, 230);
-    doc.setLineWidth(0.3);
-    doc.rect(margin, currentY - 8, pageWidth - 2 * margin, headerHeight);
-    
-    const colWidths = [15, 50, 30, 18, 18, 22, 27];
-    const colX = [margin + 5];
+    // Optimized column widths that fit within page margins
+    const colWidths = [12, 55, 32, 15, 18, 18, 25];
+    const colX = [margin];
     for (let i = 1; i < colWidths.length; i++) {
       colX.push(colX[i - 1] + colWidths[i - 1]);
     }
     
-    doc.setTextColor(70, 70, 70);
-    doc.text('ITEM', colX[0], currentY - 2);
-    doc.text('DESCRIPTION', colX[1], currentY - 2);
-    doc.text('DIMENSIONS', colX[2], currentY - 2);
-    doc.text('QTY', colX[3], currentY - 2);
-    doc.text('BD.FT', colX[4], currentY - 2);
-    doc.text('RATE', colX[5], currentY - 2);
-    doc.text('AMOUNT', colX[6], currentY - 2);
+    // Table Header with gradient
+    doc.setFillColor(239, 68, 68);
+    doc.rect(margin, currentY, pageWidth - 2 * margin, headerHeight, 'F');
     
-    currentY += 8;
+    // Header shadow effect
+    doc.setFillColor(220, 38, 38);
+    doc.rect(margin, currentY + headerHeight - 2, pageWidth - 2 * margin, 2, 'F');
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(255, 255, 255);
+    
+    const headers = ['ITEM', 'DESCRIPTION', 'DIMENSIONS', 'QTY', 'BD.FT', 'RATE', 'AMOUNT'];
+    headers.forEach((header, i) => {
+      doc.text(header, colX[i] + 2, currentY + 12);
+    });
+    
+    currentY += headerHeight;
 
-    // Clean table rows
+    // Table Rows with enhanced styling
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9);
     let itemNumber = 1;
     
     calculations.forEach(calc => {
       if (calc.boardFeet > 0) {
-        const rowHeight = 18;
-        
-        // Subtle alternating rows
+        // Alternating row colors
         if (itemNumber % 2 === 0) {
-          doc.setFillColor(252, 253, 253);
-          doc.rect(margin, currentY - 5, pageWidth - 2 * margin, rowHeight, 'F');
+          doc.setFillColor(248, 250, 252);
+          doc.rect(margin, currentY, pageWidth - 2 * margin, rowHeight, 'F');
         }
         
-        // Very light row borders
-        doc.setDrawColor(245, 245, 245);
-        doc.setLineWidth(0.2);
-        doc.line(margin, currentY + rowHeight - 5, pageWidth - margin, currentY + rowHeight - 5);
+        // Row border
+        doc.setDrawColor(226, 232, 240);
+        doc.setLineWidth(0.5);
+        doc.line(margin, currentY + rowHeight, pageWidth - margin, currentY + rowHeight);
         
-        doc.setTextColor(60, 60, 60);
+        doc.setTextColor(51, 65, 85);
         
-        // Item number
-        doc.text(itemNumber.toString().padStart(2, '0'), colX[0], currentY);
+        // Item number with padding
+        doc.setFont('helvetica', 'bold');
+        doc.text(itemNumber.toString().padStart(2, '0'), colX[0] + 2, currentY + 10);
         
-        // Description
+        // Description with proper text wrapping
+        doc.setFont('helvetica', 'normal');
         let description = '';
         if (calc.title && calc.woodSpecies) {
           description = `${calc.title} - ${calc.woodSpecies}`;
@@ -227,39 +240,33 @@ const BoardFootCalculator = () => {
           description = 'Lumber Material';
         }
         
-        // Wrap long descriptions
-        const descLines = doc.splitTextToSize(description, colWidths[1] - 3);
-        doc.text(descLines[0], colX[1], currentY);
-        if (descLines.length > 1) {
-          doc.setFontSize(8);
-          doc.setTextColor(100, 100, 100);
-          doc.text(descLines[1], colX[1], currentY + 5);
-          doc.setFontSize(9);
-          doc.setTextColor(60, 60, 60);
-        }
+        // Ensure description fits in column
+        const maxDescWidth = colWidths[1] - 4;
+        const descLines = doc.splitTextToSize(description, maxDescWidth);
+        doc.text(descLines[0], colX[1] + 2, currentY + 10);
         
         // Dimensions
-        doc.text(formatDimensions(calc), colX[2], currentY);
+        doc.text(formatDimensions(calc), colX[2] + 2, currentY + 10);
         
-        // Quantity
-        doc.text(calc.quantity.toString(), colX[3], currentY);
+        // Quantity (centered)
+        doc.text(calc.quantity.toString(), colX[3] + colWidths[3]/2, currentY + 10, { align: 'center' });
         
-        // Board feet
-        doc.text(calc.boardFeet.toFixed(2), colX[4], currentY);
+        // Board feet (right aligned)
+        doc.text(calc.boardFeet.toFixed(2), colX[4] + colWidths[4] - 2, currentY + 10, { align: 'right' });
         
         // Rate and amount
         const itemPrice = getItemPrice(calc);
         if (itemPrice > 0) {
-          doc.text(`$${itemPrice.toFixed(2)}`, colX[5], currentY);
+          doc.text(`$${itemPrice.toFixed(2)}`, colX[5] + colWidths[5] - 2, currentY + 10, { align: 'right' });
           const itemTotal = calc.boardFeet * itemPrice;
           doc.setFont('helvetica', 'bold');
-          doc.text(`$${itemTotal.toFixed(2)}`, colX[6], currentY);
+          doc.text(`$${itemTotal.toFixed(2)}`, colX[6] + colWidths[6] - 2, currentY + 10, { align: 'right' });
           doc.setFont('helvetica', 'normal');
         } else {
-          doc.setTextColor(150, 150, 150);
-          doc.text('--', colX[5], currentY);
-          doc.text('--', colX[6], currentY);
-          doc.setTextColor(60, 60, 60);
+          doc.setTextColor(148, 163, 184);
+          doc.text('--', colX[5] + colWidths[5]/2, currentY + 10, { align: 'center' });
+          doc.text('--', colX[6] + colWidths[6]/2, currentY + 10, { align: 'center' });
+          doc.setTextColor(51, 65, 85);
         }
         
         currentY += rowHeight;
@@ -267,67 +274,78 @@ const BoardFootCalculator = () => {
       }
     });
 
-    // Sophisticated summary section
-    currentY += 20;
-    
-    // Clean separator line
-    doc.setDrawColor(200, 200, 200);
-    doc.setLineWidth(0.5);
-    doc.line(margin, currentY, pageWidth - margin, currentY);
+    // Table border
+    doc.setDrawColor(203, 213, 225);
+    doc.setLineWidth(1);
+    doc.rect(margin, tableStartY, pageWidth - 2 * margin, currentY - tableStartY);
+
     currentY += 25;
 
-    // Summary box with clean design
-    const summaryBoxY = currentY;
-    const summaryBoxWidth = 75;
-    const summaryBoxHeight = 45;
+    // Summary Section with enhanced design
+    const summaryBoxWidth = 85;
+    const summaryBoxHeight = totalPrice > 0 ? 55 : 40;
+    const summaryX = pageWidth - margin - summaryBoxWidth;
     
-    // Clean box with subtle shadow effect
-    doc.setFillColor(250, 250, 250);
-    doc.rect(pageWidth - margin - summaryBoxWidth, summaryBoxY, summaryBoxWidth, summaryBoxHeight, 'F');
-    doc.setDrawColor(230, 230, 230);
-    doc.setLineWidth(0.5);
-    doc.rect(pageWidth - margin - summaryBoxWidth, summaryBoxY, summaryBoxWidth, summaryBoxHeight);
+    // Summary box with gradient
+    doc.setFillColor(248, 250, 252);
+    doc.rect(summaryX, currentY, summaryBoxWidth, summaryBoxHeight, 'F');
+    
+    // Summary box border
+    doc.setDrawColor(203, 213, 225);
+    doc.setLineWidth(1);
+    doc.rect(summaryX, currentY, summaryBoxWidth, summaryBoxHeight);
+    
+    // Accent line
+    doc.setFillColor(239, 68, 68);
+    doc.rect(summaryX, currentY, summaryBoxWidth, 3, 'F');
 
     // Summary content
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(11);
-    doc.setTextColor(90, 90, 90);
-    doc.text('Total Board Feet:', pageWidth - margin - summaryBoxWidth + 8, summaryBoxY + 15);
+    doc.setTextColor(71, 85, 105);
+    doc.text('Total Board Feet:', summaryX + 8, currentY + 20);
     
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(14);
-    doc.setTextColor(45, 45, 45);
-    doc.text(`${totalBoardFeet.toFixed(2)} BF`, pageWidth - margin - 8, summaryBoxY + 15, { align: 'right' });
+    doc.setFontSize(16);
+    doc.setTextColor(30, 41, 59);
+    doc.text(`${totalBoardFeet.toFixed(2)} BF`, summaryX + summaryBoxWidth - 8, currentY + 20, { align: 'right' });
 
     if (totalPrice > 0) {
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(11);
-      doc.setTextColor(90, 90, 90);
-      doc.text('Estimated Total:', pageWidth - margin - summaryBoxWidth + 8, summaryBoxY + 30);
+      doc.setTextColor(71, 85, 105);
+      doc.text('Estimated Total:', summaryX + 8, currentY + 38);
       
       doc.setFont('helvetica', 'bold');
-      doc.setFontSize(16);
-      doc.setTextColor(45, 45, 45);
-      doc.text(`$${totalPrice.toFixed(2)}`, pageWidth - margin - 8, summaryBoxY + 30, { align: 'right' });
+      doc.setFontSize(18);
+      doc.setTextColor(239, 68, 68);
+      doc.text(`$${totalPrice.toFixed(2)}`, summaryX + summaryBoxWidth - 8, currentY + 38, { align: 'right' });
     }
 
-    // Minimal footer with disclaimer
-    const footerY = pageHeight - 30;
+    // Professional Footer with fine print
+    const footerY = pageHeight - 35;
     
-    // Disclaimer in small, subtle text
+    // Footer separator
+    doc.setDrawColor(226, 232, 240);
+    doc.setLineWidth(0.5);
+    doc.line(margin, footerY - 10, pageWidth - margin, footerY - 10);
+    
+    // Fine print disclaimer
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.setTextColor(160, 160, 160);
-    doc.text('This calculation is provided for estimation purposes only. Actual requirements may vary.', pageWidth / 2, footerY, { align: 'center' });
-    doc.text('Please verify all measurements and specifications independently before procurement.', pageWidth / 2, footerY + 6, { align: 'center' });
+    doc.setFontSize(7);
+    doc.setTextColor(148, 163, 184);
+    const disclaimerText = [
+      'This calculation is provided for estimation and quotation purposes only. Actual requirements, pricing, and availability may vary.',
+      'Please verify all measurements, specifications, and pricing independently before final procurement and project planning.',
+      'MilledRight Sawmill - Professional lumber solutions for your woodworking needs.'
+    ];
+    
+    disclaimerText.forEach((line, index) => {
+      doc.text(line, pageWidth / 2, footerY + (index * 5), { align: 'center' });
+    });
 
-    // Clean page border
-    doc.setDrawColor(220, 220, 220);
-    doc.setLineWidth(0.8);
-    doc.rect(20, 20, pageWidth - 40, pageHeight - 40);
-
-    // Save with clean filename
-    const fileName = `Lumber-Calculation-${new Date().toISOString().split('T')[0]}.pdf`;
+    // Save with descriptive filename
+    const fileName = `MilledRight-Lumber-Estimate-${new Date().toISOString().split('T')[0]}.pdf`;
     doc.save(fileName);
   };
 
