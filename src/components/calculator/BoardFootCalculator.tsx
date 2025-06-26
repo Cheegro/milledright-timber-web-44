@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -172,13 +173,13 @@ const BoardFootCalculator = () => {
     
     currentY += 25;
 
-    // Enhanced Table Design
+    // Enhanced Table Design with properly fitted columns
     const tableStartY = currentY;
     const rowHeight = 16;
     const headerHeight = 20;
     
-    // Optimized column widths that fit within page margins
-    const colWidths = [12, 55, 32, 15, 18, 18, 25];
+    // Reduced column widths to fit within page margins (total = 150)
+    const colWidths = [10, 45, 28, 12, 15, 15, 20];
     const colX = [margin];
     for (let i = 1; i < colWidths.length; i++) {
       colX.push(colX[i - 1] + colWidths[i - 1]);
@@ -193,7 +194,7 @@ const BoardFootCalculator = () => {
     doc.rect(margin, currentY + headerHeight - 2, pageWidth - 2 * margin, 2, 'F');
     
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9);
+    doc.setFontSize(8);
     doc.setTextColor(255, 255, 255);
     
     const headers = ['ITEM', 'DESCRIPTION', 'DIMENSIONS', 'QTY', 'BD.FT', 'RATE', 'AMOUNT'];
@@ -205,7 +206,7 @@ const BoardFootCalculator = () => {
 
     // Table Rows with enhanced styling
     doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
+    doc.setFontSize(8);
     let itemNumber = 1;
     
     calculations.forEach(calc => {
@@ -240,10 +241,12 @@ const BoardFootCalculator = () => {
           description = 'Lumber Material';
         }
         
-        // Ensure description fits in column
+        // Ensure description fits in column with proper truncation
         const maxDescWidth = colWidths[1] - 4;
         const descLines = doc.splitTextToSize(description, maxDescWidth);
-        doc.text(descLines[0], colX[1] + 2, currentY + 10);
+        if (descLines.length > 0) {
+          doc.text(descLines[0], colX[1] + 2, currentY + 10);
+        }
         
         // Dimensions
         doc.text(formatDimensions(calc), colX[2] + 2, currentY + 10);
