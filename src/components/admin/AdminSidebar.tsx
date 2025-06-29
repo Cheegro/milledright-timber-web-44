@@ -1,5 +1,4 @@
-
-import { Home, Package, FolderOpen, Star, Settings, BookOpen, TreePine, Archive, Users, MessageSquare, Quote } from "lucide-react";
+import { Home, Package, FolderOpen, Star, Settings, BookOpen, TreePine, Archive, Users, MessageSquare, Quote, BarChart3 } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -60,6 +59,11 @@ const AdminSidebar = () => {
       title: "Testimonials",
       url: "/admin/testimonials",
       icon: Quote,
+    },
+    {
+      title: "Analytics",
+      icon: BarChart3,
+      path: "/admin/analytics",
     },
     {
       title: "Settings",
