@@ -18,11 +18,8 @@ import ReviewsAdmin from "./pages/admin/ReviewsAdmin";
 import ReviewFormPage from "./pages/admin/ReviewFormPage";
 import Settings from "./pages/admin/Settings";
 import Login from "./pages/admin/Login";
-import WoodSpeciesAdmin from "./pages/admin/WoodSpeciesAdmin";
-import LogStockAdmin from "./pages/admin/LogStockAdmin";
 import ProjectsAdmin from "./pages/admin/ProjectsAdmin";
 import ProjectFormPage from "./pages/admin/ProjectFormPage";
-import TestimonialsAdmin from "./pages/admin/TestimonialsAdmin";
 import PublicLayout from "./layouts/PublicLayout";
 import Home from "./pages/Home";
 import Contact from "./pages/Contact";
@@ -98,16 +95,8 @@ const routes = [
         element: <Settings />,
       },
       {
-        path: "wood-species",
-        element: <WoodSpeciesAdmin />,
-      },
-      {
         path: "analytics",
         element: <Analytics />,
-      },
-      {
-        path: "log-stock",
-        element: <LogStockAdmin />,
       },
       {
         path: "projects",
@@ -120,10 +109,6 @@ const routes = [
       {
         path: "projects/:id/edit",
         element: <ProjectFormPage />,
-      },
-      {
-        path: "testimonials",
-        element: <TestimonialsAdmin />,
       },
     ],
   },

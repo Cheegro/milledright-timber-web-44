@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
-import AnalyticsDebugPanel from "@/components/admin/AnalyticsDebugPanel";
+
 const Dashboard = () => {
   // Fetch actual counts from database tables
   const {
@@ -36,46 +36,6 @@ const Dashboard = () => {
     }
   });
 
-  // Add analytics data debugging
-  const {
-    data: analyticsDebug,
-    isLoading: analyticsLoading
-  } = useQuery({
-    queryKey: ['analytics-debug'],
-    queryFn: async () => {
-      console.log('=== ANALYTICS DEBUG ===');
-      const pageViewsResponse = await supabase.from('analytics_page_views').select('*', {
-        count: 'exact'
-      }).limit(5);
-      const eventsResponse = await supabase.from('analytics_events').select('*', {
-        count: 'exact'
-      }).limit(5);
-      console.log('Page views count:', pageViewsResponse.count);
-      console.log('Page views sample:', pageViewsResponse.data);
-      console.log('Events count:', eventsResponse.count);
-      console.log('Events sample:', eventsResponse.data);
-      const sevenDaysAgo = new Date();
-      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-      const recentPageViewsResponse = await supabase.from('analytics_page_views').select('*', {
-        count: 'exact',
-        head: true
-      }).gte('created_at', sevenDaysAgo.toISOString());
-      const recentEventsResponse = await supabase.from('analytics_events').select('*', {
-        count: 'exact',
-        head: true
-      }).gte('created_at', sevenDaysAgo.toISOString());
-      console.log('Recent page views (last 7 days):', recentPageViewsResponse.count);
-      console.log('Recent events (last 7 days):', recentEventsResponse.count);
-      return {
-        totalPageViews: pageViewsResponse.count || 0,
-        totalEvents: eventsResponse.count || 0,
-        recentPageViews: recentPageViewsResponse.count || 0,
-        recentEvents: recentEventsResponse.count || 0,
-        samplePageViews: pageViewsResponse.data || [],
-        sampleEvents: eventsResponse.data || []
-      };
-    }
-  });
 
   // Fetch recent products for the dashboard
   const {
@@ -154,33 +114,6 @@ const Dashboard = () => {
           <Link to="/admin/settings" className="w-full h-full inline-block">Settings</Link>
         </Button>
       </div>
-      
-      {/* Analytics Debug Panel */}
-      <AnalyticsDebugPanel />
-      
-      {/* Analytics Debug Info */}
-      {analyticsDebug && <Card className="border-orange-200 bg-orange-50">
-          <CardHeader className="bg-zinc-950">
-            <CardTitle className="text-lg text-orange-800">Analytics Debug Information</CardTitle>
-          </CardHeader>
-          <CardContent className="bg-zinc-950">
-            <div className="space-y-2 text-sm">
-              <p><strong>Total Page Views in DB:</strong> {analyticsDebug.totalPageViews}</p>
-              <p><strong>Total Events in DB:</strong> {analyticsDebug.totalEvents}</p>
-              <p><strong>Recent Page Views (7 days):</strong> {analyticsDebug.recentPageViews}</p>
-              <p><strong>Recent Events (7 days):</strong> {analyticsDebug.recentEvents}</p>
-              <p className="text-orange-600">
-                <strong>Check browser console for detailed sample data</strong>
-              </p>
-              {analyticsDebug.totalPageViews === 0 && analyticsDebug.totalEvents === 0 && <p className="text-red-600 font-semibold">
-                  ⚠️ No analytics data found! Analytics tracking may not be working.
-                </p>}
-              {analyticsDebug.recentPageViews === 0 && analyticsDebug.recentEvents === 0 && analyticsDebug.totalPageViews > 0 && <p className="text-yellow-600 font-semibold">
-                  ⚠️ No recent analytics data! You may be seeing old test data.
-                </p>}
-            </div>
-          </CardContent>
-        </Card>}
       
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

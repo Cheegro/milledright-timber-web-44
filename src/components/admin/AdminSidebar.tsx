@@ -21,16 +21,6 @@ const AdminSidebar = () => {
       icon: Home,
     },
     {
-      title: "Wood Species",
-      url: "/admin/wood-species",
-      icon: TreePine,
-    },
-    {
-      title: "Log Stock",
-      url: "/admin/log-stock", 
-      icon: Archive,
-    },
-    {
       title: "Products",
       url: "/admin/products",
       icon: Package,
@@ -54,11 +44,6 @@ const AdminSidebar = () => {
       title: "Reviews",
       url: "/admin/reviews",
       icon: Star,
-    },
-    {
-      title: "Testimonials",
-      url: "/admin/testimonials",
-      icon: Quote,
     },
     {
       title: "Analytics",
