@@ -3,9 +3,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from "@/components/ui/sonner";
 import { useEffect } from "react";
-import { trackEnhancedPageView } from "@/utils/enhancedAnalytics";
-import Analytics from "./pages/admin/Analytics";
+import { newAnalytics } from "@/services/newAnalytics";
+
 import AdminLayout from "./layouts/AdminLayout";
+import Analytics from "./pages/admin/Analytics";
 import Dashboard from "./pages/admin/Dashboard";
 import ProductsAdmin from "./pages/admin/ProductsAdmin";
 import ProductFormPage from "./pages/admin/ProductFormPage";
@@ -97,12 +98,12 @@ const routes = [
         element: <Settings />,
       },
       {
-        path: "analytics",
-        element: <Analytics />,
-      },
-      {
         path: "wood-species",
         element: <WoodSpeciesAdmin />,
+      },
+      {
+        path: "analytics",
+        element: <Analytics />,
       },
       {
         path: "log-stock",
@@ -185,10 +186,29 @@ const routes = [
 const queryClient = new QueryClient();
 
 function App() {
-  // Initialize enhanced analytics tracking
+  // Initialize new analytics tracking
   useEffect(() => {
-    // Track initial page view with enhanced analytics
-    trackEnhancedPageView();
+    // Track initial page view
+    newAnalytics.trackPageView(window.location.pathname);
+    
+    // Track page changes for SPA
+    const originalPushState = history.pushState;
+    const originalReplaceState = history.replaceState;
+    
+    history.pushState = function(...args) {
+      originalPushState.apply(history, args);
+      setTimeout(() => newAnalytics.trackPageView(window.location.pathname), 0);
+    };
+    
+    history.replaceState = function(...args) {
+      originalReplaceState.apply(history, args);
+      setTimeout(() => newAnalytics.trackPageView(window.location.pathname), 0);
+    };
+    
+    // Track back/forward navigation
+    window.addEventListener('popstate', () => {
+      setTimeout(() => newAnalytics.trackPageView(window.location.pathname), 0);
+    });
   }, []);
 
   return (
