@@ -122,7 +122,7 @@ const AnalyticsSettings = () => {
 
                 <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center gap-2">
-                    {exclusionStatus.enabled && !exclusionStatus.disabled ? (
+                    {exclusionStatus.enabled ? (
                       <>
                         <Eye className="h-4 w-4 text-green-500" />
                         <span className="text-sm font-medium">Currently Tracking</span>
@@ -134,8 +134,8 @@ const AnalyticsSettings = () => {
                       </>
                     )}
                   </div>
-                  <Badge variant={exclusionStatus.enabled && !exclusionStatus.disabled ? "default" : "secondary"}>
-                    {exclusionStatus.enabled && !exclusionStatus.disabled ? "Active" : "Disabled"}
+                  <Badge variant={exclusionStatus.enabled ? "default" : "secondary"}>
+                    {exclusionStatus.enabled ? "Active" : "Disabled"}
                   </Badge>
                 </div>
               </CardContent>

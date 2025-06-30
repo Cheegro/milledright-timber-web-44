@@ -62,8 +62,8 @@ const AdminSidebar = () => {
     },
     {
       title: "Analytics",
+      url: "/admin/analytics",
       icon: BarChart3,
-      path: "/admin/analytics",
     },
     {
       title: "Settings",

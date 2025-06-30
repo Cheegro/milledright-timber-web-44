@@ -4,7 +4,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { Toaster } from "@/components/ui/sonner";
 import { useEffect } from "react";
 import { trackEnhancedPageView } from "@/utils/enhancedAnalytics";
-import Analytics from "@/pages/admin/Analytics";
+import Analytics from "./pages/admin/Analytics";
 import AdminLayout from "./layouts/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
 import ProductsAdmin from "./pages/admin/ProductsAdmin";
@@ -166,7 +166,6 @@ function App() {
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>
-          <Analytics />
           <Routes>
             {routes.map((route) => (
               <Route key={route.path} path={route.path} element={route.element}>
