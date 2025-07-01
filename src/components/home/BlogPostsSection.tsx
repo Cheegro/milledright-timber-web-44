@@ -73,21 +73,7 @@ const BlogPostsSection = () => {
           ) : (
             // Fallback to static content if no posts are available
             <>
-              <Card>
-                <div className="aspect-video relative overflow-hidden">
-                  <img 
-                    src="https://lh3.googleusercontent.com/pw/AP1GczMvU1jPjRuTD7NTL26kN32qe3xBVIe9TFH12AhmjREiYsWiWrKArbnxaIv-2OCojyczJbFsjBAJ9DDAKguoih5sYfzfZLUWiHcjm1CABI8YBg3y=w2400" 
-                    alt="Bandsaw maintenance blog post"
-                    className="object-cover w-full h-full"
-                  />
-                </div>
-                <CardContent className="p-4">
-                  <div className="text-sawmill-orange text-sm mb-2">May 5, 2025</div>
-                  <h3 className="text-xl font-bold text-sawmill-dark-brown">10 Tips for Maintaining Your Bandsaw Blades</h3>
-                  <p className="text-sawmill-dark-gray mt-2 mb-4">Learn how to extend the life of your bandsaw blades and improve cutting performance...</p>
-                  <Link to="/blog" className="text-sawmill-orange hover:underline font-medium">Read More</Link>
-                </CardContent>
-              </Card>
+              {/* Removed bandsaw post - not connected to backend */}
               
               <Card>
                 <div className="aspect-video relative overflow-hidden">
