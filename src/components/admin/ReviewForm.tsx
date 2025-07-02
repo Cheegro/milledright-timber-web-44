@@ -148,7 +148,7 @@ const ReviewForm = () => {
   if (isEditMode && isReviewLoading) {
     return (
       <div className="flex items-center justify-center p-8">
-        <Loader2 className="h-8 w-8 animate-spin text-sawmill-dark-brown" />
+        <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
   }
@@ -156,7 +156,7 @@ const ReviewForm = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-sawmill-dark-brown">
+        <h1 className="text-2xl font-bold">
           {isEditMode ? 'Edit Review' : 'Add New Review'}
         </h1>
       </div>
@@ -236,7 +236,7 @@ const ReviewForm = () => {
               name="product_id"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Related Product</FormLabel>
+                  <FormLabel>Related Product (Optional)</FormLabel>
                   <Select
                     onValueChange={(value) => field.onChange(value || null)}
                     value={field.value || ""}
@@ -247,7 +247,7 @@ const ReviewForm = () => {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {/* Fixed: Removed the empty value SelectItem that was causing the error */}
+                      <SelectItem value="">No product</SelectItem>
                       {products.map((product) => (
                         <SelectItem key={product.id} value={product.id}>
                           {product.name}
@@ -282,7 +282,6 @@ const ReviewForm = () => {
           <div className="flex gap-4">
             <Button 
               type="submit" 
-              className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown"
               disabled={isSubmitting}
             >
               {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

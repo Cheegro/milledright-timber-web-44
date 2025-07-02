@@ -29,23 +29,22 @@ import {
   CardHeader, 
   CardTitle 
 } from '@/components/ui/card';
-import { 
-  fetchCategories, 
-  GalleryCategory, 
-  uploadGalleryImage, 
-  updateGalleryImage 
-} from '@/services/galleryService';
+import { toast } from '@/components/ui/use-toast';
+import { Loader2, Upload, X, ArrowLeft } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from '@/hooks/use-toast';
 
 const formSchema = z.object({
   title: z.string().min(2, "Title must be at least 2 characters"),
   description: z.string().optional(),
   category_id: z.string().optional(),
-  image: z.any().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
+
+interface GalleryCategory {
+  id: string;
+  name: string;
+}
 
 const GalleryImageForm = () => {
   const navigate = useNavigate();
@@ -55,6 +54,7 @@ const GalleryImageForm = () => {
   const [categories, setCategories] = useState<GalleryCategory[]>([]);
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -71,8 +71,13 @@ const GalleryImageForm = () => {
       setLoading(true);
       try {
         // Load categories
-        const categoriesData = await fetchCategories();
-        setCategories(categoriesData);
+        const { data: categoriesData, error: categoriesError } = await supabase
+          .from('gallery_categories')
+          .select('*')
+          .order('name');
+          
+        if (categoriesError) throw categoriesError;
+        setCategories(categoriesData || []);
         
         // If editing, load the image data
         if (isEditing) {
@@ -82,9 +87,7 @@ const GalleryImageForm = () => {
             .eq('id', id)
             .single();
             
-          if (error) {
-            throw new Error(error.message);
-          }
+          if (error) throw error;
           
           if (data) {
             form.reset({
@@ -114,51 +117,98 @@ const GalleryImageForm = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Preview the selected image
+      setImageFile(file);
       const reader = new FileReader();
       reader.onload = () => {
         setPreviewImage(reader.result as string);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    setPreviewImage(null);
+  };
+
+  const uploadImage = async (file: File): Promise<string | null> => {
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
       
-      // Store the file in form values
-      form.setValue('image', file);
+      const { data, error } = await supabase.storage
+        .from('gallery-images')
+        .upload(fileName, file);
+
+      if (error) throw error;
+
+      const { data: publicUrlData } = supabase.storage
+        .from('gallery-images')
+        .getPublicUrl(fileName);
+
+      return publicUrlData.publicUrl;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      throw error;
     }
   };
 
   const onSubmit = async (values: FormValues) => {
+    if (!isEditing && !imageFile) {
+      toast({
+        title: "Error",
+        description: "Please select an image to upload",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
     
     try {
+      let imageUrl = previewImage;
+      
+      if (imageFile) {
+        imageUrl = await uploadImage(imageFile);
+      }
+
       if (isEditing) {
         // Update existing image
-        const result = await updateGalleryImage(id as string, {
-          title: values.title,
-          description: values.description || null,
-          category_id: values.category_id || null,
+        const { error } = await supabase
+          .from('gallery_images')
+          .update({
+            title: values.title,
+            description: values.description || null,
+            category_id: values.category_id || null,
+          })
+          .eq('id', id);
+          
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: "Gallery image updated successfully",
         });
-        
-        if (result) {
-          navigate('/admin/gallery');
-        }
       } else {
         // Create new image
-        const file = values.image;
-        if (!file) {
-          throw new Error("Please select an image to upload");
-        }
-        
-        const result = await uploadGalleryImage(
-          file as File,
-          values.category_id || null,
-          values.title,
-          values.description || null
-        );
-        
-        if (result) {
-          navigate('/admin/gallery');
-        }
+        const { error } = await supabase
+          .from('gallery_images')
+          .insert({
+            title: values.title,
+            description: values.description || null,
+            category_id: values.category_id || null,
+            image_url: imageUrl,
+          });
+          
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: "Gallery image uploaded successfully",
+        });
       }
+      
+      navigate('/admin/gallery');
     } catch (error) {
       console.error("Error saving image:", error);
       toast({
@@ -172,9 +222,17 @@ const GalleryImageForm = () => {
   };
 
   return (
-    <div>
-      <div className="mb-6">
-        <h1 className="text-2xl md:text-3xl font-bold text-sawmill-dark-brown">
+    <div className="space-y-6">
+      <div className="flex items-center gap-4">
+        <Button
+          variant="outline"
+          onClick={() => navigate('/admin/gallery')}
+          className="flex items-center gap-2"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Gallery
+        </Button>
+        <h1 className="text-2xl md:text-3xl font-bold">
           {isEditing ? 'Edit Gallery Image' : 'Add New Gallery Image'}
         </h1>
       </div>
@@ -207,7 +265,7 @@ const GalleryImageForm = () => {
                     name="description"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Description</FormLabel>
+                        <FormLabel>Description (Optional)</FormLabel>
                         <FormControl>
                           <Textarea placeholder="Enter image description" {...field} />
                         </FormControl>
@@ -221,7 +279,7 @@ const GalleryImageForm = () => {
                     name="category_id"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Category</FormLabel>
+                        <FormLabel>Category (Optional)</FormLabel>
                         <Select 
                           onValueChange={field.onChange} 
                           value={field.value}
@@ -245,46 +303,55 @@ const GalleryImageForm = () => {
                   />
                   
                   {!isEditing && (
-                    <FormField
-                      control={form.control}
-                      name="image"
-                      render={() => (
-                        <FormItem>
-                          <FormLabel>Image</FormLabel>
-                          <FormControl>
-                            <Input 
-                              type="file" 
-                              accept="image/*" 
-                              onChange={handleImageChange}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Image Upload</label>
+                      <Input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handleImageChange}
+                        className="w-full"
+                      />
+                      <p className="text-sm text-gray-500">
+                        Select an image to upload (JPG, PNG, GIF)
+                      </p>
+                    </div>
                   )}
                 </div>
                 
                 <div className="flex items-center justify-center">
                   {previewImage ? (
-                    <div className="relative aspect-square w-full max-w-xs overflow-hidden rounded-md border border-gray-200">
+                    <div className="relative w-full max-w-xs">
                       <img 
                         src={previewImage} 
                         alt="Preview" 
-                        className="object-cover w-full h-full"
+                        className="w-full h-64 object-cover rounded-md border"
                       />
+                      {!isEditing && (
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          className="absolute top-2 right-2"
+                          onClick={removeImage}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      )}
                     </div>
                   ) : (
-                    <div className="flex items-center justify-center aspect-square w-full max-w-xs bg-gray-100 rounded-md border border-gray-200">
-                      <p className="text-muted-foreground text-center p-4">
-                        {isEditing ? "Loading image..." : "Image preview will appear here"}
-                      </p>
+                    <div className="w-full max-w-xs h-64 bg-gray-100 rounded-md border border-dashed flex items-center justify-center">
+                      <div className="text-center">
+                        <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                        <p className="mt-2 text-sm text-gray-500">
+                          {isEditing ? "Loading image..." : "Image preview will appear here"}
+                        </p>
+                      </div>
                     </div>
                   )}
                 </div>
               </div>
               
-              <CardFooter className="px-0 pt-4 flex justify-between">
+              <div className="flex justify-between">
                 <Button 
                   type="button" 
                   variant="outline" 
@@ -295,20 +362,12 @@ const GalleryImageForm = () => {
                 </Button>
                 <Button 
                   type="submit" 
-                  className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown"
                   disabled={loading}
                 >
-                  {loading ? (
-                    <span className="flex items-center">
-                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      {isEditing ? 'Updating...' : 'Uploading...'}
-                    </span>
-                  ) : isEditing ? 'Update Image' : 'Upload Image'}
+                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {isEditing ? 'Update Image' : 'Upload Image'}
                 </Button>
-              </CardFooter>
+              </div>
             </form>
           </Form>
         </CardContent>

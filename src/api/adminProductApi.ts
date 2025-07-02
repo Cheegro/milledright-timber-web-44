@@ -1,22 +1,26 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/components/ui/use-toast";
 
-// Type for product with relationships
-export interface AdminProduct {
+export interface Product {
   id: string;
   name: string;
-  category_id: string | null;
-  category?: string; // Populated from relationship
+  category_id: string;
   price: string;
-  description: string | null;
-  image_url: string | null;
+  price_unit?: string;
+  description: string;
+  image_url: string;
   created_at: string;
   updated_at: string;
 }
 
-// Fetch all products
-export async function fetchProducts(): Promise<AdminProduct[]> {
+export interface ProductCategory {
+  id: string;
+  name: string;
+  created_at: string;
+}
+
+// Fetch all products for admin
+export async function fetchProducts(): Promise<Product[]> {
   try {
     const { data, error } = await supabase
       .from("products")
@@ -31,25 +35,19 @@ export async function fetchProducts(): Promise<AdminProduct[]> {
       throw new Error(error.message);
     }
 
-    return data.map(product => ({
-      ...product,
-      category: product.product_categories?.name || null
-    }));
+    return data || [];
   } catch (error) {
     console.error("Exception fetching products:", error);
     throw error;
   }
 }
 
-// Fetch a single product by ID
-export async function fetchProduct(id: string): Promise<AdminProduct | null> {
+// Fetch a single product
+export async function fetchProduct(id: string): Promise<Product> {
   try {
     const { data, error } = await supabase
       .from("products")
-      .select(`
-        *,
-        product_categories(name)
-      `)
+      .select("*")
       .eq("id", id)
       .single();
 
@@ -58,10 +56,7 @@ export async function fetchProduct(id: string): Promise<AdminProduct | null> {
       throw new Error(error.message);
     }
 
-    return {
-      ...data,
-      category: data.product_categories?.name || null
-    };
+    return data;
   } catch (error) {
     console.error("Exception fetching product:", error);
     throw error;
@@ -69,7 +64,7 @@ export async function fetchProduct(id: string): Promise<AdminProduct | null> {
 }
 
 // Fetch all product categories
-export async function fetchProductCategories() {
+export async function fetchProductCategories(): Promise<ProductCategory[]> {
   try {
     const { data, error } = await supabase
       .from("product_categories")
@@ -81,7 +76,7 @@ export async function fetchProductCategories() {
       throw new Error(error.message);
     }
 
-    return data;
+    return data || [];
   } catch (error) {
     console.error("Exception fetching product categories:", error);
     throw error;
@@ -91,11 +86,12 @@ export async function fetchProductCategories() {
 // Create a new product
 export async function createProduct(productData: {
   name: string;
-  category_id: string | null;
   price: string;
-  description: string | null;
-  image_url: string | null;
-}) {
+  price_unit?: string;
+  description: string;
+  category_id: string;
+  image_url?: string;
+}): Promise<Product> {
   try {
     const { data, error } = await supabase
       .from("products")
@@ -105,7 +101,7 @@ export async function createProduct(productData: {
 
     if (error) {
       console.error("Error creating product:", error);
-      throw new Error(`Failed to create product: ${error.message}`);
+      throw new Error(error.message);
     }
 
     return data;
@@ -118,14 +114,15 @@ export async function createProduct(productData: {
 // Update an existing product
 export async function updateProduct(
   id: string,
-  productData: {
-    name?: string;
-    category_id?: string | null;
-    price?: string;
-    description?: string | null;
-    image_url?: string | null;
-  }
-) {
+  productData: Partial<{
+    name: string;
+    price: string;
+    price_unit?: string;
+    description: string;
+    category_id: string;
+    image_url?: string;
+  }>
+): Promise<Product> {
   try {
     const { data, error } = await supabase
       .from("products")
@@ -136,7 +133,7 @@ export async function updateProduct(
 
     if (error) {
       console.error("Error updating product:", error);
-      throw new Error(`Failed to update product: ${error.message}`);
+      throw new Error(error.message);
     }
 
     return data;
@@ -147,7 +144,7 @@ export async function updateProduct(
 }
 
 // Delete a product
-export async function deleteProduct(id: string) {
+export async function deleteProduct(id: string): Promise<boolean> {
   try {
     const { error } = await supabase
       .from("products")
@@ -156,7 +153,7 @@ export async function deleteProduct(id: string) {
 
     if (error) {
       console.error("Error deleting product:", error);
-      throw new Error(`Failed to delete product: ${error.message}`);
+      throw new Error(error.message);
     }
 
     return true;
@@ -167,29 +164,30 @@ export async function deleteProduct(id: string) {
 }
 
 // Upload a product image
-export async function uploadProductImage(file: File) {
+export async function uploadProductImage(file: File): Promise<string | null> {
   try {
-    // Check file size before uploading
+    // Check file size
     const maxSize = 5 * 1024 * 1024; // 5MB
     if (file.size > maxSize) {
-      throw new Error(`File size exceeds limit of 5MB. Current size: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+      throw new Error(`File size exceeds 5MB limit. Current size: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
     }
-    
-    // Create a unique file name
-    const fileExt = file.name.split('.').pop();
+
+    // Create unique filename
+    const fileExt = file.name.split('.').pop()?.toLowerCase() || 'jpg';
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
-    
-    // Upload the file to the bucket - no need to check for bucket existence
-    // The bucket should already be created and public
+
+    console.log(`Uploading product image: ${fileName}`);
+
     const { data, error } = await supabase.storage
       .from('product-images')
       .upload(fileName, file, {
-        upsert: false,
-        cacheControl: '3600'
+        contentType: file.type,
+        cacheControl: '3600',
+        upsert: false
       });
 
     if (error) {
-      console.error("Error uploading image:", error);
+      console.error("Error uploading product image:", error);
       throw new Error(`Failed to upload image: ${error.message}`);
     }
 
@@ -198,9 +196,10 @@ export async function uploadProductImage(file: File) {
       .from('product-images')
       .getPublicUrl(fileName);
 
+    console.log("Product image uploaded successfully:", publicUrlData.publicUrl);
     return publicUrlData.publicUrl;
   } catch (error) {
-    console.error("Exception uploading image:", error);
+    console.error("Exception uploading product image:", error);
     throw error;
   }
 }

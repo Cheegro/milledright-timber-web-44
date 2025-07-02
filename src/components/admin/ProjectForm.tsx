@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Loader2, Upload } from 'lucide-react';
+import { Loader2, Upload, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -119,8 +119,19 @@ const ProjectForm = () => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setImageFile(file);
-      setImagePreview(URL.createObjectURL(file));
+      
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    form.setValue('image_url', '');
   };
 
   // Handle form submission
@@ -152,6 +163,7 @@ const ProjectForm = () => {
         });
       }
     } catch (error: any) {
+      setIsUploading(false);
       toast({
         title: 'Error',
         description: error.message,
@@ -255,47 +267,38 @@ const ProjectForm = () => {
                         alt="Project preview" 
                         className="object-cover w-full h-full"
                       />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        className="absolute top-2 right-2"
+                        onClick={removeImage}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
                     </div>
                   ) : (
                     <div className="flex justify-center items-center aspect-[4/3] bg-muted rounded-md border border-dashed">
-                      <p className="text-muted-foreground">No image selected</p>
+                      <div className="text-center">
+                        <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                        <p className="text-muted-foreground">No image selected</p>
+                      </div>
                     </div>
                   )}
                   
                   <div>
-                    <label htmlFor="image-upload" className="cursor-pointer">
-                      <div className="flex items-center gap-2 text-primary">
-                        <Upload size={16} />
-                        <span>Choose image</span>
-                      </div>
-                      <Input 
-                        id="image-upload"
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="hidden"
-                      />
-                    </label>
+                    <Input 
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="w-full"
+                    />
                     <p className="text-xs text-muted-foreground mt-1">
-                      Recommended size: 1200×900px. Max 5MB.
+                      Upload project image (JPG, PNG, GIF). Max 5MB.
                     </p>
                   </div>
                 </div>
               </div>
-
-              <FormField
-                control={form.control}
-                name="image_url"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Image URL</FormLabel>
-                    <FormControl>
-                      <Input {...field} placeholder="https://..." />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
               <div className="flex justify-end gap-4 pt-4">
                 <Button

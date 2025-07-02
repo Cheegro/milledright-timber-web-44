@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -21,23 +23,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
-import { Loader2, Upload } from 'lucide-react';
+import { Loader2, Upload, X } from 'lucide-react';
 import { createProduct, updateProduct, uploadProductImage } from '@/api/adminProductApi';
-import { uploadGalleryImage } from '@/services/galleryService';
 
-// Form validation schema - removed price_unit as it doesn't exist in DB
 const productFormSchema = z.object({
-  name: z.string().min(3, 'Product name must be at least 3 characters'),
-  category_id: z.string().optional(),
+  name: z.string().min(1, 'Product name is required'),
   price: z.string().min(1, 'Price is required'),
-  description: z.string().optional(),
+  price_unit: z.string().optional(),
+  description: z.string().min(1, 'Description is required'),
+  category_id: z.string().min(1, 'Category is required'),
   image_url: z.string().optional(),
 });
 
-export interface ProductFormProps {
-  categories: { id: string; name: string }[];
+type ProductFormValues = z.infer<typeof productFormSchema>;
+
+interface ProductFormProps {
+  categories: any[];
   product?: any;
   isEditing?: boolean;
 }
@@ -45,96 +47,59 @@ export interface ProductFormProps {
 const ProductForm = ({ categories, product, isEditing = false }: ProductFormProps) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(
     product?.image_url || null
   );
 
-  // Initialize form with existing product data or defaults
-  const form = useForm<z.infer<typeof productFormSchema>>({
+  const form = useForm<ProductFormValues>({
     resolver: zodResolver(productFormSchema),
     defaultValues: {
       name: product?.name || '',
-      category_id: product?.category_id || '',
       price: product?.price || '',
+      price_unit: product?.price_unit || 'each',
       description: product?.description || '',
+      category_id: product?.category_id || '',
       image_url: product?.image_url || '',
     },
   });
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      setSelectedFile(file);
-      
-      // Create a preview URL for the selected image
-      const fileReader = new FileReader();
-      fileReader.onload = () => {
-        setPreviewUrl(fileReader.result as string);
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImagePreview(reader.result as string);
       };
-      fileReader.readAsDataURL(file);
+      reader.readAsDataURL(file);
     }
   };
 
-  const handleImageUpload = async () => {
-    if (!selectedFile) return null;
-    
-    try {
-      setIsUploading(true);
-      
-      // Upload to product images
-      const imageUrl = await uploadProductImage(selectedFile);
-      
-      // Also upload to gallery automatically
-      if (imageUrl) {
-        try {
-          await uploadGalleryImage(
-            selectedFile,
-            null, // No specific category
-            `Product Image: ${form.getValues('name') || 'Untitled Product'}`,
-            `Automatically uploaded from product: ${form.getValues('name') || 'Untitled Product'}`
-          );
-          console.log('Image also uploaded to gallery successfully');
-        } catch (galleryError) {
-          console.warn('Failed to upload to gallery, but product upload succeeded:', galleryError);
-          // Don't fail the whole process if gallery upload fails
-        }
-      }
-      
-      return imageUrl;
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to upload image. Please try again.',
-        variant: 'destructive',
-      });
-      return null;
-    } finally {
-      setIsUploading(false);
-    }
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    form.setValue('image_url', '');
   };
 
-  const onSubmit = async (data: z.infer<typeof productFormSchema>) => {
+  const onSubmit = async (values: ProductFormValues) => {
     try {
       setIsLoading(true);
-      
-      // Upload image if a new one was selected
-      let imageUrl = data.image_url;
-      if (selectedFile) {
-        imageUrl = await handleImageUpload();
-        if (!imageUrl) return; // Stop if image upload failed
+
+      // Upload image if there's a new one
+      let imageUrl = values.image_url;
+      if (imageFile) {
+        const uploadedUrl = await uploadProductImage(imageFile);
+        if (uploadedUrl) {
+          imageUrl = uploadedUrl;
+        }
       }
-      
+
       const productData = {
-        name: data.name,
-        category_id: data.category_id || null,
-        price: data.price,
-        description: data.description || null,
-        image_url: imageUrl || null,
+        ...values,
+        image_url: imageUrl || '',
       };
-      
+
       if (isEditing && product) {
         await updateProduct(product.id, productData);
         toast({
@@ -148,13 +113,13 @@ const ProductForm = ({ categories, product, isEditing = false }: ProductFormProp
           description: 'Product created successfully',
         });
       }
-      
+
       navigate('/admin/products');
     } catch (error: any) {
       console.error('Error saving product:', error);
       toast({
         title: 'Error',
-        description: error.message || 'Failed to save product. Please try again.',
+        description: error.message || 'Failed to save product',
         variant: 'destructive',
       });
     } finally {
@@ -163,170 +128,171 @@ const ProductForm = ({ categories, product, isEditing = false }: ProductFormProp
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-6">
-            {/* Product Name */}
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Product Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Product name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Category */}
-            <FormField
-              control={form.control}
-              name="category_id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Category</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
+    <div className="space-y-6">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Product Name</FormLabel>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a category" />
-                      </SelectTrigger>
+                      <Input placeholder="Enter product name" {...field} />
                     </FormControl>
-                    <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            {/* Price */}
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Price</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g. $99.99/board ft" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Include the unit in the price (e.g. $99.99/board ft, $25.00 each)
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Price</FormLabel>
+                      <FormControl>
+                        <Input placeholder="0.00" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            {/* Description */}
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Product description"
-                      {...field}
-                      rows={5}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+                <FormField
+                  control={form.control}
+                  name="price_unit"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Unit</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select unit" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="each">Each</SelectItem>
+                          <SelectItem value="sq ft">Per Sq Ft</SelectItem>
+                          <SelectItem value="board ft">Per Board Ft</SelectItem>
+                          <SelectItem value="linear ft">Per Linear Ft</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-          {/* Image Upload */}
-          <div className="space-y-6">
-            <FormField
-              control={form.control}
-              name="image_url"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Product Image</FormLabel>
-                  <FormControl>
-                    <div className="space-y-4">
-                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-50 transition-colors">
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleFileChange}
-                          className="hidden"
-                          id="product-image"
-                        />
-                        <label
-                          htmlFor="product-image"
-                          className="cursor-pointer block"
-                        >
-                          <Upload className="h-10 w-10 mx-auto text-gray-400" />
-                          <p className="mt-2 text-sm text-gray-500">
-                            {isEditing ? 'Click to change product image' : 'Click to upload product image'}
-                          </p>
-                          <p className="text-xs text-gray-400">
-                            PNG, JPG, GIF up to 5MB
-                          </p>
-                        </label>
-                      </div>
+              <FormField
+                control={form.control}
+                name="category_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Category</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select category" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {categories.map((category) => (
+                          <SelectItem key={category.id} value={category.id}>
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-                      {(previewUrl || field.value) && (
-                        <div className="mt-4">
-                          <p className="text-sm font-medium mb-2">
-                            {selectedFile ? 'New Image Preview' : 'Current Image'}
-                          </p>
-                          <div className="border rounded p-2 bg-white">
-                            <img
-                              src={previewUrl || field.value}
-                              alt="Product preview"
-                              className="max-h-64 mx-auto object-contain"
-                            />
-                          </div>
-                        </div>
-                      )}
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Description</FormLabel>
+                    <FormControl>
+                      <Textarea 
+                        placeholder="Enter product description" 
+                        className="min-h-[120px]"
+                        {...field} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <Label>Product Image</Label>
+                <div className="mt-2 space-y-4">
+                  {imagePreview ? (
+                    <div className="relative">
+                      <img 
+                        src={imagePreview} 
+                        alt="Product preview" 
+                        className="w-full h-48 object-cover rounded-md border"
+                      />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        className="absolute top-2 right-2"
+                        onClick={removeImage}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
                     </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                  ) : (
+                    <div className="w-full h-48 border-2 border-dashed border-gray-300 rounded-md flex items-center justify-center">
+                      <div className="text-center">
+                        <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                        <p className="mt-2 text-sm text-gray-500">No image selected</p>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="w-full"
+                    />
+                    <p className="text-sm text-gray-500 mt-1">
+                      Upload a product image (JPG, PNG, GIF)
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
 
-        {/* Submit buttons */}
-        <div className="flex gap-4 justify-end">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => navigate('/admin/products')}
-            disabled={isLoading || isUploading}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            disabled={isLoading || isUploading}
-            className="bg-sawmill-dark-brown hover:bg-sawmill-medium-brown"
-          >
-            {(isLoading || isUploading) && (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            )}
-            {isEditing ? 'Update' : 'Create'} Product
-          </Button>
-        </div>
-      </form>
-    </Form>
+          <div className="flex gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => navigate('/admin/products')}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isEditing ? 'Update Product' : 'Create Product'}
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
   );
 };
 
