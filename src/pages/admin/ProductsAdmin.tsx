@@ -15,7 +15,7 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { fetchProducts, deleteProduct } from '@/api/adminProductApi';
+import { fetchProducts, deleteProduct, fetchProductCategories } from '@/api/adminProductApi';
 
 const ProductsAdmin = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -25,6 +25,12 @@ const ProductsAdmin = () => {
   const { data: products = [], isLoading, error, refetch } = useQuery({
     queryKey: ['adminProducts'],
     queryFn: fetchProducts,
+  });
+
+  // Fetch categories for filtering
+  const { data: categories = [] } = useQuery({
+    queryKey: ['productCategories'],
+    queryFn: fetchProductCategories,
   });
   
   useEffect(() => {
@@ -37,13 +43,18 @@ const ProductsAdmin = () => {
     }
   }, [error]);
 
-  // Get unique categories from products
-  const categories = ['All', ...Array.from(new Set(products.map(p => p.category || 'Uncategorized')))];
+  // Get unique categories from products for filtering
+  const categoryFilters = ['All', ...categories.map(c => c.name)];
   
   // Filter products based on search query and category
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = currentCategory === 'All' || product.category === currentCategory;
+    
+    // Find the category name from the categories array
+    const productCategory = categories.find(c => c.id === product.category_id);
+    const categoryName = productCategory?.name || 'Uncategorized';
+    
+    const matchesCategory = currentCategory === 'All' || categoryName === currentCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -90,7 +101,7 @@ const ProductsAdmin = () => {
         </div>
         
         <div className="flex flex-wrap gap-2">
-          {categories.map(category => (
+          {categoryFilters.map(category => (
             <Button
               key={category}
               variant={currentCategory === category ? "default" : "outline"}
@@ -124,43 +135,48 @@ const ProductsAdmin = () => {
             </TableHeader>
             <TableBody>
               {filteredProducts.length > 0 ? (
-                filteredProducts.map(product => (
-                  <TableRow key={product.id}>
-                    <TableCell className="font-medium">{product.id.substring(0, 8)}...</TableCell>
-                    <TableCell>
-                      <Link 
-                        to={`/admin/products/${product.id}/edit`}
-                        className="text-sawmill-dark-brown hover:underline font-medium"
-                      >
-                        {product.name}
-                      </Link>
-                    </TableCell>
-                    <TableCell>{product.category || 'Uncategorized'}</TableCell>
-                    <TableCell>{product.price}</TableCell>
-                    <TableCell>
-                      <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
-                        Active
-                      </span>
-                    </TableCell>
-                    <TableCell>{new Date(product.created_at).toLocaleDateString()}</TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
+                filteredProducts.map(product => {
+                  const productCategory = categories.find(c => c.id === product.category_id);
+                  const categoryName = productCategory?.name || 'Uncategorized';
+                  
+                  return (
+                    <TableRow key={product.id}>
+                      <TableCell className="font-medium">{product.id.substring(0, 8)}...</TableCell>
+                      <TableCell>
                         <Link 
                           to={`/admin/products/${product.id}/edit`}
-                          className="text-sawmill-orange hover:underline text-sm"
+                          className="text-sawmill-dark-brown hover:underline font-medium"
                         >
-                          Edit
+                          {product.name}
                         </Link>
-                        <button 
-                          className="text-red-500 hover:underline text-sm"
-                          onClick={() => handleDeleteProduct(product.id, product.name)}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))
+                      </TableCell>
+                      <TableCell>{categoryName}</TableCell>
+                      <TableCell>{product.price}</TableCell>
+                      <TableCell>
+                        <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
+                          Active
+                        </span>
+                      </TableCell>
+                      <TableCell>{new Date(product.created_at).toLocaleDateString()}</TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2">
+                          <Link 
+                            to={`/admin/products/${product.id}/edit`}
+                            className="text-sawmill-orange hover:underline text-sm"
+                          >
+                            Edit
+                          </Link>
+                          <button 
+                            className="text-red-500 hover:underline text-sm"
+                            onClick={() => handleDeleteProduct(product.id, product.name)}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
               ) : (
                 <TableRow>
                   <TableCell colSpan={7} className="h-24 text-center">

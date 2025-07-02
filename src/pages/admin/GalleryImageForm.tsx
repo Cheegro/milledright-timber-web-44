@@ -190,14 +190,15 @@ const GalleryImageForm = () => {
           description: "Gallery image updated successfully",
         });
       } else {
-        // Create new image
+        // Create new image - include required thumbnail_url
         const { error } = await supabase
           .from('gallery_images')
           .insert({
             title: values.title,
             description: values.description || null,
             category_id: values.category_id || null,
-            image_url: imageUrl,
+            image_url: imageUrl!,
+            thumbnail_url: imageUrl!, // Use same image for thumbnail
           });
           
         if (error) throw error;

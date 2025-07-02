@@ -95,8 +95,13 @@ const ProductForm = ({ categories, product, isEditing = false }: ProductFormProp
         }
       }
 
+      // Ensure all required fields are present
       const productData = {
-        ...values,
+        name: values.name,
+        price: values.price,
+        price_unit: values.price_unit,
+        description: values.description,
+        category_id: values.category_id,
         image_url: imageUrl || '',
       };
 
