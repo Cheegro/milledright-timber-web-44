@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -85,6 +84,7 @@ const ProjectForm = () => {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
     },
     onError: (error) => {
+      console.error('Error creating project:', error);
       toast({
         title: 'Error creating project',
         description: error.message,
@@ -106,6 +106,7 @@ const ProjectForm = () => {
       queryClient.invalidateQueries({ queryKey: ['projects'] });
     },
     onError: (error) => {
+      console.error('Error updating project:', error);
       toast({
         title: 'Error updating project',
         description: error.message,
@@ -118,6 +119,7 @@ const ProjectForm = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      console.log('Project image selected:', file.name, 'Size:', file.size);
       setImageFile(file);
       
       const reader = new FileReader();
@@ -137,16 +139,34 @@ const ProjectForm = () => {
   // Handle form submission
   const onSubmit = async (values: ProjectFormValues) => {
     try {
+      console.log('Starting project submission...', { isEditing: !!id, hasImageFile: !!imageFile });
+      
       // Upload image if there's a new one
       if (imageFile) {
+        console.log('Uploading project image...');
         setIsUploading(true);
-        const imageUrl = await uploadProjectImage(imageFile);
-        setIsUploading(false);
-        
-        if (imageUrl) {
-          values.image_url = imageUrl;
+        try {
+          const imageUrl = await uploadProjectImage(imageFile);
+          if (imageUrl) {
+            values.image_url = imageUrl;
+            console.log('Project image uploaded successfully:', imageUrl);
+          } else {
+            throw new Error('Image upload returned null');
+          }
+        } catch (uploadError) {
+          console.error('Project image upload failed:', uploadError);
+          toast({
+            title: 'Image Upload Failed',
+            description: uploadError instanceof Error ? uploadError.message : 'Failed to upload image',
+            variant: 'destructive',
+          });
+          return; // Don't continue if image upload fails
+        } finally {
+          setIsUploading(false);
         }
       }
+
+      console.log('Submitting project data:', values);
 
       if (id) {
         updateMutation.mutate({ 
@@ -163,6 +183,7 @@ const ProjectForm = () => {
         });
       }
     } catch (error: any) {
+      console.error('Error in project submission:', error);
       setIsUploading(false);
       toast({
         title: 'Error',
@@ -273,6 +294,7 @@ const ProjectForm = () => {
                         size="sm"
                         className="absolute top-2 right-2"
                         onClick={removeImage}
+                        disabled={isUploading}
                       >
                         <X className="h-4 w-4" />
                       </Button>
@@ -292,10 +314,17 @@ const ProjectForm = () => {
                       accept="image/*"
                       onChange={handleImageChange}
                       className="w-full"
+                      disabled={isUploading}
                     />
                     <p className="text-xs text-muted-foreground mt-1">
                       Upload project image (JPG, PNG, GIF). Max 5MB.
                     </p>
+                    {isUploading && (
+                      <p className="text-sm text-blue-600 mt-1 flex items-center">
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Uploading image...
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -305,6 +334,7 @@ const ProjectForm = () => {
                   type="button"
                   variant="outline"
                   onClick={() => navigate('/admin/projects')}
+                  disabled={createMutation.isPending || updateMutation.isPending || isUploading}
                 >
                   Cancel
                 </Button>
@@ -315,7 +345,7 @@ const ProjectForm = () => {
                   {(createMutation.isPending || updateMutation.isPending || isUploading) && (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
-                  {id ? 'Update Project' : 'Create Project'}
+                  {isUploading ? 'Uploading...' : id ? 'Update Project' : 'Create Project'}
                 </Button>
               </div>
             </div>

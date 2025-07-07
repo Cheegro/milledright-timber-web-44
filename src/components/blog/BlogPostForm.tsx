@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -93,6 +94,7 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
     // Fetch blog categories
     async function fetchCategories() {
       try {
+        console.log('Loading blog categories...');
         const { supabase } = await import('@/integrations/supabase/client');
         const { data, error } = await supabase
           .from('blog_categories')
@@ -100,9 +102,11 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
           .order('name');
           
         if (error) {
+          console.error('Error loading blog categories:', error);
           throw error;
         }
         
+        console.log('Blog categories loaded:', data?.length || 0);
         setCategories(data || []);
       } catch (err) {
         console.error('Error fetching blog categories:', err);
@@ -120,6 +124,7 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
+      console.log('Blog image selected:', file.name, 'Size:', file.size);
       setSelectedFile(file);
       setKeepExistingImage(false);
       
@@ -155,13 +160,18 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
       console.log("Starting blog image upload...");
       
       const imageUrl = await uploadBlogImage(selectedFile);
-      console.log("Upload result:", imageUrl ? "Success" : "Failed");
+      console.log("Blog upload result:", imageUrl ? "Success" : "Failed");
+      
+      if (!imageUrl) {
+        throw new Error('Upload returned null');
+      }
+      
       return imageUrl;
     } catch (error) {
       console.error('Error uploading blog image:', error);
       toast({
-        title: 'Error',
-        description: 'Failed to upload image. Please try again with a different image format.',
+        title: 'Image Upload Failed',
+        description: error instanceof Error ? error.message : 'Failed to upload image. Please try again.',
         variant: 'destructive',
       });
       return null;
@@ -173,6 +183,7 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
   const onSubmit = async (data: z.infer<typeof blogFormSchema>) => {
     try {
       setIsLoading(true);
+      console.log('Starting blog post submission...', { isEditing, hasSelectedFile: !!selectedFile });
       
       // Handle image logic
       let imageUrl = '';
@@ -182,8 +193,8 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
         console.log("Uploading new featured image...");
         imageUrl = await handleImageUpload();
         if (!imageUrl) {
-          console.log("Image upload failed, continuing with form submission without image");
-          imageUrl = '';
+          console.log("Image upload failed, stopping form submission");
+          return; // Don't continue if image upload fails
         }
       } else if (isEditing && keepExistingImage && hasExistingImage && initialData?.featured_image_url) {
         // Keep existing image when editing
@@ -204,6 +215,8 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
         is_published: data.is_published,
         featured_image_url: imageUrl,
       };
+      
+      console.log('Submitting blog post data:', blogPostData);
       
       if (isEditing && initialData) {
         await updateBlogPost(initialData.id, blogPostData);
@@ -252,7 +265,6 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
               )}
             />
 
-            {/* Slug */}
             <FormField
               control={form.control}
               name="slug"
@@ -267,7 +279,6 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
               )}
             />
             
-            {/* Author */}
             <FormField
               control={form.control}
               name="author_name"
@@ -282,7 +293,6 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
               )}
             />
             
-            {/* Excerpt */}
             <FormField
               control={form.control}
               name="excerpt"
@@ -301,7 +311,6 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
               )}
             />
 
-            {/* Category */}
             <FormField
               control={form.control}
               name="category_id"
@@ -329,7 +338,6 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
               )}
             />
 
-            {/* Published Status */}
             <FormField
               control={form.control}
               name="is_published"
@@ -353,7 +361,6 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
           </div>
 
           <div className="space-y-6">
-            {/* Content */}
             <FormField
               control={form.control}
               name="content"
@@ -372,7 +379,6 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
               )}
             />
 
-            {/* Featured Image */}
             <FormField
               control={form.control}
               name="featured_image_url"
@@ -391,6 +397,7 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
                               variant={keepExistingImage ? "default" : "outline"}
                               size="sm"
                               onClick={handleKeepExistingImage}
+                              disabled={isUploading}
                             >
                               Keep Current Image
                             </Button>
@@ -399,6 +406,7 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
                               variant="outline"
                               size="sm"
                               onClick={handleRemoveImage}
+                              disabled={isUploading}
                             >
                               Remove Image
                             </Button>
@@ -413,6 +421,7 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
                           onChange={handleFileChange}
                           className="hidden"
                           id="blog-image"
+                          disabled={isUploading}
                         />
                         <label
                           htmlFor="blog-image"
@@ -428,6 +437,13 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
                         </label>
                       </div>
 
+                      {isUploading && (
+                        <p className="text-sm text-blue-600 flex items-center">
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Uploading image...
+                        </p>
+                      )}
+
                       {previewUrl && (
                         <div className="mt-4">
                           <div className="flex items-center justify-between mb-2">
@@ -439,6 +455,7 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
                               variant="ghost"
                               size="sm"
                               onClick={handleRemoveImage}
+                              disabled={isUploading}
                             >
                               <X className="h-4 w-4" />
                             </Button>
@@ -479,7 +496,7 @@ const BlogPostForm = ({ initialData, isEditing = false }: BlogPostFormProps) => 
             {(isLoading || isUploading) && (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             )}
-            {isEditing ? 'Update' : 'Create'} Blog Post
+            {isUploading ? 'Uploading...' : isEditing ? 'Update' : 'Create'} Blog Post
           </Button>
         </div>
       </form>

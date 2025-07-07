@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -47,6 +46,7 @@ interface ProductFormProps {
 const ProductForm = ({ categories, product, isEditing = false }: ProductFormProps) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(
     product?.image_url || null
@@ -67,6 +67,7 @@ const ProductForm = ({ categories, product, isEditing = false }: ProductFormProp
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      console.log('Image selected:', file.name, 'Size:', file.size);
       setImageFile(file);
       const reader = new FileReader();
       reader.onload = () => {
@@ -85,25 +86,45 @@ const ProductForm = ({ categories, product, isEditing = false }: ProductFormProp
   const onSubmit = async (values: ProductFormValues) => {
     try {
       setIsLoading(true);
+      console.log('Starting product submission...', { isEditing, hasImageFile: !!imageFile });
 
       // Upload image if there's a new one
-      let imageUrl = values.image_url;
+      let imageUrl = values.image_url || '';
       if (imageFile) {
-        const uploadedUrl = await uploadProductImage(imageFile);
-        if (uploadedUrl) {
-          imageUrl = uploadedUrl;
+        console.log('Uploading image...');
+        setIsUploading(true);
+        try {
+          const uploadedUrl = await uploadProductImage(imageFile);
+          if (uploadedUrl) {
+            imageUrl = uploadedUrl;
+            console.log('Image uploaded successfully:', uploadedUrl);
+          } else {
+            throw new Error('Image upload returned null');
+          }
+        } catch (uploadError) {
+          console.error('Image upload failed:', uploadError);
+          toast({
+            title: 'Image Upload Failed',
+            description: uploadError instanceof Error ? uploadError.message : 'Failed to upload image',
+            variant: 'destructive',
+          });
+          return; // Don't continue if image upload fails
+        } finally {
+          setIsUploading(false);
         }
       }
 
-      // Ensure all required fields are present
+      // Prepare product data with all required fields
       const productData = {
         name: values.name,
         price: values.price,
-        price_unit: values.price_unit,
+        price_unit: values.price_unit || 'each',
         description: values.description,
         category_id: values.category_id,
-        image_url: imageUrl || '',
+        image_url: imageUrl,
       };
+
+      console.log('Submitting product data:', productData);
 
       if (isEditing && product) {
         await updateProduct(product.id, productData);
@@ -129,6 +150,7 @@ const ProductForm = ({ categories, product, isEditing = false }: ProductFormProp
       });
     } finally {
       setIsLoading(false);
+      setIsUploading(false);
     }
   };
 
@@ -253,6 +275,7 @@ const ProductForm = ({ categories, product, isEditing = false }: ProductFormProp
                         size="sm"
                         className="absolute top-2 right-2"
                         onClick={removeImage}
+                        disabled={isUploading}
                       >
                         <X className="h-4 w-4" />
                       </Button>
@@ -272,10 +295,17 @@ const ProductForm = ({ categories, product, isEditing = false }: ProductFormProp
                       accept="image/*"
                       onChange={handleImageChange}
                       className="w-full"
+                      disabled={isUploading}
                     />
                     <p className="text-sm text-gray-500 mt-1">
-                      Upload a product image (JPG, PNG, GIF)
+                      Upload a product image (JPG, PNG, GIF - Max 5MB)
                     </p>
+                    {isUploading && (
+                      <p className="text-sm text-blue-600 mt-1 flex items-center">
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Uploading image...
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -287,12 +317,13 @@ const ProductForm = ({ categories, product, isEditing = false }: ProductFormProp
               type="button"
               variant="outline"
               onClick={() => navigate('/admin/products')}
+              disabled={isLoading || isUploading}
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isEditing ? 'Update Product' : 'Create Product'}
+            <Button type="submit" disabled={isLoading || isUploading}>
+              {(isLoading || isUploading) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isUploading ? 'Uploading...' : isEditing ? 'Update Product' : 'Create Product'}
             </Button>
           </div>
         </form>

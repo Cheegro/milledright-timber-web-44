@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -53,6 +52,7 @@ const GalleryImageForm = () => {
   
   const [categories, setCategories] = useState<GalleryCategory[]>([]);
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   
@@ -70,24 +70,35 @@ const GalleryImageForm = () => {
     const loadData = async () => {
       setLoading(true);
       try {
+        console.log('Loading gallery form data...');
+        
         // Load categories
         const { data: categoriesData, error: categoriesError } = await supabase
           .from('gallery_categories')
           .select('*')
           .order('name');
           
-        if (categoriesError) throw categoriesError;
+        if (categoriesError) {
+          console.error('Error loading categories:', categoriesError);
+          throw categoriesError;
+        }
+        
+        console.log('Categories loaded:', categoriesData?.length || 0);
         setCategories(categoriesData || []);
         
         // If editing, load the image data
         if (isEditing) {
+          console.log('Loading existing gallery image:', id);
           const { data, error } = await supabase
             .from('gallery_images')
             .select('*')
             .eq('id', id)
             .single();
             
-          if (error) throw error;
+          if (error) {
+            console.error('Error loading gallery image:', error);
+            throw error;
+          }
           
           if (data) {
             form.reset({
@@ -97,6 +108,7 @@ const GalleryImageForm = () => {
             });
             
             setPreviewImage(data.image_url);
+            console.log('Existing image loaded:', data.title);
           }
         }
       } catch (error) {
@@ -117,6 +129,7 @@ const GalleryImageForm = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      console.log('Image selected for gallery:', file.name, 'Size:', file.size);
       setImageFile(file);
       const reader = new FileReader();
       reader.onload = () => {
@@ -133,28 +146,44 @@ const GalleryImageForm = () => {
 
   const uploadImage = async (file: File): Promise<string | null> => {
     try {
+      console.log('Starting gallery image upload...');
+      setUploading(true);
+      
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
       
+      console.log('Uploading to gallery-images bucket:', fileName);
+      
       const { data, error } = await supabase.storage
         .from('gallery-images')
-        .upload(fileName, file);
+        .upload(fileName, file, {
+          contentType: file.type,
+          cacheControl: '3600',
+          upsert: false
+        });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Storage upload error:', error);
+        throw error;
+      }
 
       const { data: publicUrlData } = supabase.storage
         .from('gallery-images')
         .getPublicUrl(fileName);
 
+      console.log('Gallery image uploaded successfully:', publicUrlData.publicUrl);
       return publicUrlData.publicUrl;
     } catch (error) {
-      console.error('Error uploading image:', error);
+      console.error('Error uploading gallery image:', error);
       throw error;
+    } finally {
+      setUploading(false);
     }
   };
 
   const onSubmit = async (values: FormValues) => {
     if (!isEditing && !imageFile) {
+      console.error('No image file selected for new gallery image');
       toast({
         title: "Error",
         description: "Please select an image to upload",
@@ -166,13 +195,19 @@ const GalleryImageForm = () => {
     setLoading(true);
     
     try {
+      console.log('Starting gallery form submission...', { isEditing, hasImageFile: !!imageFile });
+      
       let imageUrl = previewImage;
       
       if (imageFile) {
         imageUrl = await uploadImage(imageFile);
+        if (!imageUrl) {
+          throw new Error('Failed to upload image');
+        }
       }
 
       if (isEditing) {
+        console.log('Updating gallery image:', id);
         // Update existing image
         const { error } = await supabase
           .from('gallery_images')
@@ -183,13 +218,17 @@ const GalleryImageForm = () => {
           })
           .eq('id', id);
           
-        if (error) throw error;
+        if (error) {
+          console.error('Error updating gallery image:', error);
+          throw error;
+        }
 
         toast({
           title: "Success",
           description: "Gallery image updated successfully",
         });
       } else {
+        console.log('Creating new gallery image');
         // Create new image - include required thumbnail_url
         const { error } = await supabase
           .from('gallery_images')
@@ -201,7 +240,10 @@ const GalleryImageForm = () => {
             thumbnail_url: imageUrl!, // Use same image for thumbnail
           });
           
-        if (error) throw error;
+        if (error) {
+          console.error('Error creating gallery image:', error);
+          throw error;
+        }
 
         toast({
           title: "Success",
@@ -211,7 +253,7 @@ const GalleryImageForm = () => {
       
       navigate('/admin/gallery');
     } catch (error) {
-      console.error("Error saving image:", error);
+      console.error("Error saving gallery image:", error);
       toast({
         title: "Error saving image",
         description: error instanceof Error ? error.message : "An unknown error occurred",
@@ -222,6 +264,14 @@ const GalleryImageForm = () => {
     }
   };
 
+  if (loading && !categories.length) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
@@ -229,6 +279,7 @@ const GalleryImageForm = () => {
           variant="outline"
           onClick={() => navigate('/admin/gallery')}
           className="flex items-center gap-2"
+          disabled={loading || uploading}
         >
           <ArrowLeft className="h-4 w-4" />
           Back to Gallery
@@ -311,10 +362,17 @@ const GalleryImageForm = () => {
                         accept="image/*" 
                         onChange={handleImageChange}
                         className="w-full"
+                        disabled={uploading}
                       />
                       <p className="text-sm text-gray-500">
-                        Select an image to upload (JPG, PNG, GIF)
+                        Select an image to upload (JPG, PNG, GIF - Max 5MB)
                       </p>
+                      {uploading && (
+                        <p className="text-sm text-blue-600 flex items-center">
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Uploading image...
+                        </p>
+                      )}
                     </div>
                   )}
                 </div>
@@ -334,6 +392,7 @@ const GalleryImageForm = () => {
                           size="sm"
                           className="absolute top-2 right-2"
                           onClick={removeImage}
+                          disabled={uploading}
                         >
                           <X className="h-4 w-4" />
                         </Button>
@@ -357,16 +416,16 @@ const GalleryImageForm = () => {
                   type="button" 
                   variant="outline" 
                   onClick={() => navigate('/admin/gallery')}
-                  disabled={loading}
+                  disabled={loading || uploading}
                 >
                   Cancel
                 </Button>
                 <Button 
                   type="submit" 
-                  disabled={loading}
+                  disabled={loading || uploading}
                 >
-                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  {isEditing ? 'Update Image' : 'Upload Image'}
+                  {(loading || uploading) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  {uploading ? 'Uploading...' : isEditing ? 'Update Image' : 'Upload Image'}
                 </Button>
               </div>
             </form>
