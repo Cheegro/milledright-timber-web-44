@@ -4,47 +4,36 @@ import { supabase } from "@/integrations/supabase/client";
 export type Testimonial = {
   id: string;
   author: string;
-  location?: string | null;
-  rating: number;
-  text: string;
-  status: 'Published' | 'Pending';
-  product_id?: string | null;
-  date: string;
+  content: string;
+  status: 'active' | 'inactive';
+  image_url?: string | null;
   created_at: string;
-  updated_at: string;
 };
 
 export type TestimonialFormValues = {
   author: string;
-  location?: string | null;
-  rating: number;
-  text: string;
-  status: 'Published' | 'Pending';
-  product_id?: string | null;
-  date?: string;
+  content: string;
+  status: 'active' | 'inactive';
+  image_url?: string | null;
 };
 
 // Type for raw database response
 type DatabaseTestimonial = {
   id: string;
   author: string;
-  location?: string | null;
-  rating: number;
-  text: string;
+  content: string;
   status: string;
-  product_id?: string | null;
-  date: string;
+  image_url?: string | null;
   created_at: string;
-  updated_at: string;
 };
 
 // Helper function to transform database response to Testimonial type
 const transformDatabaseTestimonial = (dbTestimonial: DatabaseTestimonial): Testimonial => {
   return {
     ...dbTestimonial,
-    status: (dbTestimonial.status === 'Published' || dbTestimonial.status === 'Pending') 
-      ? dbTestimonial.status as 'Published' | 'Pending'
-      : 'Pending'
+    status: (dbTestimonial.status === 'active' || dbTestimonial.status === 'inactive') 
+      ? dbTestimonial.status as 'active' | 'inactive'
+      : 'active'
   };
 };
 
@@ -53,8 +42,8 @@ export const fetchPublishedTestimonials = async (): Promise<Testimonial[]> => {
   const { data, error } = await supabase
     .from("testimonials")
     .select("*")
-    .eq("status", "Published")
-    .order("date", { ascending: false })
+    .eq("status", "active")
+    .order("created_at", { ascending: false })
     .limit(6);
     
   if (error) {
@@ -70,7 +59,7 @@ export const fetchAllTestimonials = async (): Promise<Testimonial[]> => {
   const { data, error } = await supabase
     .from("testimonials")
     .select("*")
-    .order("date", { ascending: false });
+    .order("created_at", { ascending: false });
     
   if (error) {
     console.error("Error fetching all testimonials:", error);

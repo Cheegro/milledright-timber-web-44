@@ -8,9 +8,8 @@ export interface BlogPost {
   slug: string;
   content: string;
   excerpt: string;
-  author_name: string;
   category_id: string | null;
-  is_published: boolean;
+  status: string;
   featured_image_url: string | null;
   created_at: string;
   updated_at: string;
@@ -28,16 +27,14 @@ export interface BlogCategory {
 export interface DatabaseBlogPost {
   id: string;
   title: string;
+  slug: string;
   content: string;
-  excerpt: string;
-  author: string;
-  category_id: string | null;
-  is_published: boolean;
+  excerpt: string | null;
   image_url: string | null;
-  created_at: string;
-  updated_at: string;
-  published_at?: string;
-  slug?: string;
+  category_id: string | null;
+  status: string | null;
+  created_at: string | null;
+  updated_at: string | null;
   blog_categories?: {
     name: string;
   };

@@ -130,7 +130,18 @@ const Gallery = () => {
         </div>
       </section>
 
-      <div className="container-wide py-12">
+        <div className="container-wide py-12">
+        {/* Admin Link */}
+        <div className="mb-6 text-center">
+          <a 
+            href="/admin/gallery" 
+            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            <Camera className="w-4 h-4" />
+            Upload Images (Admin)
+          </a>
+        </div>
+        
         {/* Enhanced Search and Filter Section */}
         <div className="mb-8 bg-card rounded-2xl shadow-lg p-6 border border-border">
           <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">

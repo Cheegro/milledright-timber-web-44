@@ -93,28 +93,12 @@ export interface AdvancedAnalyticsStats {
 
 // Track a page view
 export const trackPageView = async (pageView: Omit<AnalyticsPageView, 'id' | 'created_at'>) => {
-  try {
-    const { error } = await supabase
-      .from('analytics_page_views')
-      .insert([pageView]);
-    
-    if (error) throw error;
-  } catch (error) {
-    console.error('Error tracking page view:', error);
-  }
+  // Analytics disabled - no analytics tables in current database schema
 };
 
 // Track an event
 export const trackEvent = async (event: Omit<AnalyticsEvent, 'id' | 'created_at'>) => {
-  try {
-    const { error } = await supabase
-      .from('analytics_events')
-      .insert([event]);
-    
-    if (error) throw error;
-  } catch (error) {
-    console.error('Error tracking event:', error);
-  }
+  // Analytics disabled - no analytics tables in current database schema
 };
 
 // Get advanced analytics stats
