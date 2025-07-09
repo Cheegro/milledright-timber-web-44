@@ -21,7 +21,7 @@ const SEOTab: React.FC<SEOTabProps> = ({ settings, onSettingsUpdate }) => {
   const { register, handleSubmit, formState: { isSubmitting }, watch } = useForm();
 
   const getSettingValue = (key: string): string => {
-    const setting = settings.find(s => s.setting_key === key);
+    const setting = settings.find(s => s.key === key);
     if (!setting) return "";
     const value = parseSettingValue(setting);
     return typeof value === 'string' ? value : "";

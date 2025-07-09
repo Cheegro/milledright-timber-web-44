@@ -10,8 +10,7 @@ export interface BlogPost {
   image_url: string;
   author: string;
   category_id: string;
-  published_at: string;
-  is_published: boolean;
+  status: string;
   created_at: string;
   updated_at: string;
 }
@@ -31,8 +30,8 @@ export async function fetchBlogPosts() {
         *,
         blog_categories(name)
       `)
-      .eq("is_published", true)
-      .order("published_at", { ascending: false });
+      .eq("status", "published")
+      .order("created_at", { ascending: false });
 
     if (error) {
       console.error("Error fetching blog posts:", error);
@@ -135,7 +134,7 @@ export async function fetchCategoryPostCounts() {
     const { data, error } = await supabase
       .from("blog_posts")
       .select("category_id, blog_categories(id, name)")
-      .eq("is_published", true);
+      .eq("status", "published");
 
     if (error) {
       console.error("Error fetching category counts:", error);
@@ -166,10 +165,10 @@ export async function fetchRecentBlogPosts(limit = 3) {
         title,
         excerpt,
         image_url,
-        published_at
+        created_at
       `)
-      .eq("is_published", true)
-      .order("published_at", { ascending: false })
+      .eq("status", "published")
+      .order("created_at", { ascending: false })
       .limit(limit);
 
     if (error) {
@@ -194,12 +193,12 @@ export async function fetchRelatedBlogPosts(currentPostId: string, categoryId: s
         title,
         excerpt,
         image_url,
-        published_at
+        created_at
       `)
       .eq("category_id", categoryId)
-      .eq("is_published", true)
+      .eq("status", "published")
       .neq("id", currentPostId)
-      .order("published_at", { ascending: false })
+      .order("created_at", { ascending: false })
       .limit(limit);
 
     if (error) {

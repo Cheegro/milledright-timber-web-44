@@ -19,7 +19,7 @@ const WebsiteContentTab: React.FC<WebsiteContentTabProps> = ({ settings, onSetti
   const { register, handleSubmit, formState: { isSubmitting } } = useForm();
 
   const getSettingValue = (key: string): string => {
-    const setting = settings.find(s => s.setting_key === key);
+    const setting = settings.find(s => s.key === key);
     if (!setting) return "";
     const value = parseSettingValue(setting);
     return typeof value === 'string' ? value : "";

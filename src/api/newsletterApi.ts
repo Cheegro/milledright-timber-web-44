@@ -12,46 +12,19 @@ export interface NewsletterSubscription {
 }
 
 export const subscribeToNewsletter = async (email: string, name?: string): Promise<NewsletterSubscription> => {
-  const { data, error } = await supabase
-    .from("newsletter_subscriptions")
-    .insert({
-      email,
-      name: name || null,
-    })
-    .select()
-    .single();
-    
-  if (error) {
-    if (error.code === '23505') { // Unique constraint violation
-      throw new Error('This email is already subscribed to our newsletter.');
-    }
-    throw error;
-  }
-  
-  return data;
+  // Newsletter subscriptions table not implemented yet
+  console.warn("Newsletter subscriptions table not implemented in database");
+  throw new Error("Newsletter functionality not yet implemented");
 };
 
 export const unsubscribeFromNewsletter = async (token: string): Promise<void> => {
-  const { error } = await supabase
-    .from("newsletter_subscriptions")
-    .update({ is_active: false })
-    .eq("unsubscribe_token", token);
-    
-  if (error) {
-    throw error;
-  }
+  // Newsletter subscriptions table not implemented yet
+  console.warn("Newsletter subscriptions table not implemented in database");
+  throw new Error("Newsletter functionality not yet implemented");
 };
 
 export const checkSubscriptionStatus = async (email: string): Promise<boolean> => {
-  const { data, error } = await supabase
-    .from("newsletter_subscriptions")
-    .select("is_active")
-    .eq("email", email)
-    .maybeSingle();
-    
-  if (error) {
-    throw error;
-  }
-  
-  return data?.is_active || false;
+  // Newsletter subscriptions table not implemented yet
+  console.warn("Newsletter subscriptions table not implemented in database");
+  return false;
 };

@@ -11,7 +11,7 @@ export const fetchSettings = async (): Promise<SiteSetting[]> => {
   const { data, error } = await supabase
     .from("site_settings")
     .select("*")
-    .order("setting_key");
+    .order("key");
     
   if (error) {
     console.error("Error fetching settings:", error);
@@ -26,7 +26,7 @@ export const getSetting = async (key: string): Promise<SiteSetting | null> => {
   const { data, error } = await supabase
     .from("site_settings")
     .select("*")
-    .eq("setting_key", key)
+    .eq("key", key)
     .single();
     
   if (error && error.code !== 'PGRST116') {
@@ -42,10 +42,10 @@ export const updateSetting = async (key: string, value: SettingValue): Promise<S
   const { data, error } = await supabase
     .from("site_settings")
     .update({ 
-      setting_value: JSON.stringify(value),
+      value: JSON.stringify(value),
       updated_at: new Date().toISOString()
     })
-    .eq("setting_key", key)
+    .eq("key", key)
     .select("*")
     .single();
     
@@ -68,12 +68,12 @@ export const updateMultipleSettings = async (updates: Record<string, SettingValu
 
 // Helper function to parse setting value
 export const parseSettingValue = (setting: SiteSetting): SettingValue => {
-  if (!setting.setting_value) return "";
+  if (!setting.value) return "";
   
   try {
-    const parsed = JSON.parse(setting.setting_value as string);
+    const parsed = JSON.parse(setting.value as string);
     return parsed;
   } catch {
-    return setting.setting_value as string;
+    return setting.value as string;
   }
 };

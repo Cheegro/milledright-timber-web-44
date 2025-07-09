@@ -21,7 +21,7 @@ const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ settings, onSettingsUpdate 
   const { register, handleSubmit, formState: { isSubmitting }, watch, setValue } = useForm();
 
   const getSettingValue = (key: string): string | boolean => {
-    const setting = settings.find(s => s.setting_key === key);
+    const setting = settings.find(s => s.key === key);
     if (!setting) return "";
     const value = parseSettingValue(setting);
     return value as string | boolean;

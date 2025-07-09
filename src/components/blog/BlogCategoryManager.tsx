@@ -62,9 +62,12 @@ const BlogCategoryManager = () => {
     if (!newCategoryName.trim()) return;
     
     try {
+      // Generate slug from name
+      const slug = newCategoryName.trim().toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s+/g, '-');
+      
       const { data, error } = await supabase
         .from('blog_categories')
-        .insert([{ name: newCategoryName.trim() }])
+        .insert([{ name: newCategoryName.trim(), slug }])
         .select();
       
       if (error) throw error;

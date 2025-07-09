@@ -36,87 +36,31 @@ export interface ConversationEntry {
   attachments?: any;
 }
 
-// Fetch all customers
+// Fetch all customers (table doesn't exist yet)
 export const fetchCustomers = async (): Promise<Customer[]> => {
-  const { data, error } = await supabase
-    .from("customers")
-    .select("*")
-    .order("created_at", { ascending: false });
-    
-  if (error) {
-    console.error("Error fetching customers:", error);
-    throw error;
-  }
-  
-  return data || [];
+  // Customer table not implemented yet
+  console.warn("Customer table not implemented in database");
+  return [];
 };
 
-// Fetch conversations for a customer
+// Fetch conversations for a customer (table doesn't exist yet)
 export const fetchConversations = async (customerId?: number): Promise<Conversation[]> => {
-  let query = supabase
-    .from("conversations")
-    .select("*")
-    .order("updated_at", { ascending: false });
-    
-  if (customerId) {
-    query = query.eq("customer_id", customerId);
-  }
-    
-  const { data, error } = await query;
-    
-  if (error) {
-    console.error("Error fetching conversations:", error);
-    throw error;
-  }
-  
-  return data || [];
+  // Conversations table not implemented yet
+  console.warn("Conversations table not implemented in database");
+  return [];
 };
 
-// Create a new customer
+// Create a new customer (table doesn't exist yet)
 export const createCustomer = async (customer: Omit<Customer, 'customer_id' | 'created_at'>): Promise<Customer> => {
-  const { data, error } = await supabase
-    .from("customers")
-    .insert(customer)
-    .select("*")
-    .single();
-    
-  if (error) {
-    console.error("Error creating customer:", error);
-    throw error;
-  }
-  
-  return data;
+  throw new Error("Customer table not implemented in database");
 };
 
-// Create a new conversation
+// Create a new conversation (table doesn't exist yet)
 export const createConversation = async (conversation: Omit<Conversation, 'conversation_id' | 'created_at' | 'updated_at'>): Promise<Conversation> => {
-  const { data, error } = await supabase
-    .from("conversations")
-    .insert(conversation)
-    .select("*")
-    .single();
-    
-  if (error) {
-    console.error("Error creating conversation:", error);
-    throw error;
-  }
-  
-  return data;
+  throw new Error("Conversations table not implemented in database");
 };
 
-// Update conversation status
+// Update conversation status (table doesn't exist yet)
 export const updateConversationStatus = async (conversationId: number, status: string): Promise<Conversation> => {
-  const { data, error } = await supabase
-    .from("conversations")
-    .update({ status, updated_at: new Date().toISOString() })
-    .eq("conversation_id", conversationId)
-    .select("*")
-    .single();
-    
-  if (error) {
-    console.error("Error updating conversation:", error);
-    throw error;
-  }
-  
-  return data;
+  throw new Error("Conversations table not implemented in database");
 };

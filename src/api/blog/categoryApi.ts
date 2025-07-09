@@ -25,9 +25,12 @@ export async function fetchBlogCategories(): Promise<BlogCategory[]> {
 // Create a new blog category
 export async function createBlogCategory(name: string): Promise<BlogCategory> {
   try {
+    // Generate slug from name
+    const slug = name.toLowerCase().replace(/[^\w\s]/gi, '').replace(/\s+/g, '-');
+    
     const { data, error } = await supabase
       .from("blog_categories")
-      .insert([{ name }])
+      .insert([{ name, slug }])
       .select()
       .single();
 

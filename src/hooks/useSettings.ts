@@ -18,7 +18,7 @@ export const useSettings = () => {
   });
 
   const getSetting = (key: string, defaultValue: string = ''): string => {
-    const setting = settings.find(s => s.setting_key === key);
+    const setting = settings.find(s => s.key === key);
     if (!setting) {
       console.warn(`Setting '${key}' not found, using default:`, defaultValue);
       return defaultValue;
@@ -28,7 +28,7 @@ export const useSettings = () => {
   };
 
   const getBooleanSetting = (key: string, defaultValue: boolean = false): boolean => {
-    const setting = settings.find(s => s.setting_key === key);
+    const setting = settings.find(s => s.key === key);
     if (!setting) {
       console.warn(`Setting '${key}' not found, using default:`, defaultValue);
       return defaultValue;
