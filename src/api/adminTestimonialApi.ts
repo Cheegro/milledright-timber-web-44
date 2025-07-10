@@ -5,6 +5,10 @@ export type Testimonial = {
   id: string;
   author: string;
   content: string;
+  text: string;
+  location?: string | null;
+  rating?: number | null;
+  product_id?: string | null;
   status: 'active' | 'inactive';
   image_url?: string | null;
   created_at: string;
@@ -13,6 +17,10 @@ export type Testimonial = {
 export type TestimonialFormValues = {
   author: string;
   content: string;
+  text: string;
+  location?: string | null;
+  rating?: number | null;
+  product_id?: string | null;
   status: 'active' | 'inactive';
   image_url?: string | null;
 };
@@ -22,6 +30,10 @@ type DatabaseTestimonial = {
   id: string;
   author: string;
   content: string;
+  text: string;
+  location?: string | null;
+  rating?: number | null;
+  product_id?: string | null;
   status: string;
   image_url?: string | null;
   created_at: string;

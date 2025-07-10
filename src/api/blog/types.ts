@@ -10,7 +10,12 @@ export interface BlogPost {
   excerpt: string;
   category_id: string | null;
   status: string;
+  author: string | null;
+  author_name: string | null;
+  is_published: boolean;
+  published_at: string | null;
   featured_image_url: string | null;
+  image_url: string | null;
   created_at: string;
   updated_at: string;
   category_name?: string;
@@ -30,6 +35,10 @@ export interface DatabaseBlogPost {
   slug: string;
   content: string;
   excerpt: string | null;
+  author: string | null;
+  author_name: string | null;
+  is_published: boolean;
+  published_at: string | null;
   image_url: string | null;
   category_id: string | null;
   status: string | null;

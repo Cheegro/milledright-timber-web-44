@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -58,7 +57,7 @@ const TestimonialForm: React.FC<TestimonialFormProps> = ({
         <div>
           <Label className="text-sm font-medium">Rating</Label>
           <Select
-            value={formData.rating.toString()}
+            value={formData.rating?.toString() || '5'}
             onValueChange={(value) => setFormData({ ...formData, rating: parseInt(value) })}
           >
             <SelectTrigger>
@@ -77,7 +76,7 @@ const TestimonialForm: React.FC<TestimonialFormProps> = ({
           <Label className="text-sm font-medium">Status</Label>
           <Select
             value={formData.status}
-            onValueChange={(value: 'Published' | 'Pending') => 
+            onValueChange={(value: 'active' | 'inactive') => 
               setFormData({ ...formData, status: value })
             }
           >
@@ -85,8 +84,8 @@ const TestimonialForm: React.FC<TestimonialFormProps> = ({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Published">Published</SelectItem>
-              <SelectItem value="Pending">Pending</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="inactive">Inactive</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -115,8 +114,8 @@ const TestimonialForm: React.FC<TestimonialFormProps> = ({
       <div>
         <Label className="text-sm font-medium">Testimonial Text</Label>
         <Textarea
-          value={formData.text}
-          onChange={(e) => setFormData({ ...formData, text: e.target.value })}
+          value={formData.text || ''}
+          onChange={(e) => setFormData({ ...formData, text: e.target.value, content: e.target.value })}
           placeholder="The quality of lumber from MilledRight is consistently excellent..."
           className="min-h-24"
           required

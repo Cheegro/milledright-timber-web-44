@@ -17,10 +17,11 @@ export const useTestimonials = () => {
   const [editingTestimonial, setEditingTestimonial] = useState<Testimonial | null>(null);
   const [formData, setFormData] = useState<TestimonialFormValues>({
     author: '',
+    content: '',
+    text: '',
     location: '',
     rating: 5,
-    text: '',
-    status: 'Published',
+    status: 'active',
   });
 
   const queryClient = useQueryClient();
@@ -100,10 +101,11 @@ export const useTestimonials = () => {
   const resetForm = () => {
     setFormData({
       author: '',
+      content: '',
+      text: '',
       location: '',
       rating: 5,
-      text: '',
-      status: 'Published',
+      status: 'active',
     });
     setEditingTestimonial(null);
   };
@@ -122,9 +124,10 @@ export const useTestimonials = () => {
     setEditingTestimonial(testimonial);
     setFormData({
       author: testimonial.author,
+      content: testimonial.content,
+      text: testimonial.text,
       location: testimonial.location,
       rating: testimonial.rating,
-      text: testimonial.text,
       status: testimonial.status,
       product_id: testimonial.product_id,
     });

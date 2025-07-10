@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -57,15 +56,15 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({
         </div>
         <div className="flex items-center gap-2">
           <div className="flex">
-            {renderStars(testimonial.rating)}
+            {renderStars(testimonial.rating || 5)}
           </div>
-          <Badge variant={testimonial.status === 'Published' ? 'default' : 'secondary'}>
-            {testimonial.status}
+          <Badge variant={testimonial.status === 'active' ? 'default' : 'secondary'}>
+            {testimonial.status === 'active' ? 'Active' : 'Inactive'}
           </Badge>
         </div>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-gray-700 italic">"{testimonial.text}"</p>
+        <p className="text-sm text-gray-700 italic">"{testimonial.text || testimonial.content}"</p>
       </CardContent>
     </Card>
   );

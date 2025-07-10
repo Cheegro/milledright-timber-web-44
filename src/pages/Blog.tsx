@@ -18,6 +18,8 @@ interface BlogPost {
   excerpt: string | null;
   image_url: string | null;
   author: string | null;
+  author_name: string | null;
+  status: string;
   is_published: boolean;
   published_at: string | null;
   created_at: string;
@@ -38,7 +40,7 @@ const Blog = () => {
       try {
         setLoading(true);
         const blogPosts = await fetchBlogPosts();
-        const publishedPosts = blogPosts.filter(post => post.is_published);
+        const publishedPosts = blogPosts.filter(post => post.status === 'published');
         setPosts(publishedPosts);
         setFilteredPosts(publishedPosts);
       } catch (error) {

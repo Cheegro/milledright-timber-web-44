@@ -60,8 +60,8 @@ const BlogAdmin = () => {
   // Map BlogPost type to add author property required by BlogCard
   const postsWithAuthor = filteredPosts.map(post => ({
     ...post,
-    author: post.author_name,
-    imageUrl: post.featured_image_url
+    author: post.author || post.author_name || 'Admin',
+    imageUrl: post.image_url
   }));
   
   return (
